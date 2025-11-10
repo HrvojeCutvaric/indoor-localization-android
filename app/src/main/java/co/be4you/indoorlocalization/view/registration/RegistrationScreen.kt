@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,32 +23,34 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultTextField
+import co.be4you.indoorlocalization.viewmodel.registration.RegistrationAction
+import co.be4you.indoorlocalization.viewmodel.registration.RegistrationState
+import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegistrationScreen(
-
+    viewModel: RegistrationViewModel = koinViewModel(),
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
+    state?.let { currentState ->
+        RegistrationLayout(
+            state = currentState,
+            onAction = viewModel::execute,
+        )
+    }
 }
 
 @Composable
 private fun RegistrationLayout(
-    email: String,
-    password: String,
-    confirmPassword: String,
-    isPasswordVisible: Boolean,
-    isConfirmPasswordVisible: Boolean,
-    onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onConfirmPasswordChanged: (String) -> Unit,
-    onPasswordVisibilityChanged: () -> Unit,
-    onConfirmPasswordVisibilityChanged: () -> Unit,
-    onRegisterClicked: () -> Unit,
-    onLoginClicked: () -> Unit,
+    state: RegistrationState,
+    onAction: (RegistrationAction) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -70,8 +73,8 @@ private fun RegistrationLayout(
 
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = email,
-            onValueChange = onEmailChanged,
+            value = state.email,
+            onValueChange = { onAction(RegistrationAction.OnEmailChanged(it)) },
             label = R.string.email,
             placeholder = R.string.email,
         )
@@ -80,26 +83,26 @@ private fun RegistrationLayout(
 
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = password,
-            onValueChange = onPasswordChanged,
+            value = state.password,
+            onValueChange = { onAction(RegistrationAction.OnPasswordChanged(it)) },
             label = R.string.password,
             placeholder = R.string.password,
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = if (isPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
-            onTrailingIconClicked = onPasswordVisibilityChanged,
+            visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = if (state.isPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
+            onTrailingIconClicked = { onAction(RegistrationAction.OnPasswordVisibilityChanged) },
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = confirmPassword,
-            onValueChange = onConfirmPasswordChanged,
+            value = state.confirmPassword,
+            onValueChange = { onAction(RegistrationAction.OnConfirmPasswordChanged(it)) },
             label = R.string.confirm_password,
             placeholder = R.string.confirm_password,
-            visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = if (isConfirmPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
-            onTrailingIconClicked = onConfirmPasswordVisibilityChanged,
+            visualTransformation = if (state.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = if (state.isConfirmPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
+            onTrailingIconClicked = { onAction(RegistrationAction.OnConfirmPasswordVisibilityChanged) },
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -107,7 +110,7 @@ private fun RegistrationLayout(
         DefaultButton(
             modifier = Modifier.fillMaxWidth(),
             label = R.string.register,
-            onButtonClicked = onRegisterClicked,
+            onButtonClicked = { onAction(RegistrationAction.OnRegisterClicked) },
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -125,7 +128,7 @@ private fun RegistrationLayout(
             )
 
             TextButton(
-                onClick = onLoginClicked
+                onClick = { onAction(RegistrationAction.OnLoginClicked) }
             ) {
                 Text(
                     text = stringResource(R.string.login),
@@ -145,18 +148,15 @@ private fun RegistrationLayout(
 private fun RegistrationLayoutPreview() {
     IndoorLocalizationTheme {
         RegistrationLayout(
-            email = "test123@gmail.com",
-            password = "test123",
-            confirmPassword = "test123",
-            isPasswordVisible = false,
-            isConfirmPasswordVisible = true,
-            onEmailChanged = {},
-            onPasswordChanged = {},
-            onConfirmPasswordChanged = {},
-            onPasswordVisibilityChanged = {},
-            onConfirmPasswordVisibilityChanged = {},
-            onRegisterClicked = {},
-            onLoginClicked = {},
+            state = RegistrationState(
+                email = "test123@gmail.com",
+                password = "test123",
+                confirmPassword = "test123",
+                isPasswordVisible = false,
+                isConfirmPasswordVisible = false,
+                isButtonLoading = true,
+            ),
+            onAction = {},
         )
     }
 }

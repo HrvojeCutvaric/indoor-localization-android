@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import co.be4you.indoorlocalization.di.viewModelModule
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.view.registration.RegistrationScreen
 import org.koin.compose.KoinApplication
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             IndoorLocalizationTheme {
                 KoinApplication(application = {
-                    modules()
+                    modules(viewModelModule)
                 }) {
                     RegistrationScreen()
                 }
