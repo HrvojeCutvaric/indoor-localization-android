@@ -41,11 +41,11 @@ private fun RegistrationLayout(
     confirmPassword: String,
     isPasswordVisible: Boolean,
     isConfirmPasswordVisible: Boolean,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onConfirmPasswordChange: (String) -> Unit,
-    onPasswordVisibilityChange: () -> Unit,
-    onConfirmPasswordVisibilityChange: () -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
+    onPasswordVisibilityChanged: () -> Unit,
+    onConfirmPasswordVisibilityChanged: () -> Unit,
     onRegisterClicked: () -> Unit,
     onLoginClicked: () -> Unit,
 ) {
@@ -71,7 +71,7 @@ private fun RegistrationLayout(
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
             value = email,
-            onValueChange = onEmailChange,
+            onValueChange = onEmailChanged,
             label = R.string.email,
             placeholder = R.string.email,
         )
@@ -81,12 +81,12 @@ private fun RegistrationLayout(
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
             value = password,
-            onValueChange = onPasswordChange,
+            onValueChange = onPasswordChanged,
             label = R.string.password,
             placeholder = R.string.password,
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = if (isPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
-            onTrailingIconClicked = onPasswordVisibilityChange,
+            onTrailingIconClicked = onPasswordVisibilityChanged,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -94,12 +94,12 @@ private fun RegistrationLayout(
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
             value = confirmPassword,
-            onValueChange = onConfirmPasswordChange,
+            onValueChange = onConfirmPasswordChanged,
             label = R.string.confirm_password,
             placeholder = R.string.confirm_password,
             visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = if (isConfirmPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
-            onTrailingIconClicked = onConfirmPasswordVisibilityChange,
+            onTrailingIconClicked = onConfirmPasswordVisibilityChanged,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -150,11 +150,11 @@ private fun RegistrationLayoutPreview() {
             confirmPassword = "test123",
             isPasswordVisible = false,
             isConfirmPasswordVisible = true,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onConfirmPasswordChange = {},
-            onPasswordVisibilityChange = {},
-            onConfirmPasswordVisibilityChange = {},
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onConfirmPasswordChanged = {},
+            onPasswordVisibilityChanged = {},
+            onConfirmPasswordVisibilityChanged = {},
             onRegisterClicked = {},
             onLoginClicked = {},
         )
