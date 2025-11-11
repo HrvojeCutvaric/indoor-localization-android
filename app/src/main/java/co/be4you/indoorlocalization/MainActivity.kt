@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.material3.Text
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import co.be4you.indoorlocalization.di.viewModelModule
@@ -36,7 +37,11 @@ class MainActivity : ComponentActivity() {
                         },
                         entryProvider = entryProvider {
                             entry<Route.Registration> {
-                                RegistrationScreen()
+                                RegistrationScreen(onAction = mainViewModel::execute)
+                            }
+
+                            entry<Route.Login> {
+                                Text("Login")
                             }
                         }
                     )
