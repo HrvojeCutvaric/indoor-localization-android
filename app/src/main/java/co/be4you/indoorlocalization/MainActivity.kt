@@ -8,7 +8,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import co.be4you.indoorlocalization.di.viewModelModule
@@ -42,6 +45,10 @@ class MainActivity : ComponentActivity() {
 
                             entry<Route.Login> {
                                 Text("Login")
+                            }
+
+                            entry<Route.Home> {
+                                Text("Home")
                             }
                         }
                     )
