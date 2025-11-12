@@ -12,7 +12,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val viewModelModule = module {
+val modules = module {
     singleOf(::TestAuthApi).bind<AuthApi>()
     singleOf(::AuthRepository).bind<AuthRepository>()
 

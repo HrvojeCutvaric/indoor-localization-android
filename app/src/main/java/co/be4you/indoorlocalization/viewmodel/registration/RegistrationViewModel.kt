@@ -2,12 +2,8 @@ package co.be4you.indoorlocalization.viewmodel.registration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
-import co.be4you.indoorlocalization.domain.utils.RegisterThrowable
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

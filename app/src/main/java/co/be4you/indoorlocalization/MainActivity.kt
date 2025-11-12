@@ -8,13 +8,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import co.be4you.indoorlocalization.di.viewModelModule
+import co.be4you.indoorlocalization.di.modules
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.view.registration.RegistrationScreen
@@ -28,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KoinApplication(application = {
-                modules(viewModelModule)
+                modules(modules)
             }) {
                 val mainViewModel = koinViewModel<MainViewModel>()
 
