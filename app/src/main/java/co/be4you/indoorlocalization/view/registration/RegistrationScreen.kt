@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,16 +29,23 @@ import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultTextField
+import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationAction
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationState
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegistrationScreen(
     viewModel: RegistrationViewModel = koinViewModel(),
+    onAction: (MainAction) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest(onAction)
+    }
 
     state?.let { currentState ->
         RegistrationLayout(
