@@ -5,7 +5,7 @@ import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val viewModelModule = module {
+val modules = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
 }
