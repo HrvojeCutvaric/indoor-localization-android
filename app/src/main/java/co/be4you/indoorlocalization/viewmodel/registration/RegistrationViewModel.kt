@@ -1,9 +1,12 @@
 package co.be4you.indoorlocalization.viewmodel.registration
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -11,9 +14,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RegistrationViewModel : ViewModel() {
+class RegistrationViewModel(
+    private val registerUseCase: RegisterUseCase,
+) : ViewModel() {
 
-    private val _state = MutableStateFlow<RegistrationState?>(
+    private val _state = MutableStateFlow<RegistrationState>(
         RegistrationState(
             email = "",
             password = "",
@@ -32,36 +37,58 @@ class RegistrationViewModel : ViewModel() {
         when (action) {
             is RegistrationAction.OnConfirmPasswordChanged -> {
                 _state.update {
-                    it?.copy(confirmPassword = action.newConfirmPassword)
+                    it.copy(confirmPassword = action.newConfirmPassword)
                 }
             }
 
             RegistrationAction.OnConfirmPasswordVisibilityChanged -> {
                 _state.update {
-                    it?.copy(isConfirmPasswordVisible = it.isConfirmPasswordVisible.not())
+                    it.copy(isConfirmPasswordVisible = it.isConfirmPasswordVisible.not())
                 }
             }
 
             is RegistrationAction.OnEmailChanged -> {
                 _state.update {
-                    it?.copy(email = action.newEmail)
+                    it.copy(email = action.newEmail)
                 }
             }
 
             is RegistrationAction.OnPasswordChanged -> {
                 _state.update {
-                    it?.copy(password = action.newPassword)
+                    it.copy(password = action.newPassword)
                 }
             }
 
             RegistrationAction.OnPasswordVisibilityChanged -> {
                 _state.update {
-                    it?.copy(isPasswordVisible = it.isPasswordVisible.not())
+                    it.copy(isPasswordVisible = it.isPasswordVisible.not())
                 }
             }
 
-            RegistrationAction.OnRegisterClicked -> {
-                // TODO: implement on register clicked
+            RegistrationAction.OnRegisterClicked -> viewModelScope.launch(Dispatchers.IO) {
+                _state.update {
+                    it.copy(isButtonLoading = true)
+                }
+
+                val currentState = _state.value
+
+                registerUseCase.execute(
+                    email = currentState.email,
+                    password = currentState.password,
+                    confirmPassword = currentState.confirmPassword
+                ).fold(
+                    onSuccess = {
+                        _state.update {
+                            it.copy(isButtonLoading = false)
+                        }
+                    },
+                    onFailure = { throwable ->
+                        Log.e("RegistrationViewModel.kt", "OnRegisterClicked: $throwable")
+                        _state.update {
+                            it.copy(isButtonLoading = false)
+                        }
+                    }
+                )
             }
 
             RegistrationAction.OnLoginClicked -> viewModelScope.launch {
