@@ -7,4 +7,9 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="login">Login</string>
+    <string name="invalid_email">The email address is invalid</string>
+    <string name="weak_password">Password should be at least 6 characters</string>
+    <string name="email_exists">The email address is already in use by another account</string>
+    <string name="confirm_password_not_match">Confirm password doesn\'t match password</string>
+    <string name="generic_error_message">Sorry, something went wrong.</string>
 </resources>

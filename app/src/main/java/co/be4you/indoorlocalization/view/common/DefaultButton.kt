@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +30,7 @@ fun DefaultButton(
     modifier: Modifier = Modifier,
     @StringRes label: Int,
     isButtonEnabled: Boolean = true,
+    isButtonLoading: Boolean = false,
     onButtonClicked: () -> Unit,
 ) {
     Button(
@@ -35,13 +40,21 @@ fun DefaultButton(
         contentPadding = PaddingValues(16.dp),
         onClick = onButtonClicked,
     ) {
-        Text(
-            text = stringResource(label),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+        if (isButtonLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                strokeWidth = 1.dp,
+                color = MaterialTheme.colorScheme.onPrimary
             )
-        )
+        } else {
+            Text(
+                text = stringResource(label),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            )
+        }
     }
 }
 
@@ -58,6 +71,7 @@ private fun DefaultButtonPreview() {
             DefaultButton(
                 modifier = Modifier.fillMaxWidth(),
                 label = R.string.registration,
+                isButtonLoading = true,
                 onButtonClicked = {},
             )
         }

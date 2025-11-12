@@ -1,9 +1,10 @@
 package co.be4you.indoorlocalization.viewmodel.registration
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
+import co.be4you.indoorlocalization.domain.utils.RegisterThrowable
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ class RegistrationViewModel(
     private val registerUseCase: RegisterUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<RegistrationState>(
+    private val _state = MutableStateFlow(
         RegistrationState(
             email = "",
             password = "",
@@ -26,6 +27,7 @@ class RegistrationViewModel(
             isPasswordVisible = false,
             isConfirmPasswordVisible = false,
             isButtonLoading = false,
+            error = null,
         )
     )
     val state = _state.asStateFlow()
@@ -79,13 +81,24 @@ class RegistrationViewModel(
                 ).fold(
                     onSuccess = {
                         _state.update {
-                            it.copy(isButtonLoading = false)
+                            it.copy(
+                                isButtonLoading = false,
+                                error = null,
+                            )
                         }
                     },
                     onFailure = { throwable ->
-                        Log.e("RegistrationViewModel.kt", "OnRegisterClicked: $throwable")
                         _state.update {
-                            it.copy(isButtonLoading = false)
+                            it.copy(
+                                isButtonLoading = false,
+                                error = when (throwable) {
+                                    RegisterThrowable.ConfirmPasswordNotMatch -> R.string.confirm_password_not_match
+                                    RegisterThrowable.InvalidEmail -> R.string.invalid_email
+                                    RegisterThrowable.EmailExists -> R.string.email_exists
+                                    RegisterThrowable.WeakPassword -> R.string.weak_password
+                                    else -> R.string.generic_error_message
+                                }
+                            )
                         }
                     }
                 )
