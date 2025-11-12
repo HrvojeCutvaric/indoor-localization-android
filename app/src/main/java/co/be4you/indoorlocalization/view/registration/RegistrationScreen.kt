@@ -1,6 +1,7 @@
 package co.be4you.indoorlocalization.view.registration
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,12 +48,10 @@ fun RegistrationScreen(
         viewModel.event.collectLatest(onAction)
     }
 
-    state?.let { currentState ->
-        RegistrationLayout(
-            state = currentState,
-            onAction = viewModel::execute,
-        )
-    }
+    RegistrationLayout(
+        state = state,
+        onAction = viewModel::execute,
+    )
 }
 
 @Composable
@@ -78,6 +77,19 @@ private fun RegistrationLayout(
         )
 
         Spacer(modifier = Modifier.height(32.dp))
+
+        Box(modifier = Modifier.height(24.dp)) {
+            state.error?.let {
+                Text(
+                    text = stringResource(it),
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.error,
+                    ),
+                )
+            }
+        }
 
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -119,6 +131,8 @@ private fun RegistrationLayout(
             modifier = Modifier.fillMaxWidth(),
             label = R.string.register,
             onButtonClicked = { onAction(RegistrationAction.OnRegisterClicked) },
+            isButtonLoading = state.isButtonLoading,
+            isButtonEnabled = state.isButtonLoading.not(),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -162,7 +176,8 @@ private fun RegistrationLayoutPreview() {
                 confirmPassword = "test123",
                 isPasswordVisible = false,
                 isConfirmPasswordVisible = false,
-                isButtonLoading = true,
+                isButtonLoading = false,
+                error = R.string.weak_password,
             ),
             onAction = {},
         )

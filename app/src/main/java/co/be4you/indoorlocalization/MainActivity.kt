@@ -43,6 +43,10 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Login> {
                                 Text("Login")
                             }
+
+                            entry<Route.Home> {
+                                Text("Home")
+                            }
                         }
                     )
                 }
