@@ -47,12 +47,10 @@ fun RegistrationScreen(
         viewModel.event.collectLatest(onAction)
     }
 
-    state?.let { currentState ->
-        RegistrationLayout(
-            state = currentState,
-            onAction = viewModel::execute,
-        )
-    }
+    RegistrationLayout(
+        state = state,
+        onAction = viewModel::execute,
+    )
 }
 
 @Composable
