@@ -15,7 +15,7 @@ class LoginViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(
         LoginState(
-            username = "",
+            email = "",
             password = "",
             isPasswordVisible = false,
             errorResource = null,
@@ -30,7 +30,7 @@ class LoginViewModel : ViewModel() {
     fun execute(action: LoginAction) {
         when (action) {
             is LoginAction.OnEmailChanged -> {
-                _state.value = _state.value.copy(username = action.email)
+                _state.value = _state.value.copy(email = action.email)
             }
 
             LoginAction.OnLoginClicked -> {
