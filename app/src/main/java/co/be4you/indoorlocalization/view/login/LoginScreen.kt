@@ -117,7 +117,7 @@ private fun LoginLayout(
             label = R.string.login,
             onButtonClicked = { onAction(LoginAction.OnLoginClicked) },
             isButtonLoading = state.isButtonLoading,
-            isButtonEnabled = state.isButtonLoading.not(),
+            isButtonEnabled = state.isButtonLoading.not() && state.email.isNotEmpty() && state.password.isNotEmpty(),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
