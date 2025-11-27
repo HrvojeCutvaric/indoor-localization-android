@@ -12,4 +12,5 @@
     <string name="email_exists">The email address is already in use by another account</string>
     <string name="confirm_password_not_match">Confirm password doesn\'t match password</string>
     <string name="generic_error_message">Sorry, something went wrong.</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
 </resources>
