@@ -7,6 +7,7 @@ import co.be4you.indoorlocalization.data.apis.test.TestFloorMapApi
 import co.be4you.indoorlocalization.data.repositories.AuthRepository
 import co.be4you.indoorlocalization.data.repositories.FloorMapRepository
 import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
+import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
@@ -25,6 +26,7 @@ val modules = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
     viewModelOf(::LoginViewModel)
+    viewModelOf(::DashboardViewModel)
 
     factoryOf(::RegisterUseCase)
 }
