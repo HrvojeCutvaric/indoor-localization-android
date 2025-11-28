@@ -8,12 +8,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.material3.Text
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import co.be4you.indoorlocalization.di.modules
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.indoorlocalization.view.dashboard.DashboardScreen
 import co.be4you.indoorlocalization.view.login.LoginScreen
 import co.be4you.indoorlocalization.view.registration.RegistrationScreen
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Home> {
-                                Text("Home")
+                                DashboardScreen()
                             }
                         }
                     )
