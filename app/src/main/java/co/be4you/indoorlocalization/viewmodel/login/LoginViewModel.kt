@@ -46,7 +46,7 @@ class LoginViewModel(
                     password = _state.value.password
                 ).fold(
                     onSuccess = {
-                        _event.emit(MainAction.NavigateTo(Route.Home))
+                        _event.emit(MainAction.NavigateTo(Route.Dashboard))
                     },
                     onFailure = {
                         val errorMessageResource = when (it) {
