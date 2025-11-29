@@ -14,6 +14,7 @@ import androidx.navigation3.ui.NavDisplay
 import co.be4you.indoorlocalization.di.modules
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.indoorlocalization.view.login.LoginScreen
 import co.be4you.indoorlocalization.view.registration.RegistrationScreen
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Login> {
-                                Text("Login")
+                                LoginScreen(onAction = mainViewModel::execute)
                             }
 
                             entry<Route.Home> {
