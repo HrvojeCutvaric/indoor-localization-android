@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                                 LoginScreen(onAction = mainViewModel::execute)
                             }
 
-                            entry<Route.Home> {
+                            entry<Route.Dashboard> {
                                 DashboardScreen()
                             }
                         }
