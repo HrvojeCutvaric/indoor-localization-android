@@ -4,6 +4,7 @@ import co.be4you.indoorlocalization.data.apis.AuthApi
 import co.be4you.indoorlocalization.data.apis.FloorMapApi
 import co.be4you.indoorlocalization.data.apis.test.TestAuthApi
 import co.be4you.indoorlocalization.data.apis.test.TestFloorMapApi
+import co.be4you.indoorlocalization.data.apis.ws.AuthApiService
 import co.be4you.indoorlocalization.data.repositories.AuthRepository
 import co.be4you.indoorlocalization.data.repositories.FloorMapRepository
 import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
@@ -11,11 +12,16 @@ import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
+import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 val modules = module {
     singleOf(::TestAuthApi).bind<AuthApi>()
@@ -29,4 +35,20 @@ val modules = module {
     viewModelOf(::DashboardViewModel)
 
     factoryOf(::RegisterUseCase)
+
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .build()
+    }
+    single {
+        Retrofit
+            .Builder()
+            .baseUrl("http://10.0.2.2:5001")
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 }
