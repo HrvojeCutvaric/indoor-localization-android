@@ -7,8 +7,9 @@ class AuthRepository(
     private val authService: AuthService,
 ) {
 
-    suspend fun register(email: String, password: String): Result<Unit> =
-        authService.register(email = email, password = password)
+    suspend fun register(email: String, password: String): Result<Unit> {
+        return authService.register(email = email, password = password)
+    }
 
     suspend fun login(username: String, password: String): Result<LoginResponse> {
         return authService.login(username = username, password = password)

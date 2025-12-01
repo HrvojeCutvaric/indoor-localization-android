@@ -3,32 +3,33 @@ package co.be4you.core.data.network.ws
 import co.be4you.core.data.network.AuthService
 import co.be4you.core.data.network.ws.mappers.toLoginResponse
 import co.be4you.core.data.network.ws.models.LoginRequestBody
+import co.be4you.core.data.network.ws.models.RegisterRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
-import co.be4you.core.domain.utils.RegisterThrowable
-import kotlinx.coroutines.delay
 
 class WSAuthService(
     private val authApiService: AuthApiService
 ) : AuthService {
 
-    private var users = mapOf(
-        "test@gmail.com" to "qqqqqq",
-        "test123@gmail.com" to "qqqqqq"
-    )
-
     override suspend fun register(
         email: String,
         password: String
     ): Result<Unit> {
-        delay(2000)
+        val registerResult = authApiService.register(
+            requestBody = RegisterRequestBody(
+                username = "test",
+                email = email,
+                password = password,
+                firstName = "test",
+                lastName = "test"
+            )
+        )
 
-        if (users.containsKey(email).not()) {
-            users = users + mapOf(email to password)
-            return Result.success(Unit)
+        if (registerResult.isSuccessful.not()) {
+            return Result.failure(Exception("Registration failed"))
         }
 
-        return Result.failure(RegisterThrowable.EmailExists)
+        return Result.success(Unit)
     }
 
     override suspend fun login(
