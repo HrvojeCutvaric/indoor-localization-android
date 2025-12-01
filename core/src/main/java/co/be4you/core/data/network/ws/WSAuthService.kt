@@ -12,16 +12,19 @@ class WSAuthService(
 ) : AuthService {
 
     override suspend fun register(
+        firstName: String,
+        lastName: String,
         email: String,
+        username: String,
         password: String
     ): Result<Unit> {
         val registerResult = authApiService.register(
             requestBody = RegisterRequestBody(
-                username = "test",
+                username = username,
                 email = email,
                 password = password,
-                firstName = "test",
-                lastName = "test"
+                firstName = firstName,
+                lastName = lastName,
             )
         )
 

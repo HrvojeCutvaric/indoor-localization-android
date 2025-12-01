@@ -22,16 +22,16 @@ class RegistrationViewModel(
 
     private val _state = MutableStateFlow(
         RegistrationState(
+            firstName = "",
+            lastName = "",
             email = "",
+            username = "",
             password = "",
             confirmPassword = "",
             isPasswordVisible = false,
             isConfirmPasswordVisible = false,
             isButtonLoading = false,
             error = null,
-            username = "",
-            firstName = "",
-            lastName = "",
         )
     )
     val state = _state.asStateFlow()
@@ -79,9 +79,12 @@ class RegistrationViewModel(
                 val currentState = _state.value
 
                 registerUseCase.execute(
+                    firstName = currentState.firstName,
+                    lastName = currentState.lastName,
                     email = currentState.email,
+                    username = currentState.username,
                     password = currentState.password,
-                    confirmPassword = currentState.confirmPassword
+                    confirmPassword = currentState.confirmPassword,
                 ).fold(
                     onSuccess = {
                         _state.update {
