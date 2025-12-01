@@ -21,7 +21,7 @@ class LoginViewModel(
 
     private val _state = MutableStateFlow(
         LoginState(
-            email = "",
+            username = "",
             password = "",
             isPasswordVisible = false,
             errorResource = null,
@@ -36,13 +36,13 @@ class LoginViewModel(
     fun execute(action: LoginAction) {
         when (action) {
             is LoginAction.OnEmailChanged -> {
-                _state.value = _state.value.copy(email = action.email)
+                _state.value = _state.value.copy(username = action.email)
             }
 
             LoginAction.OnLoginClicked -> viewModelScope.launch(Dispatchers.IO) {
                 _state.value = _state.value.copy(isButtonLoading = true)
                 authRepository.login(
-                    username = _state.value.email,
+                    username = _state.value.username,
                     password = _state.value.password
                 ).fold(
                     onSuccess = {
