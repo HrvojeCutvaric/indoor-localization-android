@@ -1,10 +1,10 @@
 package co.be4you.indoorlocalization.di
 
-import co.be4you.indoorlocalization.data.apis.AuthApi
-import co.be4you.indoorlocalization.data.apis.FloorMapApi
-import co.be4you.indoorlocalization.data.apis.test.TestAuthApi
-import co.be4you.indoorlocalization.data.apis.test.TestFloorMapApi
-import co.be4you.indoorlocalization.data.apis.ws.AuthApiService
+import co.be4you.indoorlocalization.data.network.AuthService
+import co.be4you.indoorlocalization.data.network.FloorMapApi
+import co.be4you.indoorlocalization.data.network.ws.WSAuthService
+import co.be4you.indoorlocalization.data.network.test.TestFloorMapApi
+import co.be4you.indoorlocalization.data.network.ws.AuthApiService
 import co.be4you.indoorlocalization.data.repositories.AuthRepository
 import co.be4you.indoorlocalization.data.repositories.FloorMapRepository
 import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
@@ -24,7 +24,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val modules = module {
-    singleOf(::TestAuthApi).bind<AuthApi>()
+    singleOf(::WSAuthService).bind<AuthService>()
     singleOf(::AuthRepository).bind<AuthRepository>()
     singleOf(::TestFloorMapApi).bind<FloorMapApi>()
     singleOf(::FloorMapRepository).bind<FloorMapRepository>()
@@ -51,4 +51,6 @@ val modules = module {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    single { get<Retrofit>().create(AuthApiService::class.java) }
 }

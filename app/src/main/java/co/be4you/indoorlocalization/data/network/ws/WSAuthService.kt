@@ -1,11 +1,14 @@
-package co.be4you.indoorlocalization.data.apis.test
+package co.be4you.indoorlocalization.data.network.ws
 
-import co.be4you.indoorlocalization.data.apis.AuthApi
+import co.be4you.indoorlocalization.data.network.AuthService
+import co.be4you.indoorlocalization.data.network.ws.models.LoginRequestBody
 import co.be4you.indoorlocalization.domain.utils.LoginThrowable
 import co.be4you.indoorlocalization.domain.utils.RegisterThrowable
 import kotlinx.coroutines.delay
 
-class TestAuthApi : AuthApi {
+class WSAuthService(
+    private val authApiService: AuthApiService
+) : AuthService {
 
     private var users = mapOf(
         "test@gmail.com" to "qqqqqq",
@@ -30,12 +33,14 @@ class TestAuthApi : AuthApi {
         email: String,
         password: String
     ): Result<Unit> {
-        delay(2000)
 
-        if (users.containsKey(email).not() || users[email] != password) {
-            return Result.failure(LoginThrowable.IncorrectEmailPassword)
+        val isSuccessful =
+            authApiService.login(LoginRequestBody(username = email, password = password)).isSuccessful
+
+        return if (isSuccessful) {
+            Result.success(Unit)
+        } else {
+            Result.failure(LoginThrowable.IncorrectEmailPassword)
         }
-
-        return Result.success(Unit)
     }
 }

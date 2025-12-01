@@ -1,6 +1,6 @@
-package co.be4you.indoorlocalization.data.apis
+package co.be4you.indoorlocalization.data.network
 
-interface AuthApi {
+interface AuthService {
 
     suspend fun register(email: String, password: String): Result<Unit>
 

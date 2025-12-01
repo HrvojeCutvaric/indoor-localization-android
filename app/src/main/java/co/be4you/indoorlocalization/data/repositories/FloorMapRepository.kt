@@ -1,6 +1,6 @@
 package co.be4you.indoorlocalization.data.repositories
 
-import co.be4you.indoorlocalization.data.apis.FloorMapApi
+import co.be4you.indoorlocalization.data.network.FloorMapApi
 import co.be4you.indoorlocalization.domain.models.FloorMap
 
 class FloorMapRepository(

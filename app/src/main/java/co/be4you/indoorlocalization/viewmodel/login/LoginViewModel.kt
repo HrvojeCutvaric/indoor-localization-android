@@ -3,7 +3,7 @@ package co.be4you.indoorlocalization.viewmodel.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.data.apis.AuthApi
+import co.be4you.indoorlocalization.data.network.AuthService
 import co.be4you.indoorlocalization.domain.utils.LoginThrowable
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val authApi: AuthApi,
+    private val authService: AuthService,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -41,7 +41,7 @@ class LoginViewModel(
 
             LoginAction.OnLoginClicked -> viewModelScope.launch(Dispatchers.IO) {
                 _state.value = _state.value.copy(isButtonLoading = true)
-                authApi.login(
+                authService.login(
                     email = _state.value.email,
                     password = _state.value.password
                 ).fold(

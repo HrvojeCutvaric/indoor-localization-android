@@ -1,11 +1,15 @@
 package co.be4you.indoorlocalization.data.repositories
 
-import co.be4you.indoorlocalization.data.apis.AuthApi
+import co.be4you.indoorlocalization.data.network.AuthService
 
 class AuthRepository(
-    private val authApi: AuthApi,
+    private val authService: AuthService,
 ) {
 
     suspend fun register(email: String, password: String): Result<Unit> =
-        authApi.register(email = email, password = password)
+        authService.register(email = email, password = password)
+
+    suspend fun login(username: String, password: String): Result<Unit> {
+        return authService.login(email = username, password = password)
+    }
 }

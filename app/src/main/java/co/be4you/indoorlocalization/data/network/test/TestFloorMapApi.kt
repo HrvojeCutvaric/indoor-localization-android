@@ -1,8 +1,8 @@
-package co.be4you.indoorlocalization.data.apis.test
+package co.be4you.indoorlocalization.data.network.test
 
-import co.be4you.indoorlocalization.data.apis.FloorMapApi
-import co.be4you.indoorlocalization.data.apis.test.mappers.toFloorMap
-import co.be4you.indoorlocalization.data.apis.test.models.TestFloorMap
+import co.be4you.indoorlocalization.data.network.FloorMapApi
+import co.be4you.indoorlocalization.data.network.test.mappers.toFloorMap
+import co.be4you.indoorlocalization.data.network.test.models.TestFloorMap
 import co.be4you.indoorlocalization.domain.models.FloorMap
 import kotlinx.coroutines.delay
 

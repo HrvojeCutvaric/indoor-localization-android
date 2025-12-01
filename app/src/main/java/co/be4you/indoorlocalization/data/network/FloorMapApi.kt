@@ -1,4 +1,4 @@
-package co.be4you.indoorlocalization.data.apis
+package co.be4you.indoorlocalization.data.network
 
 import co.be4you.indoorlocalization.domain.models.FloorMap
 
