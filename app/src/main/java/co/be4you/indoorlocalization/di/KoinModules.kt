@@ -1,13 +1,13 @@
 package co.be4you.indoorlocalization.di
 
-import co.be4you.indoorlocalization.data.network.AuthService
-import co.be4you.indoorlocalization.data.network.FloorMapApi
-import co.be4you.indoorlocalization.data.network.ws.WSAuthService
-import co.be4you.indoorlocalization.data.network.test.TestFloorMapApi
-import co.be4you.indoorlocalization.data.network.ws.AuthApiService
-import co.be4you.indoorlocalization.data.repositories.AuthRepository
-import co.be4you.indoorlocalization.data.repositories.FloorMapRepository
-import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
+import co.be4you.core.data.network.AuthService
+import co.be4you.core.data.network.FloorMapApi
+import co.be4you.core.data.network.test.TestFloorMapApi
+import co.be4you.core.data.network.ws.AuthApiService
+import co.be4you.core.data.network.ws.WSAuthService
+import co.be4you.core.data.repositories.AuthRepository
+import co.be4you.core.data.repositories.FloorMapRepository
+import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel

@@ -60,5 +60,5 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.bundles.navigation3)
     implementation(libs.bundles.coil)
-    implementation(libs.bundles.retrofit)
+    implementation(project(":core"))
 }

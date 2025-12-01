@@ -24,8 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.be4you.core.domain.models.FloorMap
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.domain.models.FloorMap
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel

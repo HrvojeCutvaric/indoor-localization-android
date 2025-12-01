@@ -2,9 +2,9 @@ package co.be4you.indoorlocalization.viewmodel.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.be4you.core.data.network.AuthService
+import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.data.network.AuthService
-import co.be4you.indoorlocalization.domain.utils.LoginThrowable
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers

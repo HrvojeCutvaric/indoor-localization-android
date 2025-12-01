@@ -2,8 +2,8 @@ package co.be4you.indoorlocalization.viewmodel.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.be4you.indoorlocalization.data.network.test.FLOOR_MAP_ID
-import co.be4you.indoorlocalization.data.repositories.FloorMapRepository
+import co.be4you.core.data.network.test.FLOOR_MAP_ID
+import co.be4you.core.data.repositories.FloorMapRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
