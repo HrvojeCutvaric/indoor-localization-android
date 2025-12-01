@@ -135,7 +135,7 @@ private fun LoginLayout(
             )
 
             TextButton(
-                onClick = { onAction(LoginAction.OnLoginClicked) },
+                onClick = { onAction(LoginAction.OnRegisterClicked) },
                 enabled = state.isButtonLoading.not()
             ) {
                 Text(

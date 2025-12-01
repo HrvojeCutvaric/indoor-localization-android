@@ -11,10 +11,16 @@ class MainViewModel : ViewModel() {
     fun execute(action: MainAction) {
         when (action) {
             is MainAction.NavigateBack -> {
-                backStack.removeLastOrNull()
+                action.route?.let {
+                    val index = backStack.indexOf(it)
+                    backStack.subList(index - 1, backStack.size).clear()
+                } ?: backStack.removeLastOrNull()
             }
 
             is MainAction.NavigateTo -> {
+                action.removeRoutes?.let {
+                    backStack.removeAll(it)
+                }
                 backStack.add(action.route)
             }
         }
