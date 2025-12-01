@@ -3,12 +3,15 @@
     <string name="registration">Registration</string>
     <string name="register">Register</string>
     <string name="email">E-mail</string>
+    <string name="username">Username</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="login">Login</string>
     <string name="invalid_email">The email address is invalid</string>
-    <string name="weak_password">Password should be at least 6 characters</string>
+    <string name="weak_password">Password must be at least 8 characters long and contain an uppercase letter, a number, and a special character.</string>
     <string name="email_exists">The email address is already in use by another account</string>
     <string name="confirm_password_not_match">Confirm password doesn\'t match password</string>
     <string name="generic_error_message">Sorry, something went wrong.</string>

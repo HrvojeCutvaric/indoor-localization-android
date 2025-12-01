@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Indoor Localization"
 include(":app")
+include(":core")

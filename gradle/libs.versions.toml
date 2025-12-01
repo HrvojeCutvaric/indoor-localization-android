@@ -9,9 +9,13 @@ lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2025.11.00"
 koin = "4.1.1"
+loggingInterceptor = "5.3.2"
 nav3Core = "1.0.0-rc01"
 lifecycleViewmodelNav3 = "1.0.0-alpha04"
 coil = "3.3.0"
+retrofit = "3.0.0"
+appcompat = "1.7.1"
+material = "1.13.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,14 +39,21 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 androidx-navigation3-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-newtwork-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+retrofit = {group="com.squareup.retrofit2", name="retrofit", version.ref="retrofit"}
+gson-converter = {group="com.squareup.retrofit2", name="converter-gson", version.ref="retrofit"}
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
 [bundles]
 koin = ['koin-androidx-compose', 'koin-compose-viewmodel']
 navigation3 = ['androidx-navigation3-runtime', 'androidx-navigation3-ui', 'androidx-navigation3-viewmodel']
 coil = ['coil-compose', 'coil-newtwork-okhttp']
+retrofit = ['retrofit', 'gson-converter', 'logging-interceptor']
 

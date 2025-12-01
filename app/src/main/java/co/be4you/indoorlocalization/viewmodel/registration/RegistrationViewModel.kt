@@ -2,11 +2,12 @@ package co.be4you.indoorlocalization.viewmodel.registration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.be4you.core.domain.use_case.RegisterUseCase
+import co.be4you.core.domain.utils.RegisterThrowable
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.domain.use_case.RegisterUseCase
-import co.be4you.indoorlocalization.domain.utils.RegisterThrowable
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
+import co.be4you.indoorlocalization.viewmodel.main.MainAction.NavigateTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,10 @@ class RegistrationViewModel(
 
     private val _state = MutableStateFlow(
         RegistrationState(
+            firstName = "",
+            lastName = "",
             email = "",
+            username = "",
             password = "",
             confirmPassword = "",
             isPasswordVisible = false,
@@ -75,9 +79,12 @@ class RegistrationViewModel(
                 val currentState = _state.value
 
                 registerUseCase.execute(
+                    firstName = currentState.firstName,
+                    lastName = currentState.lastName,
                     email = currentState.email,
+                    username = currentState.username,
                     password = currentState.password,
-                    confirmPassword = currentState.confirmPassword
+                    confirmPassword = currentState.confirmPassword,
                 ).fold(
                     onSuccess = {
                         _state.update {
@@ -86,7 +93,7 @@ class RegistrationViewModel(
                                 error = null,
                             )
                         }
-                        _event.emit(MainAction.NavigateTo(Route.Dashboard))
+                        _event.emit(NavigateTo(Route.Login))
                     },
                     onFailure = { throwable ->
                         _state.update {
@@ -106,7 +113,19 @@ class RegistrationViewModel(
             }
 
             RegistrationAction.OnLoginClicked -> viewModelScope.launch {
-                _event.emit(MainAction.NavigateTo(Route.Login))
+                _event.emit(NavigateTo(Route.Login))
+            }
+
+            is RegistrationAction.OnFirstNameChanged -> {
+                _state.update { it.copy(firstName = action.firstName) }
+            }
+
+            is RegistrationAction.OnLastNameChanged -> {
+                _state.update { it.copy(lastName = action.lastName) }
+            }
+
+            is RegistrationAction.OnUsernameChanged -> {
+                _state.update { it.copy(username = action.username) }
             }
         }
     }

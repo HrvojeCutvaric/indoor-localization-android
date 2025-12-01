@@ -1,7 +1,7 @@
 package co.be4you.indoorlocalization.viewmodel.login
 
 data class LoginState(
-    val email: String,
+    val username: String,
     val password: String,
     val isPasswordVisible: Boolean,
     val errorResource: Int?,

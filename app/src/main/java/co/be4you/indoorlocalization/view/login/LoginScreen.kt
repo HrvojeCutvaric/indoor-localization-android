@@ -91,10 +91,10 @@ private fun LoginLayout(
 
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = state.email,
+            value = state.username,
             onValueChange = { onAction(LoginAction.OnEmailChanged(it)) },
-            label = R.string.email,
-            placeholder = R.string.email,
+            label = R.string.username,
+            placeholder = R.string.username,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -117,7 +117,7 @@ private fun LoginLayout(
             label = R.string.login,
             onButtonClicked = { onAction(LoginAction.OnLoginClicked) },
             isButtonLoading = state.isButtonLoading,
-            isButtonEnabled = state.isButtonLoading.not() && state.email.isNotEmpty() && state.password.isNotEmpty(),
+            isButtonEnabled = state.isButtonLoading.not() && state.username.isNotEmpty() && state.password.isNotEmpty(),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -135,7 +135,7 @@ private fun LoginLayout(
             )
 
             TextButton(
-                onClick = { onAction(LoginAction.OnLoginClicked) },
+                onClick = { onAction(LoginAction.OnRegisterClicked) },
                 enabled = state.isButtonLoading.not()
             ) {
                 Text(
@@ -157,7 +157,7 @@ private fun LoginScreenPreview() {
     IndoorLocalizationTheme {
         LoginLayout(
             state = LoginState(
-                email = "",
+                username = "",
                 password = "",
                 isPasswordVisible = false,
                 errorResource = null,

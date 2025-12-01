@@ -2,9 +2,9 @@ package co.be4you.indoorlocalization.viewmodel.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.be4you.core.data.repositories.AuthRepository
+import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.data.apis.AuthApi
-import co.be4you.indoorlocalization.domain.utils.LoginThrowable
 import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
@@ -16,12 +16,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val authApi: AuthApi,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
         LoginState(
-            email = "",
+            username = "",
             password = "",
             isPasswordVisible = false,
             errorResource = null,
@@ -36,17 +36,22 @@ class LoginViewModel(
     fun execute(action: LoginAction) {
         when (action) {
             is LoginAction.OnEmailChanged -> {
-                _state.value = _state.value.copy(email = action.email)
+                _state.value = _state.value.copy(username = action.email)
             }
 
             LoginAction.OnLoginClicked -> viewModelScope.launch(Dispatchers.IO) {
                 _state.value = _state.value.copy(isButtonLoading = true)
-                authApi.login(
-                    email = _state.value.email,
+                authRepository.login(
+                    username = _state.value.username,
                     password = _state.value.password
                 ).fold(
                     onSuccess = {
-                        _event.emit(MainAction.NavigateTo(Route.Dashboard))
+                        _event.emit(
+                            MainAction.NavigateTo(
+                                route = Route.Dashboard,
+                                removeRoutes = listOf(Route.Login, Route.Registration),
+                            )
+                        )
                     },
                     onFailure = {
                         val errorMessageResource = when (it) {
