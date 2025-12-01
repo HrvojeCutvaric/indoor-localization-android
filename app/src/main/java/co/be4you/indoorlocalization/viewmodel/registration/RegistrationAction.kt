@@ -2,7 +2,13 @@ package co.be4you.indoorlocalization.viewmodel.registration
 
 sealed interface RegistrationAction {
 
+    data class OnFirstNameChanged(val firstName: String) : RegistrationAction
+
+    data class OnLastNameChanged(val lastName: String) : RegistrationAction
+
     data class OnEmailChanged(val newEmail: String) : RegistrationAction
+
+    data class OnUsernameChanged(val username: String) : RegistrationAction
 
     data class OnPasswordChanged(val newPassword: String) : RegistrationAction
 

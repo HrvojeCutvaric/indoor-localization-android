@@ -93,9 +93,39 @@ private fun RegistrationLayout(
 
         DefaultTextField(
             modifier = Modifier.fillMaxWidth(),
+            value = state.firstName,
+            onValueChange = { onAction(RegistrationAction.OnFirstNameChanged(it)) },
+            label = R.string.first_name,
+            placeholder = R.string.first_name,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        DefaultTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.lastName,
+            onValueChange = { onAction(RegistrationAction.OnLastNameChanged(it)) },
+            label = R.string.last_name,
+            placeholder = R.string.last_name,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        DefaultTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = state.email,
             onValueChange = { onAction(RegistrationAction.OnEmailChanged(it)) },
             label = R.string.email,
+            placeholder = R.string.email,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        DefaultTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.username,
+            onValueChange = { onAction(RegistrationAction.OnUsernameChanged(it)) },
+            label = R.string.username,
             placeholder = R.string.email,
         )
 
@@ -178,6 +208,9 @@ private fun RegistrationLayoutPreview() {
                 isConfirmPasswordVisible = false,
                 isButtonLoading = false,
                 error = R.string.weak_password,
+                username = "",
+                firstName = "",
+                lastName = "",
             ),
             onAction = {},
         )
