@@ -1,7 +1,9 @@
 package co.be4you.core.data.network.ws
 
 import co.be4you.core.data.network.AuthService
+import co.be4you.core.data.network.ws.mappers.toLoginResponse
 import co.be4you.core.data.network.ws.models.LoginRequestBody
+import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.core.domain.utils.RegisterThrowable
 import kotlinx.coroutines.delay
@@ -30,17 +32,22 @@ class WSAuthService(
     }
 
     override suspend fun login(
-        email: String,
+        username: String,
         password: String
-    ): Result<Unit> {
+    ): Result<LoginResponse> {
 
-        val isSuccessful =
-            authApiService.login(LoginRequestBody(username = email, password = password)).isSuccessful
+        val loginResult = authApiService.login(
+            requestBody = LoginRequestBody(
+                username = username,
+                password = password
+            )
+        )
 
-        return if (isSuccessful) {
-            Result.success(Unit)
-        } else {
-            Result.failure(LoginThrowable.IncorrectEmailPassword)
-        }
+        if (loginResult.isSuccessful.not()) return Result.failure(LoginThrowable.IncorrectEmailPassword)
+
+        val loginResponseDto =
+            loginResult.body() ?: return Result.failure(Exception("Login response is null"))
+
+        return Result.success(loginResponseDto.toLoginResponse())
     }
 }
