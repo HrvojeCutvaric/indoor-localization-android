@@ -86,7 +86,7 @@ class RegistrationViewModel(
                                 error = null,
                             )
                         }
-                        _event.emit(MainAction.NavigateTo(Route.Dashboard))
+                        _event.emit(MainAction.NavigateTo(Route.Login))
                     },
                     onFailure = { throwable ->
                         _state.update {
