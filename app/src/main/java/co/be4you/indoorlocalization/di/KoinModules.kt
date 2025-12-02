@@ -1,7 +1,5 @@
 package co.be4you.indoorlocalization.di
 
-import android.content.Context
-import android.content.SharedPreferences
 import co.be4you.core.data.network.AuthService
 import co.be4you.core.data.network.FloorMapApi
 import co.be4you.core.data.network.test.TestFloorMapApi
@@ -24,12 +22,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
-import co.be4you.core.domain.storage.TokenStorage
-import co.be4you.indoorlocalization.storage.TokenStorageImpl
-import co.be4you.indoorlocalization.network.AuthInterceptor
-import co.be4you.indoorlocalization.network.TokenAuthenticator
 
 
 val modules = module {
@@ -45,47 +37,15 @@ val modules = module {
 
     factoryOf(::RegisterUseCase)
 
-    /*single<SharedPreferences> {
-        val context = get<Context>()
-
-
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        EncryptedSharedPreferences.create(
-            context,
-            "secure_prefs",
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    }*/
-
-
-
-
-
-    /*single<TokenStorage> {
-        TokenStorageImpl(get())
-    }
-
-    single {
-        AuthInterceptor(
+    single<AuthService> {
+        WSAuthService(
+            authApiService = get(),
             tokenStorage = get()
         )
     }
-
-    single {
-        TokenAuthenticator(
-            apiService = get<AuthApiService>(),
-            tokenStorage = get()
-        )
-    }*/
 
     single {
         OkHttpClient.Builder()
-
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
