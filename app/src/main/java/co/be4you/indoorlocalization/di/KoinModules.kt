@@ -25,7 +25,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import co.be4you.core.domain.storage.TokenStorage
 import co.be4you.indoorlocalization.storage.TokenStorageImpl
 import co.be4you.indoorlocalization.network.AuthInterceptor
@@ -45,20 +45,28 @@ val modules = module {
 
     factoryOf(::RegisterUseCase)
 
-    single<SharedPreferences> {
+    /*single<SharedPreferences> {
         val context = get<Context>()
 
+
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
         EncryptedSharedPreferences.create(
-            "secure_prefs",
-            MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
             context,
+            "secure_prefs",
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-    }
+    }*/
 
 
-    single<TokenStorage> {
+
+
+
+    /*single<TokenStorage> {
         TokenStorageImpl(get())
     }
 
@@ -73,12 +81,11 @@ val modules = module {
             apiService = get<AuthApiService>(),
             tokenStorage = get()
         )
-    }
+    }*/
 
     single {
         OkHttpClient.Builder()
-            .addInterceptor(get<AuthInterceptor>())
-            .authenticator(get<TokenAuthenticator>())
+
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
