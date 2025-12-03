@@ -23,9 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
                 val mainViewModel = koinViewModel<MainViewModel>()
-
                 IndoorLocalizationTheme {
                     NavDisplay(
                         backStack = mainViewModel.backStack,
