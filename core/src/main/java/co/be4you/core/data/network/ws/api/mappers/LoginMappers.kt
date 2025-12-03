@@ -1,6 +1,6 @@
-package co.be4you.core.data.network.ws.mappers
+package co.be4you.core.data.network.ws.api.mappers
 
-import co.be4you.core.data.network.ws.models.LoginResponseDto
+import co.be4you.core.data.network.ws.api.models.LoginResponseDto
 import co.be4you.core.domain.models.LoginResponse
 
 fun LoginResponseDto.toLoginResponse(): LoginResponse =

@@ -1,6 +1,6 @@
 package co.be4you.core.data.repositories
 
-import co.be4you.core.data.network.AuthService
+import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.domain.models.LoginResponse
 
 class AuthRepository(

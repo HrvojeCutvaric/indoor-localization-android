@@ -1,14 +1,15 @@
 package co.be4you.core.data.network.ws
 
-import co.be4you.core.data.network.AuthService
-import co.be4you.core.data.network.ws.mappers.toLoginResponse
-import co.be4you.core.data.network.ws.models.LoginRequestBody
-import co.be4you.core.data.network.ws.models.RegisterRequestBody
+import co.be4you.core.data.network.services.AuthService
+import co.be4you.core.data.network.ws.api.AuthApi
+import co.be4you.core.data.network.ws.api.mappers.toLoginResponse
+import co.be4you.core.data.network.ws.api.models.LoginRequestBody
+import co.be4you.core.data.network.ws.api.models.RegisterRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 
 class WSAuthService(
-    private val authApiService: AuthApiService
+    private val authApi: AuthApi
 ) : AuthService {
 
     override suspend fun register(
@@ -18,7 +19,7 @@ class WSAuthService(
         username: String,
         password: String
     ): Result<Unit> {
-        val registerResult = authApiService.register(
+        val registerResult = authApi.register(
             requestBody = RegisterRequestBody(
                 username = username,
                 email = email,
@@ -40,7 +41,7 @@ class WSAuthService(
         password: String
     ): Result<LoginResponse> {
 
-        val loginResult = authApiService.login(
+        val loginResult = authApi.login(
             requestBody = LoginRequestBody(
                 username = username,
                 password = password
