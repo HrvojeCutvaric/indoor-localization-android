@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 val modules = module {
-    singleOf(::WSAuthService).bind<AuthService>()
+
     singleOf(::AuthRepository).bind<AuthRepository>()
     singleOf(::TestFloorMapApi).bind<FloorMapApi>()
     singleOf(::FloorMapRepository).bind<FloorMapRepository>()
