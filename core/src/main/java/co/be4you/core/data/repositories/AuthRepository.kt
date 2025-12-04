@@ -2,11 +2,11 @@ package co.be4you.core.data.repositories
 
 import co.be4you.core.data.network.AuthService
 import co.be4you.core.domain.models.LoginResponse
-import co.be4you.core.domain.storage.TokenStorage
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 
 class AuthRepository(
     private val authService: AuthService,
-    private val tokenStorage: TokenStorage
+    private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences
 ) {
 
     suspend fun register(
@@ -29,7 +29,7 @@ class AuthRepository(
         val result = authService.login(username, password)
 
         return result.onSuccess { loginResponse ->
-            tokenStorage.saveTokens(
+            appEncryptedSharedPreferences.saveTokens(
                 accessToken = loginResponse.accessToken,
                 refreshToken = loginResponse.refreshToken
             )

@@ -1,11 +1,12 @@
 package co.be4you.indoorlocalization.storage
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import co.be4you.core.domain.storage.TokenStorage
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 
-class EncryptedTokenStorage(context: Context) : TokenStorage {
+class AppEncryptedSharedPreferencesImpl(context: Context) : AppEncryptedSharedPreferences {
 
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
@@ -26,15 +27,13 @@ class EncryptedTokenStorage(context: Context) : TokenStorage {
         prefs.getString("refresh_token", null)
 
     override fun saveTokens(accessToken: String, refreshToken: String) {
-        prefs.edit()
-            .putString("access_token", accessToken)
-            .putString("refresh_token", refreshToken)
-            .apply()
+        prefs.edit {
+            putString("access_token", accessToken)
+                .putString("refresh_token", refreshToken)
+        }
     }
 
     override fun clearTokens() {
-        prefs.edit()
-            .clear()
-            .apply()
+        prefs.edit { clear() }
     }
 }

@@ -3,7 +3,7 @@ package co.be4you.core.data.network
 import android.util.Log
 import co.be4you.core.data.network.ws.AuthApiService
 import co.be4you.core.data.network.ws.models.RefreshTokenRequestBody
-import co.be4you.core.domain.storage.TokenStorage
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -13,7 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class TokenAuthenticator(
-    private val tokenStorage: TokenStorage
+    private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -23,12 +23,12 @@ class TokenAuthenticator(
         }
 
         synchronized(this) {
-            val currentAccessToken = tokenStorage.getAccessToken()
-            val refreshToken = tokenStorage.getRefreshToken()
+            val currentAccessToken = appEncryptedSharedPreferences.getAccessToken()
+            val refreshToken = appEncryptedSharedPreferences.getRefreshToken()
 
             if (refreshToken.isNullOrBlank()) {
                 Log.d("TOKEN_AUTH", "No refresh token, cannot refresh.")
-                tokenStorage.clearTokens()
+                appEncryptedSharedPreferences.clearTokens()
                 return null
             }
 
@@ -67,19 +67,19 @@ class TokenAuthenticator(
 
                 if (!refreshResponse.isSuccessful) {
                     Log.d("TOKEN_AUTH", "Refresh failed with code ${refreshResponse.code()}")
-                    tokenStorage.clearTokens()
+                    appEncryptedSharedPreferences.clearTokens()
                     null
                 } else {
                     val body = refreshResponse.body()
                     if (body == null) {
                         Log.d("TOKEN_AUTH", "Refresh body null.")
-                        tokenStorage.clearTokens()
+                        appEncryptedSharedPreferences.clearTokens()
                         null
                     } else {
                         val newAccess = body.accessToken.orEmpty()
                         val newRefresh = body.refreshToken.orEmpty()
 
-                        tokenStorage.saveTokens(newAccess, newRefresh)
+                        appEncryptedSharedPreferences.saveTokens(newAccess, newRefresh)
 
                         Log.d("TOKEN_AUTH", "Refresh success, retrying original request.")
 

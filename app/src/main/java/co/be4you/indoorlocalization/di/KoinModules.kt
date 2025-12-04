@@ -10,9 +10,9 @@ import co.be4you.core.data.network.ws.AuthApiService
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
-import co.be4you.core.domain.storage.TokenStorage
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.use_case.RegisterUseCase
-import co.be4you.indoorlocalization.storage.EncryptedTokenStorage
+import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
@@ -37,7 +37,7 @@ val modules = module {
 
     factoryOf(::RegisterUseCase)
 
-    single<TokenStorage> { EncryptedTokenStorage(androidContext()) }
+    single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
 
     single {
         OkHttpClient.Builder()

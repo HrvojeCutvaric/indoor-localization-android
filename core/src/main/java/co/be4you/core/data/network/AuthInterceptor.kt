@@ -1,17 +1,17 @@
 package co.be4you.core.data.network
 
-import co.be4you.core.domain.storage.TokenStorage
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import okhttp3.Interceptor
 import okhttp3.Response
 
 class AuthInterceptor(
-    private val tokenStorage: TokenStorage
+    private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        val accessToken = tokenStorage.getAccessToken()
+        val accessToken = appEncryptedSharedPreferences.getAccessToken()
 
         if (accessToken.isNullOrEmpty()) {
             return chain.proceed(originalRequest)
