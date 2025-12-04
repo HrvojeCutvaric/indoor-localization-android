@@ -27,4 +27,12 @@ class TestFloorMapService : FloorMapService {
 
         return Result.success(testFloorMap.toFloorMap())
     }
+
+    override suspend fun getFloorMaps(): Result<List<FloorMap>> {
+        delay(2000)
+
+        val floorMaps = mockData.map { it.toFloorMap() }
+
+        return Result.success(floorMaps)
+    }
 }
