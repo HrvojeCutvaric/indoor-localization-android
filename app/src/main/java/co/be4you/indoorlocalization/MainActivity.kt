@@ -8,6 +8,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import co.be4you.indoorlocalization.di.modules
@@ -32,6 +35,9 @@ class MainActivity : ComponentActivity() {
 
                 IndoorLocalizationTheme {
                     NavDisplay(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding(),
                         backStack = mainViewModel.backStack,
                         transitionSpec = {
                             fadeIn(tween(300)) togetherWith fadeOut(tween(300))
