@@ -9,6 +9,7 @@ import co.be4you.core.data.network.ws.api.FloorMapApi
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.use_case.RegisterUseCase
+import co.be4you.core.domain.utils.Constants
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
@@ -47,7 +48,7 @@ val modules = module {
     single {
         Retrofit
             .Builder()
-            .baseUrl("http://10.0.2.2:5001")
+            .baseUrl(Constants.BASE_URL)
             .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
