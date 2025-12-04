@@ -1,9 +1,9 @@
 package co.be4you.indoorlocalization.di
 
 import co.be4you.core.data.network.AuthInterceptor
+import co.be4you.core.data.network.AuthService
 import co.be4you.core.data.network.TokenAuthenticator
 import org.koin.android.ext.koin.androidContext
-import co.be4you.core.data.network.AuthService
 import co.be4you.core.data.network.FloorMapApi
 import co.be4you.core.data.network.test.TestFloorMapApi
 import co.be4you.core.data.network.ws.AuthApiService
@@ -30,10 +30,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val modules = module {
 
-    singleOf(::AuthRepository).bind<AuthRepository>()
-    singleOf(::TestFloorMapApi).bind<FloorMapApi>()
-    singleOf(::FloorMapRepository).bind<FloorMapRepository>()
-
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
     viewModelOf(::LoginViewModel)
@@ -44,26 +40,29 @@ val modules = module {
     single<TokenStorage> { EncryptedTokenStorage(androidContext()) }
 
     single {
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(AuthInterceptor(get()))
+            .authenticator(TokenAuthenticator(get()))
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .build()
+    }
+
+    single {
         Retrofit.Builder()
             .baseUrl("http://10.0.2.2:5000/")
             .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
     single { get<Retrofit>().create(AuthApiService::class.java) }
 
-    single<AuthService> { WSAuthService(get(), get()) }
+    single<AuthService> { WSAuthService(get()) }
 
-    single<OkHttpClient> {
-        val tokenStorage: TokenStorage = get()
+    single { AuthRepository(get(), get()) }
 
-        OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .addInterceptor(AuthInterceptor(tokenStorage))
-            .authenticator(TokenAuthenticator(tokenStorage))
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .build()
-    }
+    singleOf(::TestFloorMapApi).bind<FloorMapApi>()
+    singleOf(::FloorMapRepository).bind<FloorMapRepository>()
 }
+

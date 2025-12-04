@@ -46,11 +46,10 @@ class TokenAuthenticator(
             return try {
                 Log.d("TOKEN_AUTH", "Refreshing token...")
 
-                // 👉 poseban, jednostavan client BEZ authenticatora
                 val client = OkHttpClient.Builder().build()
 
                 val retrofit = Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2:5000/") // isti baseUrl kao u app modu
+                    .baseUrl("http://10.0.2.2:5000/")
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
@@ -58,7 +57,10 @@ class TokenAuthenticator(
                 val authApiService = retrofit.create(AuthApiService::class.java)
 
                 val refreshCall = authApiService.refreshTokenSync(
-                    RefreshTokenRequestBody(refreshToken = refreshToken)
+                    RefreshTokenRequestBody(
+                        accessToken = currentAccessToken.orEmpty(),
+                        refreshToken = refreshToken
+                    )
                 )
 
                 val refreshResponse = refreshCall.execute()

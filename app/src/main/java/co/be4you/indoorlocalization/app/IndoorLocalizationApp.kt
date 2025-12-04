@@ -1,9 +1,9 @@
-package co.be4you.indoorlocalization
+package co.be4you.indoorlocalization.app
 
 import android.app.Application
+import co.be4you.indoorlocalization.di.modules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import co.be4you.indoorlocalization.di.modules
 
 class IndoorLocalizationApp : Application() {
     override fun onCreate() {

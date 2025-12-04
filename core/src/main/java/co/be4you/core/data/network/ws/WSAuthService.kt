@@ -12,8 +12,7 @@ import org.json.JSONObject
 
 
 class WSAuthService(
-    private val authApiService: AuthApiService,
-    private val tokenStorage: TokenStorage
+    private val authApiService: AuthApiService
 ) : AuthService {
 
     override suspend fun register(
@@ -25,7 +24,7 @@ class WSAuthService(
     ): Result<Unit> {
 
         val registerResult = authApiService.register(
-            RegisterRequestBody(
+            requestBody = RegisterRequestBody(
                 username = username,
                 email = email,
                 password = password,
@@ -90,24 +89,6 @@ class WSAuthService(
 
         val loginResponseDto =
             loginResult.body() ?: return Result.failure(LoginThrowable.Generic)
-
-        tokenStorage.saveTokens(
-            accessToken = loginResponseDto.accessToken.orEmpty(),
-            refreshToken = loginResponseDto.refreshToken.orEmpty()
-        )
-
-        android.util.Log.d(
-            "TOKEN_TEST",
-            "Saved -> access=${tokenStorage.getAccessToken()}, refresh=${tokenStorage.getRefreshToken()}"
-        )
-
-
-        /*if (loginResponseDto.accessToken.isNullOrBlank() ||
-            loginResponseDto.refreshToken.isNullOrBlank()
-        ) {
-            return Result.failure(LoginThrowable.Generic)
-        }*/
-
 
 
         return Result.success(loginResponseDto.toLoginResponse())

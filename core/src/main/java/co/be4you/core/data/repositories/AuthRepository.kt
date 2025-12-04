@@ -2,9 +2,11 @@ package co.be4you.core.data.repositories
 
 import co.be4you.core.data.network.AuthService
 import co.be4you.core.domain.models.LoginResponse
+import co.be4you.core.domain.storage.TokenStorage
 
 class AuthRepository(
     private val authService: AuthService,
+    private val tokenStorage: TokenStorage
 ) {
 
     suspend fun register(
@@ -24,6 +26,13 @@ class AuthRepository(
     }
 
     suspend fun login(username: String, password: String): Result<LoginResponse> {
-        return authService.login(username = username, password = password)
+        val result = authService.login(username, password)
+
+        return result.onSuccess { loginResponse ->
+            tokenStorage.saveTokens(
+                accessToken = loginResponse.accessToken,
+                refreshToken = loginResponse.refreshToken
+            )
+        }
     }
 }
