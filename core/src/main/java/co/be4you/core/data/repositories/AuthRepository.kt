@@ -1,6 +1,7 @@
 package co.be4you.core.data.repositories
 
 import co.be4you.core.data.network.services.AuthService
+import co.be4you.core.data.network.ws.Tokens
 import co.be4you.core.domain.models.LoginResponse
 
 class AuthRepository(
@@ -24,6 +25,17 @@ class AuthRepository(
     }
 
     suspend fun login(username: String, password: String): Result<LoginResponse> {
-        return authService.login(username = username, password = password)
+        authService.login(
+            username = username,
+            password = password,
+        ).fold(
+            onSuccess = {
+                Tokens.accessToken = it.accessToken
+                return Result.success(it)
+            },
+            onFailure = {
+                return Result.failure(it)
+            }
+        )
     }
 }
