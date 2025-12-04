@@ -2,9 +2,8 @@ package co.be4you.indoorlocalization.di
 
 import co.be4you.core.data.network.AuthInterceptor
 import co.be4you.core.data.network.AuthService
-import co.be4you.core.data.network.TokenAuthenticator
-import org.koin.android.ext.koin.androidContext
 import co.be4you.core.data.network.FloorMapApi
+import co.be4you.core.data.network.TokenAuthenticator
 import co.be4you.core.data.network.test.TestFloorMapApi
 import co.be4you.core.data.network.ws.AuthApiService
 import co.be4you.core.data.network.ws.WSAuthService
@@ -20,6 +19,7 @@ import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -30,6 +30,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val modules = module {
 
+    singleOf(::WSAuthService).bind<AuthService>()
+    singleOf(::AuthRepository).bind<AuthRepository>()
+    singleOf(::TestFloorMapApi).bind<FloorMapApi>()
+    singleOf(::FloorMapRepository).bind<FloorMapRepository>()
+    single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
+
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
     viewModelOf(::LoginViewModel)
@@ -37,7 +43,6 @@ val modules = module {
 
     factoryOf(::RegisterUseCase)
 
-    single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
 
     single {
         OkHttpClient.Builder()
@@ -57,12 +62,5 @@ val modules = module {
             .build()
     }
     single { get<Retrofit>().create(AuthApiService::class.java) }
-
-    single<AuthService> { WSAuthService(get()) }
-
-    single { AuthRepository(get(), get()) }
-
-    singleOf(::TestFloorMapApi).bind<FloorMapApi>()
-    singleOf(::FloorMapRepository).bind<FloorMapRepository>()
 }
 
