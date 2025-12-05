@@ -23,10 +23,15 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+enum class RetrofitType {
+    Default, Authorized
+}
 
 val modules = module {
 
@@ -43,24 +48,34 @@ val modules = module {
 
     factoryOf(::RegisterUseCase)
 
-
-    single {
-        OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .addInterceptor(AuthInterceptor(get()))
-            .authenticator(TokenAuthenticator(get()))
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .build()
+    single(named(RetrofitType.Default)) {
+        createRetrofit(
+            okHttpClient = createDefaultOkHttpClient().build()
+        )
+    }
+    single(named(RetrofitType.Authorized)) {
+        createRetrofit(
+            okHttpClient = createDefaultOkHttpClient()
+                .addInterceptor(get<AuthInterceptor>())
+                .authenticator(get<TokenAuthenticator>())
+                .build()
+        )
     }
 
-    single {
-        Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:5000/")
-            .client(get())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-    single { get<Retrofit>().create(AuthApiService::class.java) }
+    single { get<Retrofit>(named(RetrofitType.Default)).create(AuthApiService::class.java) }
 }
 
+private fun createDefaultOkHttpClient(): OkHttpClient.Builder =
+    OkHttpClient.Builder()
+        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .connectTimeout(120, TimeUnit.SECONDS)
+        .readTimeout(120, TimeUnit.SECONDS)
+
+
+private fun createRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    Retrofit
+        .Builder()
+        .baseUrl("http://10.0.2.2:5000/")
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
