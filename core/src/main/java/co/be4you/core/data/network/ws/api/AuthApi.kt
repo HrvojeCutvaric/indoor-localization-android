@@ -3,7 +3,7 @@ package co.be4you.core.data.network.ws.api
 import co.be4you.core.data.network.ws.api.models.LoginRequestBody
 import co.be4you.core.data.network.ws.api.models.LoginResponseDto
 import co.be4you.core.data.network.ws.api.models.RegisterRequestBody
-import co.be4you.core.data.network.ws.models.RegisterRequestBody
+import co.be4you.core.data.network.ws.api.models.RefreshTokenRequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

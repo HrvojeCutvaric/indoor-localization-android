@@ -67,14 +67,8 @@ class WSAuthService(
         password: String
     ): Result<LoginResponse> {
 
-        val loginResult = authApi.login(
-            requestBody = LoginRequestBody(
-                username = username,
-                password = password
-            )
-        )
         val loginResult = try {
-            authApiService.login(
+            authApi.login(
                 requestBody = LoginRequestBody(
                     username = username,
                     password = password

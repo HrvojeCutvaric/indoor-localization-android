@@ -1,8 +1,8 @@
 package co.be4you.core.data.network
 
 import android.util.Log
-import co.be4you.core.data.network.ws.AuthApiService
-import co.be4you.core.data.network.ws.models.RefreshTokenRequestBody
+import co.be4you.core.data.network.ws.api.AuthApi
+import co.be4you.core.data.network.ws.api.models.RefreshTokenRequestBody
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.utils.Constants
 import kotlinx.coroutines.runBlocking
@@ -13,7 +13,7 @@ import okhttp3.Route
 
 class TokenAuthenticator(
     private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences,
-    private val authApiService: AuthApiService,
+    private val authApi: AuthApi,
 ) : Authenticator {
 
     companion object {
@@ -54,7 +54,7 @@ class TokenAuthenticator(
                 Log.d(TAG, "Refreshing token...")
 
                 val refreshResponse = runBlocking {
-                    authApiService.refreshToken(
+                    authApi.refreshToken(
                         RefreshTokenRequestBody(
                             accessToken = currentAccessToken.orEmpty(),
                             refreshToken = refreshToken

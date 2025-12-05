@@ -1,4 +1,4 @@
-package co.be4you.core.data.network.ws.models
+package co.be4you.core.data.network.ws.api.models
 
 import com.google.gson.annotations.SerializedName
 
