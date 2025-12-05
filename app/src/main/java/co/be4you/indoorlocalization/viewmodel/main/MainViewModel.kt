@@ -13,8 +13,14 @@ class MainViewModel : ViewModel() {
             is MainAction.NavigateBack -> {
                 action.route?.let {
                     val index = backStack.indexOf(it)
-                    backStack.subList(index - 1, backStack.size).clear()
-                } ?: backStack.removeLastOrNull()
+                    if (index > 0) {
+                        backStack.subList(index, backStack.size).clear()
+                    }
+                } ?: run {
+                    if(backStack.size > 1){
+                        backStack.removeLast()
+                    }
+                }
             }
 
             is MainAction.NavigateTo -> {

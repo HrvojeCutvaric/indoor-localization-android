@@ -5,6 +5,8 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,17 +25,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.indoorlocalization.R
+import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
+import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import coil3.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DashboardScreen(
+    onAction: (MainAction) -> Unit,
     viewModel: DashboardViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -41,6 +48,7 @@ fun DashboardScreen(
     state?.let { currentState ->
         DashboardLayout(
             state = currentState,
+            onAction = onAction
         )
     } ?: run {
         Box(
@@ -55,6 +63,7 @@ fun DashboardScreen(
 @Composable
 private fun DashboardLayout(
     state: DashboardState,
+    onAction: (MainAction) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -78,6 +87,25 @@ private fun DashboardLayout(
                 )
             }
         }
+        DefaultButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            label = R.string.assets,
+            isButtonEnabled = true,
+            isButtonLoading = false,
+            onButtonClicked = {
+                onAction(
+                    MainAction.NavigateTo(
+                        Route.Assets(
+                            floorMapId = state.floorMap?.id?.toString() ?: "0",
+                            floorMapName = state.floorMap?.name ?: ""
+                        )
+                    )
+                )
+            }
+        )
+
     }
 }
 
@@ -162,7 +190,8 @@ private fun PinchToZoomView(
 private fun DashboardScreenPreview() {
     IndoorLocalizationTheme {
         DashboardLayout(
-            state = DashboardState(floorMap = null)
+            state = DashboardState(floorMap = null),
+            onAction = {}
         )
     }
 }

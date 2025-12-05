@@ -8,6 +8,7 @@ import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.use_case.RegisterUseCase
+import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
@@ -33,6 +34,8 @@ val modules = module {
     viewModelOf(::RegistrationViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::DashboardViewModel)
+    viewModelOf(::AssetsViewModel)
+
 
     factoryOf(::RegisterUseCase)
 
@@ -46,7 +49,7 @@ val modules = module {
     single {
         Retrofit
             .Builder()
-            .baseUrl("http://10.0.2.2:5001")
+            .baseUrl("http://10.0.2.2:5000")
             .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
