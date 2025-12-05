@@ -4,6 +4,7 @@ import android.util.Log
 import co.be4you.core.data.network.ws.AuthApiService
 import co.be4you.core.data.network.ws.models.RefreshTokenRequestBody
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
+import co.be4you.core.domain.utils.Constants
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -15,9 +16,13 @@ class TokenAuthenticator(
     private val authApiService: AuthApiService,
 ) : Authenticator {
 
+    companion object {
+        private const val TAG = "TOKEN_AUTH"
+    }
+
     override fun authenticate(route: Route?, response: Response): Request? {
         if (responseCount(response) >= 2) {
-            Log.d("TOKEN_AUTH", "Too many attempts, aborting.")
+            Log.d(TAG, "Too many attempts, aborting.")
             return null
         }
 
@@ -26,24 +31,27 @@ class TokenAuthenticator(
             val refreshToken = appEncryptedSharedPreferences.getRefreshToken()
 
             if (refreshToken.isNullOrBlank()) {
-                Log.d("TOKEN_AUTH", "No refresh token, cannot refresh.")
+                Log.d(TAG, "No refresh token, cannot refresh.")
                 appEncryptedSharedPreferences.clearTokens()
                 return null
             }
 
             val requestToken = response.request.header("Authorization")
-                ?.removePrefix("Bearer ")
+                ?.removePrefix(Constants.BEARER_TOKEN_PREFIX)
                 ?.trim()
 
             if (!currentAccessToken.isNullOrBlank() && currentAccessToken != requestToken) {
-                Log.d("TOKEN_AUTH", "Token already refreshed by another call, reusing it.")
+                Log.d(TAG, "Token already refreshed by another call, reusing it.")
                 return response.request.newBuilder()
-                    .header("Authorization", "Bearer $currentAccessToken")
+                    .header(
+                        name = Constants.AUTHORIZATION_HEADER,
+                        value = "${Constants.BEARER_TOKEN_PREFIX}$currentAccessToken"
+                    )
                     .build()
             }
 
             return try {
-                Log.d("TOKEN_AUTH", "Refreshing token...")
+                Log.d(TAG, "Refreshing token...")
 
                 val refreshResponse = runBlocking {
                     authApiService.refreshToken(
@@ -55,13 +63,13 @@ class TokenAuthenticator(
                 }
 
                 if (!refreshResponse.isSuccessful) {
-                    Log.d("TOKEN_AUTH", "Refresh failed with code ${refreshResponse.code()}")
+                    Log.d(TAG, "Refresh failed with code ${refreshResponse.code()}")
                     appEncryptedSharedPreferences.clearTokens()
                     null
                 } else {
                     val body = refreshResponse.body()
                     if (body == null) {
-                        Log.d("TOKEN_AUTH", "Refresh body null.")
+                        Log.d(TAG, "Refresh body null.")
                         appEncryptedSharedPreferences.clearTokens()
                         null
                     } else {
@@ -70,15 +78,18 @@ class TokenAuthenticator(
 
                         appEncryptedSharedPreferences.saveTokens(newAccess, newRefresh)
 
-                        Log.d("TOKEN_AUTH", "Refresh success, retrying original request.")
+                        Log.d(TAG, "Refresh success, retrying original request.")
 
                         response.request.newBuilder()
-                            .header("Authorization", "Bearer $newAccess")
+                            .header(
+                                name = Constants.AUTHORIZATION_HEADER,
+                                value = "${Constants.BEARER_TOKEN_PREFIX}$newAccess",
+                            )
                             .build()
                     }
                 }
             } catch (e: Exception) {
-                Log.d("TOKEN_AUTH", "Exception during refresh: ${e.message}")
+                Log.d(TAG, "Exception during refresh: ${e.message}")
                 null
             }
         }
