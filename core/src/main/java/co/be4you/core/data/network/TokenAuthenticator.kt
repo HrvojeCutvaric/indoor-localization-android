@@ -4,16 +4,15 @@ import android.util.Log
 import co.be4you.core.data.network.ws.AuthApiService
 import co.be4you.core.data.network.ws.models.RefreshTokenRequestBody
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
+import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class TokenAuthenticator(
-    private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences
+    private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences,
+    private val authApiService: AuthApiService,
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -46,24 +45,14 @@ class TokenAuthenticator(
             return try {
                 Log.d("TOKEN_AUTH", "Refreshing token...")
 
-                val client = OkHttpClient.Builder().build()
-
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2:5000/")
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-                val authApiService = retrofit.create(AuthApiService::class.java)
-
-                val refreshCall = authApiService.refreshTokenSync(
-                    RefreshTokenRequestBody(
-                        accessToken = currentAccessToken.orEmpty(),
-                        refreshToken = refreshToken
+                val refreshResponse = runBlocking {
+                    authApiService.refreshToken(
+                        RefreshTokenRequestBody(
+                            accessToken = currentAccessToken.orEmpty(),
+                            refreshToken = refreshToken
+                        )
                     )
-                )
-
-                val refreshResponse = refreshCall.execute()
+                }
 
                 if (!refreshResponse.isSuccessful) {
                     Log.d("TOKEN_AUTH", "Refresh failed with code ${refreshResponse.code()}")

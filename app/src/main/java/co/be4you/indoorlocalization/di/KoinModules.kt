@@ -40,6 +40,8 @@ val modules = module {
     singleOf(::TestFloorMapApi).bind<FloorMapApi>()
     singleOf(::FloorMapRepository).bind<FloorMapRepository>()
     single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
+    singleOf(::AuthInterceptor).bind<AuthInterceptor>()
+    singleOf(::TokenAuthenticator).bind<TokenAuthenticator>()
 
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
