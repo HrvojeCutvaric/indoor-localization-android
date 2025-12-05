@@ -36,7 +36,7 @@ class TokenAuthenticator(
                 return null
             }
 
-            val requestToken = response.request.header("Authorization")
+            val requestToken = response.request.header(Constants.AUTHORIZATION_HEADER)
                 ?.removePrefix(Constants.BEARER_TOKEN_PREFIX)
                 ?.trim()
 
