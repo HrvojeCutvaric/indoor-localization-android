@@ -1,11 +1,11 @@
 package co.be4you.indoorlocalization.di
 
 import co.be4you.core.data.network.AuthInterceptor
-import co.be4you.core.data.network.AuthService
-import co.be4you.core.data.network.FloorMapApi
+import co.be4you.core.data.network.services.AuthService
+import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.TokenAuthenticator
-import co.be4you.core.data.network.test.TestFloorMapApi
-import co.be4you.core.data.network.ws.AuthApiService
+import co.be4you.core.data.network.test.TestFloorMapService
+import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
@@ -34,10 +34,9 @@ enum class RetrofitType {
 }
 
 val modules = module {
-
     singleOf(::WSAuthService).bind<AuthService>()
     singleOf(::AuthRepository).bind<AuthRepository>()
-    singleOf(::TestFloorMapApi).bind<FloorMapApi>()
+    singleOf(::TestFloorMapService).bind<FloorMapService>()
     singleOf(::FloorMapRepository).bind<FloorMapRepository>()
     single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
     singleOf(::AuthInterceptor).bind<AuthInterceptor>()

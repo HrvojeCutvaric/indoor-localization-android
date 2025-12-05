@@ -1,6 +1,6 @@
 package co.be4you.core.data.network.test
 
-import co.be4you.core.data.network.FloorMapApi
+import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.test.mappers.toFloorMap
 import co.be4you.core.data.network.test.models.TestFloorMap
 import co.be4you.core.domain.models.FloorMap
@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 
 const val FLOOR_MAP_ID = 1L
 
-class TestFloorMapApi : FloorMapApi {
+class TestFloorMapService : FloorMapService {
 
     val mockData = listOf(
         TestFloorMap(
