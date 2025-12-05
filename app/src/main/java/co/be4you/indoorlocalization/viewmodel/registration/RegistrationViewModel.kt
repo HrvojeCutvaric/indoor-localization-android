@@ -103,6 +103,7 @@ class RegistrationViewModel(
                                     RegisterThrowable.ConfirmPasswordNotMatch -> R.string.confirm_password_not_match
                                     RegisterThrowable.InvalidEmail -> R.string.invalid_email
                                     RegisterThrowable.EmailExists -> R.string.email_exists
+                                    RegisterThrowable.UsernameExists -> R.string.username_exists
                                     RegisterThrowable.WeakPassword -> R.string.weak_password
                                     else -> R.string.generic_error_message
                                 }
