@@ -4,13 +4,15 @@ import co.be4you.core.data.network.AuthInterceptor
 import co.be4you.core.data.network.TokenAuthenticator
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
-import co.be4you.core.data.network.test.TestFloorMapService
 import co.be4you.core.data.network.ws.WSAuthService
+import co.be4you.core.data.network.ws.WSFloorMapService
 import co.be4you.core.data.network.ws.api.AuthApi
+import co.be4you.core.data.network.ws.api.FloorMapApi
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.use_case.RegisterUseCase
+import co.be4you.core.domain.utils.Constants
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
@@ -36,7 +38,7 @@ enum class RetrofitType {
 val modules = module {
     singleOf(::WSAuthService).bind<AuthService>()
     singleOf(::AuthRepository).bind<AuthRepository>()
-    singleOf(::TestFloorMapService).bind<FloorMapService>()
+    singleOf(::WSFloorMapService).bind<FloorMapService>()
     singleOf(::FloorMapRepository).bind<FloorMapRepository>()
     single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
     singleOf(::AuthInterceptor).bind<AuthInterceptor>()
@@ -64,6 +66,7 @@ val modules = module {
     }
 
     single { get<Retrofit>(named(RetrofitType.Default)).create(AuthApi::class.java) }
+    single { get<Retrofit>(named(RetrofitType.Authorized)).create(FloorMapApi::class.java) }
 }
 
 private fun createDefaultOkHttpClient(): OkHttpClient.Builder =
@@ -76,7 +79,7 @@ private fun createDefaultOkHttpClient(): OkHttpClient.Builder =
 private fun createRetrofit(okHttpClient: OkHttpClient): Retrofit =
     Retrofit
         .Builder()
-        .baseUrl("http://10.0.2.2:5001/")
+        .baseUrl(Constants.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

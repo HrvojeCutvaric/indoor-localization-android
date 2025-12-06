@@ -8,4 +8,6 @@ class FloorMapRepository(
 ) {
 
     suspend fun getFloorMap(id: Long): Result<FloorMap> = floorMapService.getFloorMap(id = id)
+
+    suspend fun getFloorMaps(): Result<List<FloorMap>> = floorMapService.getFloorMaps()
 }
