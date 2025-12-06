@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,18 +30,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
-import co.be4you.indoorlocalization.view.common.DefaultButton
+import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
+import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
-import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import coil3.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DashboardScreen(
-    onAction: (MainAction) -> Unit,
     viewModel: DashboardViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -48,12 +47,12 @@ fun DashboardScreen(
     state?.let { currentState ->
         DashboardLayout(
             state = currentState,
-            onAction = onAction
+            onAction = viewModel::execute,
         )
     } ?: run {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator()
         }
@@ -63,48 +62,58 @@ fun DashboardScreen(
 @Composable
 private fun DashboardLayout(
     state: DashboardState,
-    onAction: (MainAction) -> Unit
+    onAction: (DashboardAction) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        DefaultDropdownSelector(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            selectedValue = state.selectedFloorMap?.name.orEmpty(),
+            placeholder = R.string.select_floor_map,
+            isExpanded = state.isDropdownExpanded,
+            onExpandedChange = { onAction(DashboardAction.OnDropdownExpandedChanged) },
+            onDismissRequest = { onAction(DashboardAction.OnDismissRequest) },
         ) {
-            state.floorMap?.let { floorMap ->
-                PinchToZoomView(
-                    modifier = Modifier.fillMaxSize(),
-                    floorMap = floorMap
-                )
-            } ?: run {
-                Text(
-                    text = stringResource(R.string.failed_to_load_floor_map),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.error
-                    )
+            state.floorMaps.forEach { floorMap ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = floorMap.name,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        )
+                    },
+                    onClick = {
+                        onAction(DashboardAction.OnFloorMapSelected(floorMap = floorMap))
+                    },
                 )
             }
         }
 
-        DefaultButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            label = R.string.assets,
-            isButtonEnabled = true,
-            isButtonLoading = false,
-            onButtonClicked = {
-                onAction(
-                    MainAction.NavigateTo(
-                        Route.Assets(
-                            floorMapId = state.floorMap?.id?.toString() ?: "0",
-                            floorMapName = state.floorMap?.name ?: ""
-                        )
-                    )
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            state.selectedFloorMap?.let { floorMap ->
+                PinchToZoomView(
+                    modifier = Modifier.fillMaxSize(),
+                    floorMap = floorMap,
+                )
+            } ?: run {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.please_select_floor_map),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
                 )
             }
-        )
+        }
     }
 }
 
@@ -132,14 +141,14 @@ private fun PinchToZoomView(
                     val newScale = scale * zoom
                     scale = newScale.coerceIn(minScale, maxScale)
 
-                    val centerX = size.width / 2f
-                    val centerY = size.height / 2f
+                    val centerX = size.width / 2
+                    val centerY = size.height / 2
                     val offsetXChange = (centerX - offsetX) * (newScale / scale - 1)
                     val offsetYChange = (centerY - offsetY) * (newScale / scale - 1)
 
-                    val maxOffsetX = (size.width / 2f) * (scale - 1)
+                    val maxOffsetX = (size.width / 2) * (scale - 1)
                     val minOffsetX = -maxOffsetX
-                    val maxOffsetY = (size.height / 2f) * (scale - 1)
+                    val maxOffsetY = (size.height / 2) * (scale - 1)
                     val minOffsetY = -maxOffsetY
 
                     if (scale * zoom <= maxScale) {
@@ -149,7 +158,7 @@ private fun PinchToZoomView(
                             .coerceIn(minOffsetY, maxOffsetY)
                     }
 
-                    if (pan != Offset.Zero && initialOffset == Offset.Zero) {
+                    if (pan != Offset(0f, 0f) && initialOffset == Offset(0f, 0f)) {
                         initialOffset = Offset(offsetX, offsetY)
                     }
                 }
@@ -173,13 +182,13 @@ private fun PinchToZoomView(
                 translationX = offsetX
                 translationY = offsetY
             },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(0.95f),
             model = floorMap.imageUrl,
             contentDescription = floorMap.name,
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
         )
     }
 }
@@ -189,8 +198,30 @@ private fun PinchToZoomView(
 private fun DashboardScreenPreview() {
     IndoorLocalizationTheme {
         DashboardLayout(
-            state = DashboardState(floorMap = null),
-            onAction = {}
+            state = DashboardState(
+                floorMaps = listOf(
+                    FloorMap(
+                        id = 1,
+                        name = "Test-1",
+                        imageUrl = "https://picsum.photos/id/1/5000/3333",
+                        imageWidthPx = 0,
+                        imageHeightPx = 0,
+                        widthInMeters = 0,
+                        heightInMeters = 0,
+                    )
+                ),
+                selectedFloorMap = FloorMap(
+                    id = 1,
+                    name = "Test-1",
+                    imageUrl = "https://picsum.photos/id/1/5000/3333",
+                    imageWidthPx = 0,
+                    imageHeightPx = 0,
+                    widthInMeters = 0,
+                    heightInMeters = 0
+                ),
+                isDropdownExpanded = true,
+            ),
+            onAction = { }
         )
     }
 }

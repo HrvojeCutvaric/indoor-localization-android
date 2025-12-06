@@ -2,11 +2,11 @@ package co.be4you.indoorlocalization.viewmodel.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.be4you.core.data.network.test.FLOOR_MAP_ID
 import co.be4you.core.data.repositories.FloorMapRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
@@ -18,18 +18,47 @@ class DashboardViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            floorMapRepository.getFloorMap(FLOOR_MAP_ID).fold(
-                onSuccess = { floorMap ->
+            floorMapRepository.getFloorMaps().fold(
+                onSuccess = { floorMaps ->
                     _state.value = DashboardState(
-                        floorMap = floorMap,
+                        floorMaps = floorMaps,
+                        selectedFloorMap = null,
+                        isDropdownExpanded = false,
                     )
                 },
                 onFailure = {
-                    _state.value = DashboardState(
-                        floorMap = null,
-                    )
+                    _state.value = null
                 }
             )
+        }
+    }
+
+    fun execute(action: DashboardAction) {
+        when (action) {
+            DashboardAction.OnDismissRequest -> {
+                _state.update {
+                    it?.copy(
+                        isDropdownExpanded = false,
+                    )
+                }
+            }
+
+            DashboardAction.OnDropdownExpandedChanged -> {
+                _state.update {
+                    it?.copy(
+                        isDropdownExpanded = _state.value?.isDropdownExpanded?.not() ?: false,
+                    )
+                }
+            }
+
+            is DashboardAction.OnFloorMapSelected -> {
+                _state.update {
+                    it?.copy(
+                        selectedFloorMap = action.floorMap,
+                        isDropdownExpanded = false,
+                    )
+                }
+            }
         }
     }
 }
