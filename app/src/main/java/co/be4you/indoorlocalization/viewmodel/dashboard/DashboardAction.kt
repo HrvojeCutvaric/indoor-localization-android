@@ -9,4 +9,9 @@ sealed interface DashboardAction {
     data object OnDismissRequest : DashboardAction
 
     data class OnFloorMapSelected(val floorMap: FloorMap) : DashboardAction
+
+    data class OnNavigateToAssets(
+        val floorMapId: Long,
+        val floorMapName: String
+    ): DashboardAction
 }

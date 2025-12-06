@@ -59,6 +59,9 @@ class DashboardViewModel(
                     )
                 }
             }
+
+            is DashboardAction.OnNavigateToAssets -> {
+            }
         }
     }
 }

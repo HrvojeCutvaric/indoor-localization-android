@@ -7,7 +7,7 @@ import retrofit2.http.Path
 
 interface AssetApi {
 
-    @GET("assets/floor/{floorMapId}")
+    @GET("api/Asset/floormap/{floorMapId}")
     suspend fun getAssetsByFloor(
         @Path("floorMapId") floorMapId: Long
     ): Response<List<AssetDto>>

@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
@@ -41,6 +42,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel = koinViewModel(),
+    OnNavigateToAssets: (Long, String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -48,6 +50,7 @@ fun DashboardScreen(
         DashboardLayout(
             state = currentState,
             onAction = viewModel::execute,
+            OnNavigateToAssets = OnNavigateToAssets
         )
     } ?: run {
         Box(
@@ -63,6 +66,7 @@ fun DashboardScreen(
 private fun DashboardLayout(
     state: DashboardState,
     onAction: (DashboardAction) -> Unit,
+    OnNavigateToAssets: (Long, String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -114,6 +118,20 @@ private fun DashboardLayout(
                 )
             }
         }
+
+        DefaultButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            label = R.string.assets,
+            isButtonEnabled = state.selectedFloorMap != null,
+            isButtonLoading = false,
+            onButtonClicked = {
+                state.selectedFloorMap?.let { map ->
+                OnNavigateToAssets(map.id, map.name)
+                }
+            }
+        )
     }
 }
 
@@ -221,7 +239,8 @@ private fun DashboardScreenPreview() {
                 ),
                 isDropdownExpanded = true,
             ),
-            onAction = { }
+            onAction = { },
+            OnNavigateToAssets = {_, _ ->}
         )
     }
 }

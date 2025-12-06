@@ -1,5 +1,6 @@
 package co.be4you.indoorlocalization.view.assets
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -42,6 +43,7 @@ fun AssetsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(floorMapId) {
+        Log.d("AssetsScreen", "Received floorMapId = $floorMapId")
         viewModel.loadAssets(floorMapId)
     }
 

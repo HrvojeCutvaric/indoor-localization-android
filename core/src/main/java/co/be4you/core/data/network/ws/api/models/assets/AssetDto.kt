@@ -3,7 +3,7 @@ package co.be4you.core.data.network.ws.api.models.assets
 data class AssetDto (
     val id: Long,
     val name: String,
-    val colorHex: String?,
+    val color: String?,
     val x: Double?,
     val y: Double?,
     val floorMapId: Long,

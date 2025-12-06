@@ -48,7 +48,18 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Dashboard> {
-                                DashboardScreen()
+                                DashboardScreen(
+                                    OnNavigateToAssets = { id, name ->
+                                        mainViewModel.execute(
+                                            MainAction.NavigateTo(
+                                                Route.Assets(
+                                                    floorMapId = id,
+                                                    floorMapName = name
+                                                )
+                                            )
+                                        )
+                                    }
+                                )
                             }
                             entry<Route.Assets> { assets ->
                                 AssetsScreen(
