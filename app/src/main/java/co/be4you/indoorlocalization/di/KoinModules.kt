@@ -5,8 +5,9 @@ import co.be4you.core.data.network.TokenAuthenticator
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.ws.WSAuthService
-import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.WSFloorMapService
+import co.be4you.core.data.network.ws.api.AuthApi
+import co.be4you.core.data.network.ws.api.FloorMapApi
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
@@ -65,6 +66,7 @@ val modules = module {
     }
 
     single { get<Retrofit>(named(RetrofitType.Default)).create(AuthApi::class.java) }
+    single { get<Retrofit>(named(RetrofitType.Authorized)).create(FloorMapApi::class.java) }
 }
 
 private fun createDefaultOkHttpClient(): OkHttpClient.Builder =

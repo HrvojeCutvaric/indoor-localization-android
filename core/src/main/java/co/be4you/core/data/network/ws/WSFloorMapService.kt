@@ -10,13 +10,7 @@ class WSFloorMapService(
 ) : FloorMapService {
     override suspend fun getFloorMap(id: Long): Result<FloorMap> {
         try {
-            val accessToken =
-                Tokens.accessToken ?: return Result.failure(Throwable("No access token"))
-
-            val result = floorMapApi.getFloorMap(
-                id = id,
-                token = "Bearer $accessToken"
-            )
+            val result = floorMapApi.getFloorMap(id = id)
 
             when (result.isSuccessful) {
                 true -> {
@@ -36,10 +30,7 @@ class WSFloorMapService(
 
     override suspend fun getFloorMaps(): Result<List<FloorMap>> {
         try {
-            val accessToken =
-                Tokens.accessToken ?: return Result.failure(Throwable("No access token"))
-
-            val result = floorMapApi.getFloorMaps(token = "Bearer $accessToken")
+            val result = floorMapApi.getFloorMaps()
 
             when (result.isSuccessful) {
                 true -> {
