@@ -29,10 +29,11 @@ import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 @Composable
 fun DefaultButton(
     modifier: Modifier = Modifier,
-    @StringRes label: Int,
+    @StringRes label: Int? = null,
     isButtonEnabled: Boolean = true,
     isButtonLoading: Boolean = false,
     onButtonClicked: () -> Unit,
+    content: (@Composable () -> Unit)? = null,
 ) {
     Button(
         modifier = modifier,
@@ -53,13 +54,19 @@ fun DefaultButton(
                 color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
-            Text(
-                text = stringResource(label),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+            when {
+                content != null -> content()
+
+                label != null -> Text(
+                    text = stringResource(label),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
                 )
-            )
+
+                else -> {}
+            }
         }
     }
 }

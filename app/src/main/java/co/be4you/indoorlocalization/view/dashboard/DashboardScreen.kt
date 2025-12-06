@@ -53,7 +53,7 @@ fun DashboardScreen(
     } ?: run {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
         }
@@ -65,28 +65,28 @@ private fun DashboardLayout(
     state: DashboardState,
     onAction: (MainAction) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
+
         Box(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             state.floorMap?.let { floorMap ->
                 PinchToZoomView(
                     modifier = Modifier.fillMaxSize(),
-                    floorMap = floorMap,
+                    floorMap = floorMap
                 )
             } ?: run {
                 Text(
                     text = stringResource(R.string.failed_to_load_floor_map),
                     style = MaterialTheme.typography.headlineSmall.copy(
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.error,
-                    ),
+                        color = MaterialTheme.colorScheme.error
+                    )
                 )
             }
         }
+
         DefaultButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,7 +105,6 @@ private fun DashboardLayout(
                 )
             }
         )
-
     }
 }
 
@@ -133,14 +132,14 @@ private fun PinchToZoomView(
                     val newScale = scale * zoom
                     scale = newScale.coerceIn(minScale, maxScale)
 
-                    val centerX = size.width / 2
-                    val centerY = size.height / 2
+                    val centerX = size.width / 2f
+                    val centerY = size.height / 2f
                     val offsetXChange = (centerX - offsetX) * (newScale / scale - 1)
                     val offsetYChange = (centerY - offsetY) * (newScale / scale - 1)
 
-                    val maxOffsetX = (size.width / 2) * (scale - 1)
+                    val maxOffsetX = (size.width / 2f) * (scale - 1)
                     val minOffsetX = -maxOffsetX
-                    val maxOffsetY = (size.height / 2) * (scale - 1)
+                    val maxOffsetY = (size.height / 2f) * (scale - 1)
                     val minOffsetY = -maxOffsetY
 
                     if (scale * zoom <= maxScale) {
@@ -150,7 +149,7 @@ private fun PinchToZoomView(
                             .coerceIn(minOffsetY, maxOffsetY)
                     }
 
-                    if (pan != Offset(0f, 0f) && initialOffset == Offset(0f, 0f)) {
+                    if (pan != Offset.Zero && initialOffset == Offset.Zero) {
                         initialOffset = Offset(offsetX, offsetY)
                     }
                 }
@@ -174,13 +173,13 @@ private fun PinchToZoomView(
                 translationX = offsetX
                 translationY = offsetY
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(0.95f),
             model = floorMap.imageUrl,
             contentDescription = floorMap.name,
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.FillWidth
         )
     }
 }

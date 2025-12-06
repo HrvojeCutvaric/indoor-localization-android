@@ -3,23 +3,39 @@ package co.be4you.indoorlocalization.view.assets
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
-
+import androidx.compose.foundation.lazy.items
+import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
+import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun AssetsScreen(
     floorMapId: String,
     floorMapName: String,
-    onAction: (MainAction) -> Unit
+    onAction: (MainAction) -> Unit,
+    viewModel: AssetsViewModel = koinViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,21 +50,70 @@ fun AssetsScreen(
         ) {
             Text(
                 text = "Assets",
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.align(Alignment.Center),
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
         }
 
-        Box(
+        DefaultButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical=12.dp),
+            onButtonClicked = {/*TODO*/},
+            label = null,
+            content = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Asset",
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Add Asset",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
+                    )
+                }
+            }
+
+        )
+
+        AssetSearchBar(
+            query = state.searchQuery,
+            onQueryChanged = { viewModel.updateSearchQuery(it) }
+        )
+
+        val assets = viewModel.filteredAssets
+
+        LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
+                .padding(horizontal = 16.dp)
         ) {
-            Text("Assets content will go here")
+            if(assets.isEmpty()){
+                item{
+                    Text(
+                        text="No asset matches your search",
+                        color = Color.Gray,
+                        modifier = Modifier.padding(top=16.dp)
+                    )
+                }
+            } else{
+                items(assets) { asset ->
+                    AssetRow(
+                        name = asset.name,
+                        active = asset.active,
+                        floorMapName = asset.floorMapName,
+                        color = asset.color,
+                        onActiveChanged = { /* TODO ViewModel update */ }
+                    )
+                }
+            }
         }
+
+
 
         Box(
             modifier = Modifier
@@ -75,3 +140,80 @@ fun AssetsScreen(
         }
     }
 }
+
+@Composable
+private fun AssetSearchBar(
+    query: String,
+    onQueryChanged: (String) -> Unit
+) {
+    TextField(
+        value = query,
+        onValueChange = onQueryChanged,
+        placeholder = { Text("Search assets...") },
+        singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White
+        )
+    )
+}
+
+@Composable
+private fun AssetRow(
+    name: String,
+    active: Boolean,
+    floorMapName: String,
+    color: Long,
+    onActiveChanged: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp)
+            .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .background(Color(color), RoundedCornerShape(4.dp))
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // NAME + ACTIVE CHECKBOX LEFT SIDE
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = name,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = active,
+                    onCheckedChange = onActiveChanged
+                )
+
+                Text(
+                    text = "Active",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+
+        Text(
+            text = floorMapName,
+            style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+        )
+    }
+}
+
