@@ -9,4 +9,6 @@ sealed class RegisterThrowable() : Throwable() {
     data object WeakPassword : RegisterThrowable()
 
     data object EmailExists : RegisterThrowable()
+
+    data object UsernameExists: RegisterThrowable()
 }

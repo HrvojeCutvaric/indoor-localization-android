@@ -7,6 +7,9 @@ import co.be4you.core.data.network.ws.api.models.LoginRequestBody
 import co.be4you.core.data.network.ws.api.models.RegisterRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
+import co.be4you.core.domain.utils.RegisterThrowable
+import org.json.JSONObject
+
 
 class WSAuthService(
     private val authApi: AuthApi
@@ -29,8 +32,31 @@ class WSAuthService(
             )
         )
 
-        if (registerResult.isSuccessful.not()) {
-            return Result.failure(Exception("Registration failed"))
+        if (!registerResult.isSuccessful) {
+
+            val errorBody = registerResult.errorBody()?.string()
+            val backendMessage = try {
+                JSONObject(errorBody ?: "{}").getString("message")
+            } catch (e: Exception) {
+                null
+            }
+
+            return when (registerResult.code()) {
+                409 -> {
+                    if (backendMessage?.contains("username", ignoreCase = true) == true) {
+                        Result.failure(RegisterThrowable.UsernameExists)
+                    } else if (backendMessage?.contains("email", ignoreCase = true) == true) {
+                        Result.failure(RegisterThrowable.EmailExists)
+                    } else {
+                        Result.failure(RegisterThrowable.EmailExists)
+                    }
+                }
+
+                400 -> Result.failure(RegisterThrowable.InvalidEmail)
+
+                else -> Result.failure(Exception("Registration failed"))
+            }
+
         }
 
         return Result.success(Unit)
@@ -41,17 +67,27 @@ class WSAuthService(
         password: String
     ): Result<LoginResponse> {
 
-        val loginResult = authApi.login(
-            requestBody = LoginRequestBody(
-                username = username,
-                password = password
+        val loginResult = try {
+            authApi.login(
+                requestBody = LoginRequestBody(
+                    username = username,
+                    password = password
+                )
             )
-        )
+        } catch (e: Exception) {
+            return Result.failure(LoginThrowable.Generic)
+        }
 
-        if (loginResult.isSuccessful.not()) return Result.failure(LoginThrowable.IncorrectEmailPassword)
+        if (!loginResult.isSuccessful) {
+            return when (loginResult.code()) {
+                400, 401 -> Result.failure(LoginThrowable.IncorrectEmailPassword)
+                else -> Result.failure(LoginThrowable.Generic)
+            }
+        }
 
         val loginResponseDto =
-            loginResult.body() ?: return Result.failure(Exception("Login response is null"))
+            loginResult.body() ?: return Result.failure(LoginThrowable.Generic)
+
 
         return Result.success(loginResponseDto.toLoginResponse())
     }
