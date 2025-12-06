@@ -1,9 +1,6 @@
-package co.be4you.core.domain.models
+package co.be4you.core.data.network.ws.api.models.assets
 
-import java.time.LocalDateTime
-import java.time.Instant
-
-data class Asset(
+data class AssetDto (
     val id: Long,
     val name: String,
     val colorHex: String?,
@@ -11,5 +8,5 @@ data class Asset(
     val y: Double?,
     val floorMapId: Long,
     val active: Boolean,
-    val lastSync: Instant?,
+    val lastSync: String?,
 )

@@ -24,18 +24,27 @@ import androidx.compose.ui.unit.dp
 import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import co.be4you.core.domain.models.Asset
+
 @Composable
 fun AssetsScreen(
-    floorMapId: String,
+    floorMapId: Long,
     floorMapName: String,
     onAction: (MainAction) -> Unit,
     viewModel: AssetsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(floorMapId) {
+        viewModel.loadAssets(floorMapId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,13 +111,7 @@ fun AssetsScreen(
                 }
             } else{
                 items(assets) { asset ->
-                    AssetRow(
-                        name = asset.name,
-                        active = asset.active,
-                        floorMapName = asset.floorMapName,
-                        color = asset.color,
-                        onActiveChanged = { /* TODO ViewModel update */ }
-                    )
+                    AssetRow(asset)
                 }
             }
         }
@@ -161,14 +164,15 @@ private fun AssetSearchBar(
     )
 }
 
+
 @Composable
-private fun AssetRow(
-    name: String,
-    active: Boolean,
-    floorMapName: String,
-    color: Long,
-    onActiveChanged: (Boolean) -> Unit
-) {
+fun AssetRow(asset: Asset) {
+    val color = try {
+        Color(android.graphics.Color.parseColor(asset.colorHex ?: "#888888"))
+    } catch (e: Exception) {
+        Color.Gray
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -177,43 +181,25 @@ private fun AssetRow(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Box(
             modifier = Modifier
                 .size(20.dp)
-                .background(Color(color), RoundedCornerShape(4.dp))
+                .background(color, RoundedCornerShape(4.dp))
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(Modifier.width(12.dp))
 
-        // NAME + ACTIVE CHECKBOX LEFT SIDE
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(asset.name, style = MaterialTheme.typography.titleMedium)
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    checked = active,
-                    onCheckedChange = onActiveChanged
+                    checked = asset.active,
+                    onCheckedChange = { /* TODO */ }
                 )
-
-                Text(
-                    text = "Active",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Text("Active")
             }
         }
 
-        Text(
-            text = floorMapName,
-            style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
-        )
+        Text(asset.floorMapId.toString(), color = Color.Gray)
     }
 }
-

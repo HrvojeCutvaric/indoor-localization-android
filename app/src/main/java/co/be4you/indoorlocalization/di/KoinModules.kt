@@ -1,10 +1,14 @@
 package co.be4you.indoorlocalization.di
 
+import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.test.TestFloorMapService
+import co.be4you.core.data.network.ws.WSAssetService
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.WSAuthService
+import co.be4you.core.data.network.ws.api.AssetApi
+import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.use_case.RegisterUseCase
@@ -29,6 +33,8 @@ val modules = module {
     singleOf(::AuthRepository).bind<AuthRepository>()
     singleOf(::TestFloorMapService).bind<FloorMapService>()
     singleOf(::FloorMapRepository).bind<FloorMapRepository>()
+    singleOf(::WSAssetService).bind<AssetService>()
+    singleOf(::AssetRepository).bind<AssetRepository>()
 
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
@@ -56,4 +62,5 @@ val modules = module {
     }
 
     single { get<Retrofit>().create(AuthApi::class.java) }
+    single {get<Retrofit>().create(AssetApi::class.java) }
 }
