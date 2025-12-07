@@ -15,8 +15,6 @@ fun AssetDto.toAsset(): Asset {
         y = y,
         floorMapId = floorMapId,
         active = active,
-        lastSync = lastSync
-            ?.takeIf { it.isNotBlank() }
-            ?.let { Instant.parse(it) }
+        lastSync = lastSync?.let { Instant.ofEpochMilli(it)}
     )
 }

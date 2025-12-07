@@ -19,7 +19,6 @@ import co.be4you.indoorlocalization.view.assets.AssetsScreen
 import co.be4you.indoorlocalization.view.dashboard.DashboardScreen
 import co.be4you.indoorlocalization.view.login.LoginScreen
 import co.be4you.indoorlocalization.view.registration.RegistrationScreen
-import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -48,19 +47,9 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Dashboard> {
-                                DashboardScreen(
-                                    OnNavigateToAssets = { id, name ->
-                                        mainViewModel.execute(
-                                            MainAction.NavigateTo(
-                                                Route.Assets(
-                                                    floorMapId = id,
-                                                    floorMapName = name
-                                                )
-                                            )
-                                        )
-                                    }
-                                )
+                                DashboardScreen(onAction = mainViewModel::execute)
                             }
+
                             entry<Route.Assets> { assets ->
                                 AssetsScreen(
                                     floorMapId = assets.floorMapId,

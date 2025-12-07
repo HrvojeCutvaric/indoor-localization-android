@@ -43,7 +43,6 @@ fun AssetsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(floorMapId) {
-        Log.d("AssetsScreen", "Received floorMapId = $floorMapId")
         viewModel.loadAssets(floorMapId)
     }
 
@@ -95,7 +94,7 @@ fun AssetsScreen(
             onQueryChanged = { viewModel.updateSearchQuery(it) }
         )
 
-        val assets = viewModel.filteredAssets
+        val assets = state.filteredAssets
 
         LazyColumn(
             modifier = Modifier

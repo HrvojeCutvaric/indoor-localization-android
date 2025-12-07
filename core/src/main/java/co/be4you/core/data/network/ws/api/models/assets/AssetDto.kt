@@ -8,5 +8,5 @@ data class AssetDto (
     val y: Double?,
     val floorMapId: Long,
     val active: Boolean,
-    val lastSync: String?,
+    val lastSync: Long?,
 )

@@ -8,13 +8,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
+import co.be4you.indoorlocalization.viewmodel.main.MainAction
+import co.be4you.indoorlocalization.navigation.Route
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+
 
 class DashboardViewModel(
     private val floorMapRepository: FloorMapRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DashboardState?>(null)
-    val state: StateFlow<DashboardState?> = _state
+    val state = _state.asStateFlow()
+    private val _event = MutableSharedFlow<MainAction>()
+    val event = _event.asSharedFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,7 +68,15 @@ class DashboardViewModel(
                 }
             }
 
-            is DashboardAction.OnNavigateToAssets -> {
+            is DashboardAction.OnNavigateToAssets -> viewModelScope.launch(Dispatchers.IO){
+                _event.emit(
+                    MainAction.NavigateTo(
+                        route = Route.Assets(
+                            floorMapId = action.floorMapId,
+                            floorMapName = action.floorMapName
+                        )
+                    )
+                )
             }
         }
     }
