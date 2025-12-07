@@ -32,6 +32,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.be4you.core.domain.models.Asset
+import co.be4you.indoorlocalization.navigation.Route
+import co.be4you.indoorlocalization.viewmodel.assets.AssetAction
 
 @Composable
 fun AssetsScreen(
@@ -43,7 +45,7 @@ fun AssetsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(floorMapId) {
-        viewModel.loadAssets(floorMapId)
+        viewModel.execute(AssetAction.Load(floorMapId))
     }
 
     Column(
@@ -91,7 +93,7 @@ fun AssetsScreen(
 
         AssetSearchBar(
             query = state.searchQuery,
-            onQueryChanged = { viewModel.updateSearchQuery(it) }
+            onQueryChanged = { viewModel.execute(AssetAction.OnSearchChanged(it)) }
         )
 
         val assets = state.filteredAssets

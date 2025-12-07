@@ -2,7 +2,7 @@ package co.be4you.core.data.network
 
 import android.util.Log
 import co.be4you.core.data.network.ws.api.AuthApi
-import co.be4you.core.data.network.ws.api.models.RefreshTokenRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.RefreshTokenRequestBody
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.utils.Constants
 import kotlinx.coroutines.runBlocking
