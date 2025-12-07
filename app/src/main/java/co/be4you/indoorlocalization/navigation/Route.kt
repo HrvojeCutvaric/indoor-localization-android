@@ -20,5 +20,5 @@ sealed interface Route : NavKey {
     ):Route
 
     @Serializable
-    data class AssetDetails(val assetId: Long): Route
+    data class AssetDetail(val assetId: Long): Route
 }

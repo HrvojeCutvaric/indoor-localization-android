@@ -113,8 +113,14 @@ fun AssetsScreen(
                     )
                 }
             } else{
-                items(assets) { asset ->
-                    AssetRow(asset)
+                items(assets){
+                    asset->AssetRow(asset) { id->
+                        onAction(
+                            MainAction.NavigateTo(
+                                Route.AssetDetail(id)
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -169,7 +175,7 @@ private fun AssetSearchBar(
 
 
 @Composable
-fun AssetRow(asset: Asset) {
+fun AssetRow(asset: Asset, onClick:(Long) -> Unit) {
     val color = try {
         Color(android.graphics.Color.parseColor(asset.colorHex ?: "#888888"))
     } catch (e: Exception) {
@@ -181,6 +187,7 @@ fun AssetRow(asset: Asset) {
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
+            .clickable{ onClick(asset.id)}
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

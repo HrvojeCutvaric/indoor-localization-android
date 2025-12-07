@@ -5,5 +5,5 @@ import co.be4you.core.domain.models.Asset
 data class AssetDetailState(
     val isLoading: Boolean = false,
     val asset: Asset? = null,
-    val errorMessage: String? = null
+    val errorResource: Int? = null
 )

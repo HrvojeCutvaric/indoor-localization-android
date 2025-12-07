@@ -3,12 +3,14 @@ package co.be4you.indoorlocalization.viewmodel.assetdetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetRepository
+import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AssetDetailViewModel(
@@ -28,21 +30,25 @@ class AssetDetailViewModel(
     }
 
     private fun loadAsset(id: Long){
-        _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+        _state.update { it.copy(isLoading = true, errorResource = null) }
 
         viewModelScope.launch(Dispatchers.IO){
             repository.getAsset(id).fold(
                 onSuccess = { asset ->
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        asset = asset
-                    )
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            asset = asset
+                        )
+                    }
                 },
-                onFailure = { error ->
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        errorMessage = error.message ?: "Unknown error"
-                    )
+                onFailure = {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorResource = R.string.generic_error_message
+                        )
+                    }
                 }
             )
         }
