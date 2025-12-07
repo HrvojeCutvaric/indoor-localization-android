@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -28,10 +29,11 @@ import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
 @Composable
 fun DefaultButton(
     modifier: Modifier = Modifier,
-    @StringRes label: Int,
+    @StringRes label: Int? = null,
     isButtonEnabled: Boolean = true,
     isButtonLoading: Boolean = false,
     onButtonClicked: () -> Unit,
+    content: (@Composable () -> Unit)? = null,
 ) {
     Button(
         modifier = modifier,
@@ -39,6 +41,11 @@ fun DefaultButton(
         shape = ShapeDefaults.Small,
         contentPadding = PaddingValues(16.dp),
         onClick = onButtonClicked,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF2B85ED),
+            contentColor = Color.White,
+            disabledContentColor = Color(0xFF75AEE8)
+        )
     ) {
         if (isButtonLoading) {
             CircularProgressIndicator(
@@ -47,13 +54,19 @@ fun DefaultButton(
                 color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
-            Text(
-                text = stringResource(label),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+            when {
+                content != null -> content()
+
+                label != null -> Text(
+                    text = stringResource(label),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
                 )
-            )
+
+                else -> {}
+            }
         }
     }
 }

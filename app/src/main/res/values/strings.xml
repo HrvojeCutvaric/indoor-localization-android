@@ -22,4 +22,8 @@
     <string name="select_floor_map">Select Floor Map</string>
     <string name="failed_to_fetch_floor_maps">Failed to fetch floor maps.</string>
     <string name="failed_to_load_floor_map">Failed to load floor map.</string>
+    <string name="assets">Assets</string>
+    <string name="add_asset">Add Asset</string>
+    <string name="back">Back</string>
+
 </resources>

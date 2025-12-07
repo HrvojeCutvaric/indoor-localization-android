@@ -31,23 +31,32 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import coil3.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.flow.collectLatest
+import co.be4you.indoorlocalization.viewmodel.main.MainAction
 
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel = koinViewModel(),
+    onAction: (MainAction) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest(onAction)
+    }
 
     state?.let { currentState ->
         DashboardLayout(
             state = currentState,
-            onAction = viewModel::execute,
+            onAction = viewModel::execute
         )
     } ?: run {
         Box(
@@ -62,7 +71,7 @@ fun DashboardScreen(
 @Composable
 private fun DashboardLayout(
     state: DashboardState,
-    onAction: (DashboardAction) -> Unit,
+    onAction: (DashboardAction) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -114,6 +123,25 @@ private fun DashboardLayout(
                 )
             }
         }
+
+        DefaultButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            label = R.string.assets,
+            isButtonEnabled = state.selectedFloorMap != null,
+            isButtonLoading = false,
+            onButtonClicked = {
+                state.selectedFloorMap?.let { map ->
+                    onAction(
+                        DashboardAction.OnNavigateToAssets(
+                            floorMapId = map.id,
+                            floorMapName = map.name
+                        )
+                    )
+                }
+            }
+        )
     }
 }
 
@@ -221,7 +249,7 @@ private fun DashboardScreenPreview() {
                 ),
                 isDropdownExpanded = true,
             ),
-            onAction = { }
+            onAction = { },
         )
     }
 }
