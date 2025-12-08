@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.indoorlocalization.view.common.DefaultButton
+import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
@@ -31,19 +32,10 @@ fun AssetDetailScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF2B85ED)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Asset Details",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White
-            )
-        }
+        DefaultTopBar(
+            title = "Asset Details",
+            onBack = {onAction(MainAction.NavigateBack())}
+        )
 
         when {
             state.isLoading -> {
@@ -102,18 +94,6 @@ fun AssetDetailScreen(
                         content = { Text("Delete", color = Color.White) }
                     )
                 }
-            }
-        }
-
-        Box(modifier = Modifier.padding(16.dp)) {
-            Button(
-                onClick = { onAction(MainAction.NavigateBack()) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2B85ED),
-                    contentColor = Color.White
-                )
-            ) {
-                Text("Back", modifier = Modifier.padding(8.dp))
             }
         }
     }
