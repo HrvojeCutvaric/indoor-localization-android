@@ -1,4 +1,4 @@
-package co.be4you.indoorlocalization.view.common
+package co.be4you.core.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -19,8 +20,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.core.R
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
 
 @Composable
 fun DefaultTextField(
@@ -31,6 +32,7 @@ fun DefaultTextField(
     isSingleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     @DrawableRes trailingIcon: Int? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
     onTrailingIconClicked: () -> Unit = {},
 ) {
@@ -40,6 +42,7 @@ fun DefaultTextField(
         onValueChange = onValueChange,
         label = { Text(stringResource(label)) },
         placeholder = { Text(stringResource(placeholder)) },
+        keyboardOptions = keyboardOptions,
         singleLine = isSingleLine,
         visualTransformation = visualTransformation,
         trailingIcon = {

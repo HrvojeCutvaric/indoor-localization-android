@@ -13,11 +13,19 @@ import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.core.domain.utils.Constants
+import co.be4you.core.domain.utils.login.LoginHandler
+import co.be4you.core.navigation.AppNavigator
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
+import co.be4you.otp_login.OtpHandler
+import co.be4you.otp_login.OtpLoginUiAction
+import co.be4you.otp_login.OtpLoginUiState
+import co.be4you.password_login.PasswordHandler
+import co.be4you.password_login.PasswordLoginUiAction
+import co.be4you.password_login.PasswordLoginUiState
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -43,6 +51,9 @@ val modules = module {
     single<AppEncryptedSharedPreferences> { AppEncryptedSharedPreferencesImpl(androidContext()) }
     singleOf(::AuthInterceptor).bind<AuthInterceptor>()
     singleOf(::TokenAuthenticator).bind<TokenAuthenticator>()
+    singleOf(::PasswordHandler).bind<LoginHandler<PasswordLoginUiState, PasswordLoginUiAction>>()
+    singleOf(::OtpHandler).bind<LoginHandler<OtpLoginUiState, OtpLoginUiAction>>()
+    singleOf(::AppNavigator).bind<AppNavigator>()
 
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
@@ -50,6 +61,13 @@ val modules = module {
     viewModelOf(::DashboardViewModel)
 
     factoryOf(::RegisterUseCase)
+
+    single<List<LoginHandler<*, *>>> {
+        listOf(
+            get<PasswordHandler>(),
+            get<OtpHandler>(),
+        )
+    }
 
     single(named(RetrofitType.Default)) {
         createRetrofit(

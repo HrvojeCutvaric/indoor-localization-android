@@ -1,4 +1,4 @@
-package co.be4you.indoorlocalization.view.common
+package co.be4you.core.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
+import co.be4you.core.R
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
 
 @Composable
 fun DefaultButton(

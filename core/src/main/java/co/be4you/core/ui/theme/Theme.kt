@@ -1,4 +1,4 @@
-package co.be4you.indoorlocalization.ui.theme
+package co.be4you.core.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

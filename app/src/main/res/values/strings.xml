@@ -22,4 +22,9 @@
     <string name="select_floor_map">Select Floor Map</string>
     <string name="failed_to_fetch_floor_maps">Failed to fetch floor maps.</string>
     <string name="failed_to_load_floor_map">Failed to load floor map.</string>
+    <string name="sing_in_with_otp">Sign in with One-Time Password</string>
+    <string name="enter_your_email_to_receive_a_one_time_login_code">Enter your email to receive a one-time login code.</string>
+    <string name="enter_the_code_sent_to_your_email">Enter the code sent to %1$s.</string>
+    <string name="code">Code</string>
+    <string name="send_otp_code">Send OTP</string>
 </resources>

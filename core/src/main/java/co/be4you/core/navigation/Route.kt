@@ -1,4 +1,4 @@
-package co.be4you.indoorlocalization.navigation
+package co.be4you.core.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

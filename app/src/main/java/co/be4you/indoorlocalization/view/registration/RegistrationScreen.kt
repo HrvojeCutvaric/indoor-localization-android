@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
-import co.be4you.indoorlocalization.view.common.DefaultButton
-import co.be4you.indoorlocalization.view.common.DefaultTextField
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
+import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.DefaultTextField
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationAction
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationState
@@ -138,7 +138,7 @@ private fun RegistrationLayout(
             label = R.string.password,
             placeholder = R.string.password,
             visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = if (state.isPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
+            trailingIcon = if (state.isPasswordVisible) co.be4you.core.R.drawable.ic_visibility_off else co.be4you.core.R.drawable.ic_visibility,
             onTrailingIconClicked = { onAction(RegistrationAction.OnPasswordVisibilityChanged) },
         )
 
@@ -151,7 +151,7 @@ private fun RegistrationLayout(
             label = R.string.confirm_password,
             placeholder = R.string.confirm_password,
             visualTransformation = if (state.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = if (state.isConfirmPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
+            trailingIcon = if (state.isConfirmPasswordVisible) co.be4you.core.R.drawable.ic_visibility_off else co.be4you.core.R.drawable.ic_visibility,
             onTrailingIconClicked = { onAction(RegistrationAction.OnConfirmPasswordVisibilityChanged) },
         )
 

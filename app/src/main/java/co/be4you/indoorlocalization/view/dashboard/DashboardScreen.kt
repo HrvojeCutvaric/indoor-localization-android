@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
-import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
+import co.be4you.core.ui.components.DefaultDropdownSelector
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel

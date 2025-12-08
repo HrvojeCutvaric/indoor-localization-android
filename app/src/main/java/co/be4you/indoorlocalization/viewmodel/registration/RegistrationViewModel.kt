@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.core.domain.utils.RegisterThrowable
+import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
-import co.be4you.indoorlocalization.viewmodel.main.MainAction.NavigateTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class RegistrationViewModel(
     private val registerUseCase: RegisterUseCase,
+    private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -93,7 +94,7 @@ class RegistrationViewModel(
                                 error = null,
                             )
                         }
-                        _event.emit(NavigateTo(Route.Login))
+                        appNavigator.navigateTo(route = Route.Login)
                     },
                     onFailure = { throwable ->
                         _state.update {
@@ -114,7 +115,7 @@ class RegistrationViewModel(
             }
 
             RegistrationAction.OnLoginClicked -> viewModelScope.launch {
-                _event.emit(NavigateTo(Route.Login))
+                appNavigator.navigateTo(Route.Login)
             }
 
             is RegistrationAction.OnFirstNameChanged -> {
