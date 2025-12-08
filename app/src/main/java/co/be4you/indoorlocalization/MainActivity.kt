@@ -16,6 +16,7 @@ import androidx.navigation3.ui.NavDisplay
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
+import co.be4you.indoorlocalization.view.assets.AssetsScreen
 import co.be4you.indoorlocalization.view.dashboard.DashboardScreen
 import co.be4you.indoorlocalization.view.login.LoginScreen
 import co.be4you.indoorlocalization.view.registration.RegistrationScreen
@@ -48,13 +49,21 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(onAction = mainViewModel::execute)
                         }
 
-                        entry<Route.Dashboard> {
-                            DashboardScreen()
+                            entry<Route.Dashboard> {
+                                DashboardScreen(onAction = mainViewModel::execute)
+                            }
+
+                            entry<Route.Assets> { assets ->
+                                AssetsScreen(
+                                    floorMapId = assets.floorMapId,
+                                    floorMapName = assets.floorMapName,
+                                    onAction = mainViewModel::execute
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
-}
 

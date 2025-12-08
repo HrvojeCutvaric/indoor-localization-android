@@ -27,4 +27,7 @@
     <string name="enter_the_code_sent_to_your_email">Enter the code sent to %1$s.</string>
     <string name="code">Code</string>
     <string name="send_otp_code">Send OTP</string>
+    <string name="assets">Assets</string>
+    <string name="add_asset">Add Asset</string>
+    <string name="back">Back</string>
 </resources>

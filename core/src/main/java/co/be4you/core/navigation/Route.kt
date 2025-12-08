@@ -13,4 +13,9 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Dashboard : Route
+    @Serializable
+    data class Assets(
+        val floorMapId: Long,
+        val floorMapName: String
+    ):Route
 }
