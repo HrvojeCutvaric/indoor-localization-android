@@ -3,20 +3,21 @@ package co.be4you.indoorlocalization.viewmodel.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.FloorMapRepository
+import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
+import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.asStateFlow
-import co.be4you.indoorlocalization.viewmodel.main.MainAction
-import co.be4you.indoorlocalization.navigation.Route
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 
 
 class DashboardViewModel(
     private val floorMapRepository: FloorMapRepository,
+    private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DashboardState?>(null)
@@ -68,13 +69,11 @@ class DashboardViewModel(
                 }
             }
 
-            is DashboardAction.OnNavigateToAssets -> viewModelScope.launch(Dispatchers.IO){
-                _event.emit(
-                    MainAction.NavigateTo(
-                        route = Route.Assets(
-                            floorMapId = action.floorMapId,
-                            floorMapName = action.floorMapName
-                        )
+            is DashboardAction.OnNavigateToAssets -> {
+                appNavigator.navigateTo(
+                    Route.Assets(
+                        floorMapId = action.floorMapId,
+                        floorMapName = action.floorMapName
                     )
                 )
             }

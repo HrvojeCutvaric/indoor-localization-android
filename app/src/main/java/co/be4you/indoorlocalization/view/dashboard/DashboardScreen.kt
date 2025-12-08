@@ -38,6 +38,7 @@ import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import coil3.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.LaunchedEffect
+import co.be4you.core.ui.components.DefaultButton
 import kotlinx.coroutines.flow.collectLatest
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 

@@ -58,4 +58,5 @@ dependencies {
     debugApi(libs.androidx.compose.ui.tooling)
     debugApi(libs.androidx.compose.ui.test.manifest)
     api(libs.bundles.navigation3)
+    api(libs.icons.extended)
 }

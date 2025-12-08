@@ -1,10 +1,10 @@
 package co.be4you.indoorlocalization.view.assets
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -17,28 +17,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import co.be4you.indoorlocalization.view.common.DefaultButton
-import co.be4you.indoorlocalization.viewmodel.main.MainAction
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.LaunchedEffect
-import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
-import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import co.be4you.core.domain.models.Asset
+import co.be4you.core.ui.components.DefaultButton
+import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
+import co.be4you.indoorlocalization.viewmodel.main.MainAction
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AssetsScreen(
     floorMapId: Long,
     floorMapName: String,
     onAction: (MainAction) -> Unit,
-    viewModel: AssetsViewModel = koinViewModel()
+    viewModel: AssetsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -69,8 +66,8 @@ fun AssetsScreen(
         DefaultButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical=12.dp),
-            onButtonClicked = {/*TODO*/},
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            onButtonClicked = {/*TODO*/ },
             label = null,
             content = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -102,15 +99,15 @@ fun AssetsScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            if(assets.isEmpty()){
-                item{
+            if (assets.isEmpty()) {
+                item {
                     Text(
-                        text="No asset matches your search",
+                        text = "No asset matches your search",
                         color = Color.Gray,
-                        modifier = Modifier.padding(top=16.dp)
+                        modifier = Modifier.padding(top = 16.dp)
                     )
                 }
-            } else{
+            } else {
                 items(assets) { asset ->
                     AssetRow(asset)
                 }
@@ -126,19 +123,19 @@ fun AssetsScreen(
             contentAlignment = Alignment.BottomStart
         ) {
             Button(
-                onClick = { onAction(MainAction.NavigateBack()) },
+                onClick = { viewModel.onNavigateBack() },
                 colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2B85ED),
-                contentColor = Color.White
-            )
+                    containerColor = Color(0xFF2B85ED),
+                    contentColor = Color.White
+                )
             ) {
                 Text(
                     text = "Back",
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
-                    .padding(8.dp)
-                    .clickable{ onAction(MainAction.NavigateBack()) }
+                        .padding(8.dp)
+                        .clickable { viewModel.onNavigateBack() }
                 )
             }
         }
