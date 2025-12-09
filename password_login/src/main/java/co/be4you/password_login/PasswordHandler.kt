@@ -40,7 +40,10 @@ class PasswordHandler(
                     password = state.value.password,
                 ).fold(
                     onSuccess = {
-                        appNavigator.navigateTo(Route.Dashboard)
+                        appNavigator.navigateTo(
+                            route = Route.Dashboard,
+                            removeRoutes = listOf(Route.Login),
+                        )
                         state.update {
                             it.copy(
                                 errorResource = null,
@@ -72,7 +75,10 @@ class PasswordHandler(
             }
 
             PasswordLoginUiAction.OnRegisterClicked -> {
-                appNavigator.navigateTo(Route.Registration)
+                appNavigator.navigateTo(
+                    route = Route.Registration,
+                    removeRoutes = listOf(Route.Login),
+                )
             }
 
             is PasswordLoginUiAction.OnUsernameChanged -> {

@@ -50,7 +50,10 @@ class OtpHandler(
                 ).fold(
                     onSuccess = {
                         state.update { it.copy(isButtonLoading = false, errorResource = null) }
-                        appNavigator.navigateTo(Route.Dashboard)
+                        appNavigator.navigateTo(
+                            route = Route.Dashboard,
+                            removeRoutes = listOf(Route.Login),
+                        )
                     },
                     onFailure = { error ->
                         val errorMessage = when (error) {
@@ -69,7 +72,10 @@ class OtpHandler(
             }
 
             OtpLoginUiAction.OnRegisterClicked -> {
-                appNavigator.navigateTo(Route.Registration)
+                appNavigator.navigateTo(
+                    route = Route.Registration,
+                    removeRoutes = listOf(Route.Login),
+                )
             }
 
             OtpLoginUiAction.OnRequestOtpClicked -> scope.launch {

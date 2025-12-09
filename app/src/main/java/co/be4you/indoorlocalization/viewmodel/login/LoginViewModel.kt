@@ -33,7 +33,10 @@ class LoginViewModel(
             }
 
             LoginAction.OnRegisterClicked -> {
-                appNavigator.navigateTo(Route.Registration)
+                appNavigator.navigateTo(
+                    route = Route.Registration,
+                    removeRoutes = listOf(Route.Login),
+                )
             }
         }
     }
