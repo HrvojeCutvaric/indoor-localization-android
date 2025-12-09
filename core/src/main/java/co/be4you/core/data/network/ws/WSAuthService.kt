@@ -10,6 +10,7 @@ import co.be4you.core.data.network.ws.api.models.auth.VerifyOtpRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.core.domain.utils.RegisterThrowable
+import co.be4you.core.domain.utils.VerifyOtpThrowable
 import org.json.JSONObject
 
 
@@ -129,7 +130,7 @@ class WSAuthService(
                 }
 
                 false -> {
-                    Result.failure(Throwable(message = "Failed to verify otp"))
+                    Result.failure(VerifyOtpThrowable.InvalidOtp)
                 }
             }
         } catch (e: Throwable) {
