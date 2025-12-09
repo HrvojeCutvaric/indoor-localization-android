@@ -1,17 +1,17 @@
 package co.be4you.indoorlocalization.di
 
-import co.be4you.core.data.network.services.AssetService
-import co.be4you.core.data.network.ws.WSAssetService
-import co.be4you.core.data.network.ws.api.AssetApi
-import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.network.AuthInterceptor
 import co.be4you.core.data.network.TokenAuthenticator
+import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
+import co.be4you.core.data.network.ws.WSAssetService
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.network.ws.WSFloorMapService
+import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.FloorMapApi
+import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
@@ -19,9 +19,9 @@ import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.core.domain.utils.Constants
 import co.be4you.core.domain.utils.login.LoginHandler
 import co.be4you.core.navigation.AppNavigator
-import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
+import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
