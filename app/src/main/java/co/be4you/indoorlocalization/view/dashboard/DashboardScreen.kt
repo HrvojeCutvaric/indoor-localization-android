@@ -1,10 +1,13 @@
 package co.be4you.indoorlocalization.view.dashboard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -166,9 +169,14 @@ fun PinchToZoomView(
     var initialOffset by remember { mutableStateOf(Offset(0f, 0f)) }
     val slowMovement = 0.5f
 
+    val aspectRatio = if (floorMap.imageWidthPx <= 0 || floorMap.imageHeightPx <= 0) {
+        1f
+    } else floorMap.imageWidthPx.toFloat() / floorMap.imageHeightPx.toFloat()
+
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .aspectRatio(aspectRatio)
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, zoom, _ ->
                     val newScale = (scale * zoom).coerceIn(minScale, maxScale)
@@ -210,9 +218,10 @@ fun PinchToZoomView(
                 )
             }
     ) {
-        // Apply zoom + pan to the whole map (image + assets)
+
         Box(
             modifier = Modifier
+                .matchParentSize()
                 .graphicsLayer {
                     scaleX = scale
                     scaleY = scale
@@ -221,16 +230,17 @@ fun PinchToZoomView(
                 },
             contentAlignment = Alignment.Center
         ) {
-            // FLOOR MAP
             AsyncImage(
-                modifier = Modifier.fillMaxSize(0.95f),
+                modifier = Modifier
+                    .matchParentSize()
+                    .border(border = BorderStroke(width = 1.dp, color = Color.Red)),
                 model = floorMap.imageUrl,
                 contentDescription = floorMap.name,
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.None,
             )
 
-            // ASSET MARKERS ON TOP
             DrawAssetsOverlay(
+                modifier = Modifier.matchParentSize(),
                 assets = assets,
                 floorMap = floorMap
             )
@@ -240,13 +250,16 @@ fun PinchToZoomView(
 
 @Composable
 private fun DrawAssetsOverlay(
+    modifier: Modifier = Modifier,
     assets: List<Asset>,
     floorMap: FloorMap,
 ) {
-    Canvas(modifier = Modifier) {
-
-        val imageWidth = floorMap.imageWidthPx.toFloat()
-        val imageHeight = floorMap.imageHeightPx.toFloat()
+    Canvas(
+        modifier = modifier
+            .border(1.dp, Color.Green)
+    ) {
+        val imageWidth = floorMap.imageWidthPx
+        val imageHeight = floorMap.imageHeightPx
 
         assets.forEach { asset ->
             val x = asset.x ?: return@forEach
@@ -255,12 +268,8 @@ private fun DrawAssetsOverlay(
             val pxX = ((x / floorMap.widthInMeters) * imageWidth).toFloat()
             val pxY = ((y / floorMap.heightInMeters) * imageHeight).toFloat()
 
-            val color = asset.colorHex?.let { colorHex ->
-                try {
-                    Color(colorHex.toColorInt())
-                } catch (_: Exception) {
-                    Color.Gray
-                }
+            val color = asset.colorHex?.let { hex ->
+                runCatching { Color(hex.toColorInt()) }.getOrElse { Color.Gray }
             } ?: Color.Gray
 
             drawCircle(
@@ -271,6 +280,7 @@ private fun DrawAssetsOverlay(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
