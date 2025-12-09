@@ -114,6 +114,7 @@ private fun DashboardLayout(
                 PinchToZoomView(
                     modifier = Modifier.fillMaxSize(),
                     floorMap = floorMap,
+                    assets = state.floorMapAssets,
                 )
             } ?: run {
                 Text(
@@ -152,6 +153,7 @@ private fun DashboardLayout(
 fun PinchToZoomView(
     modifier: Modifier,
     floorMap: FloorMap,
+    assets: List<Asset>,
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
