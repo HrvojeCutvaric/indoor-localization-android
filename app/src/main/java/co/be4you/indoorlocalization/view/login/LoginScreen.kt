@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.LabelWithTextButton
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.viewmodel.login.LoginAction
 import co.be4you.indoorlocalization.viewmodel.login.LoginState
@@ -71,7 +72,14 @@ private fun LoginLayout(
                 )
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            LabelWithTextButton(
+                label = stringResource(co.be4you.core.R.string.dont_have_an_account),
+                buttonLabel = stringResource(co.be4you.core.R.string.registration),
+                isButtonLoading = false,
+                onTextButtonClicked = { onAction(LoginAction.OnRegisterClicked) },
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp)

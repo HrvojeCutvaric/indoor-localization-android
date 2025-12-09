@@ -2,6 +2,8 @@ package co.be4you.indoorlocalization.viewmodel.login
 
 import androidx.lifecycle.ViewModel
 import co.be4you.core.domain.utils.login.LoginHandler
+import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +11,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class LoginViewModel(
-    private val loginHandlers: List<LoginHandler<*, *>>
+    private val loginHandlers: List<LoginHandler<*, *>>,
+    private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -27,6 +30,10 @@ class LoginViewModel(
         when (action) {
             is LoginAction.OnLoginHandlerClicked -> {
                 _state.value = _state.value.copy(loginHandler = action.loginHandler)
+            }
+
+            LoginAction.OnRegisterClicked -> {
+                appNavigator.navigateTo(Route.Registration)
             }
         }
     }
