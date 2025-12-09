@@ -27,9 +27,12 @@ class AssetsViewModel(
     )
     val state = _state.asStateFlow()
 
-    fun execute(action: AssetAction){
-        when(action){
-            is AssetAction.Load -> loadAssets(action.floorMapId)
+    fun setFloorMapId(id: Long) {
+        loadAssets(id)
+    }
+
+    fun execute(action: AssetAction) {
+        when(action) {
             is AssetAction.OnSearchChanged -> updateSearchQuery(action.query)
         }
     }

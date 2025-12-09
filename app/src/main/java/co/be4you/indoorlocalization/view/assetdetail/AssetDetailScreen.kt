@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.indoorlocalization.view.common.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
-import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import org.koin.androidx.compose.koinViewModel
@@ -27,7 +26,7 @@ fun AssetDetailScreen(
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     LaunchedEffect(assetId) {
-        viewModel.execute(AssetDetailAction.Load(assetId))
+        viewModel.setAssetId(assetId)
     }
 
     Column(

@@ -17,16 +17,17 @@ class AssetDetailViewModel(
     private val repository: AssetRepository
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(AssetDetailState()) //Ask why you need this
+    private var assetId: Long? = null
+    private val _state = MutableStateFlow(AssetDetailState())
     val state = _state.asStateFlow()
 
     private val _event = MutableSharedFlow<MainAction>()
     val event = _event.asSharedFlow()
 
-    fun execute(action: AssetDetailAction){
-        when(action){
-            is AssetDetailAction.Load -> loadAsset(action.id)
-        }
+    fun setAssetId(id: Long) {
+        if (assetId == id) return
+        assetId = id
+        loadAsset(id)
     }
 
     private fun loadAsset(id: Long){

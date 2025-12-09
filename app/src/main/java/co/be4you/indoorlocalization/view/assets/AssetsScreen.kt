@@ -46,7 +46,7 @@ fun AssetsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(floorMapId) {
-        viewModel.execute(AssetAction.Load(floorMapId))
+        viewModel.setFloorMapId(floorMapId)
     }
 
     Column(
