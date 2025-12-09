@@ -36,7 +36,6 @@ class PasswordHandler(
             PasswordLoginUiAction.OnLoginClicked -> scope.launch {
                 state.update { it.copy(isButtonLoading = true) }
                 authRepository.login(
-
                     username = state.value.username,
                     password = state.value.password,
                 ).fold(
