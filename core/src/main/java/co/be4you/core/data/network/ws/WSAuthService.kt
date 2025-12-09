@@ -3,8 +3,8 @@ package co.be4you.core.data.network.ws
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.mappers.toLoginResponse
-import co.be4you.core.data.network.ws.api.models.LoginRequestBody
-import co.be4you.core.data.network.ws.api.models.RegisterRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.LoginRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.RegisterRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.core.domain.utils.RegisterThrowable

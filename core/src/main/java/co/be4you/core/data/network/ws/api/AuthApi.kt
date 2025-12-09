@@ -1,9 +1,9 @@
 package co.be4you.core.data.network.ws.api
 
-import co.be4you.core.data.network.ws.api.models.LoginRequestBody
-import co.be4you.core.data.network.ws.api.models.LoginResponseDto
-import co.be4you.core.data.network.ws.api.models.RegisterRequestBody
-import co.be4you.core.data.network.ws.api.models.RefreshTokenRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.LoginRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.LoginResponseDto
+import co.be4you.core.data.network.ws.api.models.auth.RegisterRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.RefreshTokenRequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

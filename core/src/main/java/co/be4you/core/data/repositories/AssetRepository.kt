@@ -9,4 +9,9 @@ class AssetRepository(
     suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>>{
         return assetService.getAssetsByFloorMap(floorMapId)
     }
+
+    suspend fun getAsset(id: Long): Result<Asset> {
+        return assetService.getAsset(id)
+    }
+
 }

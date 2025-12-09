@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.navigation.AppNavigator
+import co.be4you.indoorlocalization.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AssetsViewModel(
@@ -19,47 +21,58 @@ class AssetsViewModel(
             isLoading = false,
             searchQuery = "",
             assets = emptyList(),
-            errorMessage = null
+            filteredAssets = emptyList(),
+            errorResource = null
         )
     )
     val state = _state.asStateFlow()
 
-    fun loadAssets(floorMapId: Long) {
+    fun setFloorMapId(id: Long) {
+        loadAssets(id)
+    }
 
-        _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+    fun execute(action: AssetAction) {
+        when(action) {
+            is AssetAction.OnSearchChanged -> updateSearchQuery(action.query)
+        }
+    }
+    private fun loadAssets(floorMapId: Long){
 
-        viewModelScope.launch {
+        _state.update { it.copy(isLoading = true, errorResource = null) }
+
+        viewModelScope.launch{
             repository.getAssetsByFloorMap(floorMapId).fold(
                 onSuccess = { assets ->
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        assets = assets,
-                        filteredAssets = applyFilter(assets, _state.value.searchQuery)
-                    )
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            assets = assets,
+                            filteredAssets = applyFilter(assets, it.searchQuery)
+                        )
+                    }
                 },
-                onFailure = { error ->
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        errorMessage = error.message ?: "Unknown error"
-                    )
+                onFailure = {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorResource = R.string.generic_error_message
+                        )
+                    }
                 }
             )
         }
     }
 
-    private fun applyFilter(assets: List<Asset>, query: String): List<Asset> {
-        if (query.isBlank()) return assets
+    private fun updateSearchQuery(query: String) {
+        _state.update {
+            it.copy(
+                searchQuery = query,
+                filteredAssets = applyFilter(it.assets, query)
+            )
+        }
+    }
+    private fun applyFilter(assets: List<Asset>, query: String): List<Asset>{
+        if(query.isBlank()) return assets
         return assets.filter { it.name.contains(query, ignoreCase = true) }
-    }
-
-    fun updateSearchQuery(query: String) {
-        _state.value = _state.value.copy(
-            searchQuery = query,
-            filteredAssets = applyFilter(_state.value.assets, query)
-        )
-    }
-
-    fun onNavigateBack() {
-        appNavigator.navigateBack()
     }
 }

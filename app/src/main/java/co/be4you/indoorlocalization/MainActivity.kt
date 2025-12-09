@@ -60,6 +60,13 @@ class MainActivity : ComponentActivity() {
                                     onAction = mainViewModel::execute
                                 )
                             }
+
+                            entry<Route.AssetDetail>{ detail ->
+                                AssetDetailScreen(
+                                    assetId = detail.assetId,
+                                    onAction = mainViewModel::execute
+                                )
+                            }
                         }
                     )
                 }

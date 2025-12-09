@@ -11,4 +11,9 @@ interface AssetApi {
     suspend fun getAssetsByFloor(
         @Path("floorMapId") floorMapId: Long
     ): Response<List<AssetDto>>
+
+    @GET("api/Asset/{id}")
+    suspend fun getAssetById(
+        @Path("id") id: Long
+    ): Response<AssetDto>
 }
