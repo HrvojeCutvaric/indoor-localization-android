@@ -5,6 +5,7 @@ import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.mappers.toLoginResponse
 import co.be4you.core.data.network.ws.api.models.auth.LoginRequestBody
 import co.be4you.core.data.network.ws.api.models.auth.RegisterRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.SendOtpRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.core.domain.utils.RegisterThrowable
@@ -93,8 +94,22 @@ class WSAuthService(
     }
 
     override suspend fun requestOtp(email: String): Result<Unit> {
-        // TODO: replace this with backend call
-        return Result.success(Unit)
+        try {
+            val result = authApi.sendOtp(requestBody = SendOtpRequestBody(email = email))
+
+            return when (result.isSuccessful) {
+                true -> {
+                    Result.success(Unit)
+                }
+
+                false -> {
+                    Result.failure(Throwable(message = "Failed to send otp"))
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            return Result.failure(e)
+        }
     }
 
     override suspend fun verifyOtp(
