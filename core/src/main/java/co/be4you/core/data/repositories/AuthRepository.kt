@@ -1,5 +1,6 @@
 package co.be4you.core.data.repositories
 
+import android.util.Log
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
@@ -33,6 +34,7 @@ class AuthRepository(
                 accessToken = loginResponse.accessToken,
                 refreshToken = loginResponse.refreshToken
             )
+            Log.d("TOKEN_TEST", "Saved access=${loginResponse.accessToken.take(20)}...")
         }
     }
 }

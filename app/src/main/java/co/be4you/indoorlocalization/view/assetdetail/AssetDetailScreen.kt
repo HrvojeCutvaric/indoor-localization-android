@@ -30,7 +30,9 @@ fun AssetDetailScreen(
         viewModel.execute(AssetDetailAction.Load(assetId))
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
         DefaultTopBar(
             title = "Asset Details",
@@ -62,54 +64,86 @@ fun AssetDetailScreen(
             state.asset != null -> {
                 val asset = state.asset
 
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                ) {
 
-                    Text(
-                        text = asset.name,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .background(
+                                    try{ Color(android.graphics.Color.parseColor(asset.colorHex ?: "#888888"))}
+                                    catch (e: Exception) { Color.Gray },
+                                    shape = MaterialTheme.shapes.medium
+                                )
+                        )
 
-                    Spacer(Modifier.height(20.dp))
+                        Spacer(Modifier.width(15.dp))
+
+                        Text(
+                            text = asset.name,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+
+                    Spacer(Modifier.height(15.dp))
 
                     InfoItem("Status", if (asset.active) "Active" else "Inactive")
                     InfoItem("Last Known Position", "(${asset.x}, ${asset.y})")
                     InfoItem("Floor Map", asset.floorMapId.toString())
                     InfoItem("Last Sync", asset.lastSync?.toString() ?: "Unknown")
-
-                    Spacer(Modifier.height(40.dp))
-
-                    DefaultButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = null,
-                        onButtonClicked = { /* TODO EDIT */ },
-                        content = { Text("Edit", color = Color.White) }
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-
-                    DefaultButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = null,
-                        onButtonClicked = { /* TODO DELETE */ },
-                        content = { Text("Delete", color = Color.White) }
-                    )
                 }
             }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+
+            DefaultButton(
+                modifier = Modifier.fillMaxWidth(),
+                label = null,
+                onButtonClicked = { /* TODO EDIT */ },
+                content = { Text("Edit", color = Color.White) }
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            DefaultButton(
+                modifier = Modifier.fillMaxWidth(),
+                buttonColors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFC54B3C),
+                    contentColor = Color.White
+                ),
+                onButtonClicked = { /* TODO DELETE */ },
+                content = { Text("Delete") }
+            )
         }
     }
 }
 
 @Composable
 fun InfoItem(label: String, value: String) {
-    Column(modifier = Modifier.padding(vertical = 6.dp)) {
+    Column(modifier = Modifier.padding(vertical = 10.dp)) {
+
         Text(
             text = label,
             color = Color(0xFF75AEE8),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
         )
+
         Text(
             text = value,
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Light)
         )
+        Spacer(Modifier.height(12.dp))
     }
 }

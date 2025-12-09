@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +33,11 @@ fun DefaultButton(
     @StringRes label: Int? = null,
     isButtonEnabled: Boolean = true,
     isButtonLoading: Boolean = false,
+    buttonColors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = Color(0xFF2B85ED),
+        contentColor = Color.White,
+        disabledContentColor = Color(0xFF75AEE8)
+    ),
     onButtonClicked: () -> Unit,
     content: (@Composable () -> Unit)? = null,
 ) {
@@ -41,11 +47,7 @@ fun DefaultButton(
         shape = ShapeDefaults.Small,
         contentPadding = PaddingValues(16.dp),
         onClick = onButtonClicked,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF2B85ED),
-            contentColor = Color.White,
-            disabledContentColor = Color(0xFF75AEE8)
-        )
+        colors = buttonColors
     ) {
         if (isButtonLoading) {
             CircularProgressIndicator(
@@ -64,8 +66,6 @@ fun DefaultButton(
                         fontWeight = FontWeight.Bold,
                     )
                 )
-
-                else -> {}
             }
         }
     }
