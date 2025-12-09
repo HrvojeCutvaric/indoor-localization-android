@@ -109,6 +109,17 @@ class OtpHandler(
                     }
                 )
             }
+
+            OtpLoginUiAction.OnChangeEmailClicked -> {
+                state.update {
+                    it.copy(
+                        email = "",
+                        code = "",
+                        isOtpSend = false,
+                        errorResource = null,
+                    )
+                }
+            }
         }
     }
 

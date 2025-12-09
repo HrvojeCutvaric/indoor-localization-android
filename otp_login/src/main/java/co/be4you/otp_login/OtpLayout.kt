@@ -101,31 +101,55 @@ fun OtpLayout(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        LabelWithTextButton(
+            label = stringResource(co.be4you.core.R.string.dont_have_an_account),
+            buttonLabel = stringResource(co.be4you.core.R.string.registration),
+            isButtonLoading = state.isButtonLoading,
+            onTextButtonClicked = { onAction(OtpLoginUiAction.OnRegisterClicked) },
+        )
+
+        if (state.isOtpSend) {
+            LabelWithTextButton(
+                label = stringResource(R.string.wrong_email),
+                buttonLabel = stringResource(R.string.change),
+                isButtonLoading = state.isButtonLoading,
+                onTextButtonClicked = { onAction(OtpLoginUiAction.OnChangeEmailClicked) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun LabelWithTextButton(
+    label: String,
+    buttonLabel: String,
+    isButtonLoading: Boolean,
+    onTextButtonClicked: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal,
+                color = MaterialTheme.colorScheme.outline,
+            )
+        )
+
+        TextButton(
+            onClick = onTextButtonClicked,
+            enabled = isButtonLoading.not()
         ) {
             Text(
-                text = stringResource(co.be4you.core.R.string.dont_have_an_account),
+                text = buttonLabel,
                 style = TextStyle(
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.outline,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             )
-
-            TextButton(
-                onClick = { onAction(OtpLoginUiAction.OnRegisterClicked) },
-                enabled = state.isButtonLoading.not()
-            ) {
-                Text(
-                    text = stringResource(co.be4you.core.R.string.registration),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                )
-            }
         }
     }
 }
