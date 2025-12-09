@@ -6,6 +6,6 @@ data class FloorMap(
     val imageUrl: String,
     val imageWidthPx: Int,
     val imageHeightPx: Int,
-    val widthInMeters: Int,
-    val heightInMeters: Int
+    val widthInMeters: Double,
+    val heightInMeters: Double,
 )
