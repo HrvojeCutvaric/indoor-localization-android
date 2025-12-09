@@ -14,7 +14,7 @@ data class FloorMapDto(
     @SerializedName("imageHeightPx")
     val imageHeightPx: Int?,
     @SerializedName("widthInMeters")
-    val widthInMeters: Int,
+    val widthInMeters: Double,
     @SerializedName("heightInMeters")
-    val heightInMeters: Int,
+    val heightInMeters: Double,
 )

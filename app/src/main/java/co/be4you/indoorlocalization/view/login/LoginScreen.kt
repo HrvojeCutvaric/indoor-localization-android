@@ -1,17 +1,16 @@
 package co.be4you.indoorlocalization.view.login
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,16 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
-import co.be4you.indoorlocalization.view.common.DefaultButton
-import co.be4you.indoorlocalization.view.common.DefaultTextField
+import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.LabelWithTextButton
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.viewmodel.login.LoginAction
 import co.be4you.indoorlocalization.viewmodel.login.LoginState
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
@@ -57,95 +53,44 @@ private fun LoginLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.login),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Box(modifier = Modifier.height(24.dp)) {
-            state.errorResource?.let {
-                Text(
-                    text = stringResource(it),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.error,
-                    ),
-                )
-            }
-        }
-
-        DefaultTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.username,
-            onValueChange = { onAction(LoginAction.OnEmailChanged(it)) },
-            label = R.string.username,
-            placeholder = R.string.username,
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        DefaultTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.password,
-            onValueChange = { onAction(LoginAction.OnPasswordChanged(it)) },
-            label = R.string.password,
-            placeholder = R.string.password,
-            visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = if (state.isPasswordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
-            onTrailingIconClicked = { onAction(LoginAction.OnPasswordVisibilityChanged) },
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        DefaultButton(
-            modifier = Modifier.fillMaxWidth(),
-            label = R.string.login,
-            onButtonClicked = { onAction(LoginAction.OnLoginClicked) },
-            isButtonLoading = state.isButtonLoading,
-            isButtonEnabled = state.isButtonLoading.not() && state.username.isNotEmpty() && state.password.isNotEmpty(),
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+    state.loginHandler?.LoginLayout() ?: run {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Spacer(modifier = Modifier.height(32.dp))
+
             Text(
-                text = stringResource(R.string.dont_have_an_account),
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(co.be4you.core.R.string.select_a_login_method),
                 style = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.outline,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             )
 
-            TextButton(
-                onClick = { onAction(LoginAction.OnRegisterClicked) },
-                enabled = state.isButtonLoading.not()
+            LabelWithTextButton(
+                label = stringResource(co.be4you.core.R.string.dont_have_an_account),
+                buttonLabel = stringResource(co.be4you.core.R.string.registration),
+                isButtonLoading = false,
+                onTextButtonClicked = { onAction(LoginAction.OnRegisterClicked) },
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.registration),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                items(state.loginHandlers) { loginHandler ->
+                    DefaultButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = loginHandler.buttonTextResource,
+                        onButtonClicked = { onAction(LoginAction.OnLoginHandlerClicked(loginHandler)) }
                     )
-                )
+                }
             }
         }
     }
@@ -157,11 +102,8 @@ private fun LoginScreenPreview() {
     IndoorLocalizationTheme {
         LoginLayout(
             state = LoginState(
-                username = "",
-                password = "",
-                isPasswordVisible = false,
-                errorResource = null,
-                isButtonLoading = false,
+                loginHandler = null,
+                loginHandlers = emptyList()
             ),
             onAction = {}
         )

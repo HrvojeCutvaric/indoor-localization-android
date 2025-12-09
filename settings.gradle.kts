@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "Indoor Localization"
 include(":app")
 include(":core")
+include(":password_login")
+include(":otp_login")

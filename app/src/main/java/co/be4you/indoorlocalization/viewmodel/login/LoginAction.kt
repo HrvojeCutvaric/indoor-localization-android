@@ -1,14 +1,9 @@
 package co.be4you.indoorlocalization.viewmodel.login
 
+import co.be4you.core.domain.utils.login.LoginHandler
+
 sealed interface LoginAction {
-
-    data class OnEmailChanged(val email: String) : LoginAction
-
-    data class OnPasswordChanged(val password: String) : LoginAction
-
-    data object OnPasswordVisibilityChanged : LoginAction
-
-    data object OnLoginClicked : LoginAction
+    data class OnLoginHandlerClicked(val loginHandler: LoginHandler<*, *>) : LoginAction
 
     data object OnRegisterClicked : LoginAction
 }

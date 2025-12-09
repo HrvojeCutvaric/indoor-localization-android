@@ -12,6 +12,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,18 +30,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.FloorMap
+import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.DefaultDropdownSelector
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
-import co.be4you.indoorlocalization.view.common.DefaultButton
-import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
-import coil3.compose.AsyncImage
-import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.LaunchedEffect
-import kotlinx.coroutines.flow.collectLatest
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
+import coil3.compose.AsyncImage
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DashboardScreen(
@@ -234,8 +234,8 @@ private fun DashboardScreenPreview() {
                         imageUrl = "https://picsum.photos/id/1/5000/3333",
                         imageWidthPx = 0,
                         imageHeightPx = 0,
-                        widthInMeters = 0,
-                        heightInMeters = 0,
+                        widthInMeters = 0.0,
+                        heightInMeters = 0.0,
                     )
                 ),
                 selectedFloorMap = FloorMap(
@@ -244,8 +244,8 @@ private fun DashboardScreenPreview() {
                     imageUrl = "https://picsum.photos/id/1/5000/3333",
                     imageWidthPx = 0,
                     imageHeightPx = 0,
-                    widthInMeters = 0,
-                    heightInMeters = 0
+                    widthInMeters = 0.0,
+                    heightInMeters = 0.0,
                 ),
                 isDropdownExpanded = true,
             ),

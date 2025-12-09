@@ -37,4 +37,19 @@ class AuthRepository(
             Log.d("TOKEN_TEST", "Saved access=${loginResponse.accessToken.take(20)}...")
         }
     }
+
+    suspend fun requestOtp(email: String): Result<Unit> {
+        return authService.requestOtp(email)
+    }
+
+    suspend fun verifyOtp(email: String, code: String): Result<LoginResponse> {
+        val result = authService.verifyOtp(email = email, otp = code)
+
+        return result.onSuccess { loginResponse ->
+            appEncryptedSharedPreferences.saveTokens(
+                accessToken = loginResponse.accessToken,
+                refreshToken = loginResponse.refreshToken
+            )
+        }
+    }
 }
