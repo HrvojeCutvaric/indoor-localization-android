@@ -52,8 +52,8 @@ class OtpHandler(
                         state.update { it.copy(isButtonLoading = false, errorResource = null) }
                         appNavigator.navigateTo(Route.Dashboard)
                     },
-                    onFailure = {
-                        val errorMessage = when (it) {
+                    onFailure = { error ->
+                        val errorMessage = when (error) {
                             VerifyOtpThrowable.InvalidOtp -> R.string.invalid_otp_code
                             else -> co.be4you.core.R.string.generic_error_message
                         }
