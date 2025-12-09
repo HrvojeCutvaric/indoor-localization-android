@@ -3,6 +3,7 @@ package co.be4you.core.ui.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,6 +88,41 @@ private fun DefaultButtonPreview() {
                 label = R.string.registration,
                 isButtonLoading = true,
                 onButtonClicked = {},
+            )
+        }
+    }
+}
+
+@Composable
+fun LabelWithTextButton(
+    label: String,
+    buttonLabel: String,
+    isButtonLoading: Boolean,
+    onTextButtonClicked: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal,
+                color = MaterialTheme.colorScheme.outline,
+            )
+        )
+
+        TextButton(
+            onClick = onTextButtonClicked,
+            enabled = isButtonLoading.not()
+        ) {
+            Text(
+                text = buttonLabel,
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
             )
         }
     }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultTextField
+import co.be4you.core.ui.components.LabelWithTextButton
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 
 @Composable
@@ -114,41 +115,6 @@ fun OtpLayout(
                 buttonLabel = stringResource(R.string.change),
                 isButtonLoading = state.isButtonLoading,
                 onTextButtonClicked = { onAction(OtpLoginUiAction.OnChangeEmailClicked) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun LabelWithTextButton(
-    label: String,
-    buttonLabel: String,
-    isButtonLoading: Boolean,
-    onTextButtonClicked: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = label,
-            style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.outline,
-            )
-        )
-
-        TextButton(
-            onClick = onTextButtonClicked,
-            enabled = isButtonLoading.not()
-        ) {
-            Text(
-                text = buttonLabel,
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                )
             )
         }
     }
