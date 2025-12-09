@@ -1,6 +1,5 @@
 package co.be4you.core.domain.models
 
-import java.time.LocalDateTime
 import java.time.Instant
 
 data class Asset(

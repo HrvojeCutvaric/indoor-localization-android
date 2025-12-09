@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
@@ -92,15 +93,13 @@ fun AssetDetailScreen(
                             modifier = Modifier
                                 .size(28.dp)
                                 .background(
-                                    try {
-                                        Color(
-                                            android.graphics.Color.parseColor(
-                                                asset.colorHex ?: "#888888"
-                                            )
-                                        )
-                                    } catch (e: Exception) {
-                                        Color.Gray
-                                    },
+                                    color = asset.colorHex?.let { colorHex ->
+                                        try {
+                                            Color(colorHex.toColorInt())
+                                        } catch (_: Exception) {
+                                            Color.Gray
+                                        }
+                                    } ?: Color.Gray,
                                     shape = MaterialTheme.shapes.medium
                                 )
                         )

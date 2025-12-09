@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.FloorMap
@@ -254,8 +255,16 @@ private fun DrawAssetsOverlay(
             val pxX = ((x / floorMap.widthInMeters) * imageWidth).toFloat()
             val pxY = ((y / floorMap.heightInMeters) * imageHeight).toFloat()
 
+            val color = asset.colorHex?.let { colorHex ->
+                try {
+                    Color(colorHex.toColorInt())
+                } catch (_: Exception) {
+                    Color.Gray
+                }
+            } ?: Color.Gray
+
             drawCircle(
-                color = Color.Red,
+                color = color,
                 radius = 12f,
                 center = Offset(pxX, pxY)
             )
