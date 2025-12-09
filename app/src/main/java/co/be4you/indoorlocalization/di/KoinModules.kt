@@ -19,6 +19,7 @@ import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.core.domain.utils.Constants
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
+import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
@@ -59,6 +60,7 @@ val modules = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::DashboardViewModel)
     viewModelOf(::AssetsViewModel)
+    viewModelOf(::AssetDetailViewModel)
 
 
     factoryOf(::RegisterUseCase)

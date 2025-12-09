@@ -5,4 +5,6 @@ import co.be4you.core.domain.models.FloorMap
 
 interface AssetService {
     suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>>
+
+    suspend fun getAsset(id: Long): Result<Asset>
 }

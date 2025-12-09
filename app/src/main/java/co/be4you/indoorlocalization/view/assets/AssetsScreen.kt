@@ -32,6 +32,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.be4you.core.domain.models.Asset
+import co.be4you.indoorlocalization.navigation.Route
+import co.be4you.indoorlocalization.view.common.DefaultTopBar
+import co.be4you.indoorlocalization.viewmodel.assets.AssetAction
 
 @Composable
 fun AssetsScreen(
@@ -43,28 +46,17 @@ fun AssetsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(floorMapId) {
-        viewModel.loadAssets(floorMapId)
+        viewModel.setFloorMapId(floorMapId)
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color(0xFF2B85ED))
-                .padding(top = 16.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Text(
-                text = "Assets",
-                modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White
-            )
-        }
+        DefaultTopBar(
+            title = "Assets",
+            onBack = {onAction(MainAction.NavigateBack())}
+        )
 
         DefaultButton(
             modifier = Modifier
@@ -91,7 +83,7 @@ fun AssetsScreen(
 
         AssetSearchBar(
             query = state.searchQuery,
-            onQueryChanged = { viewModel.updateSearchQuery(it) }
+            onQueryChanged = { viewModel.execute(AssetAction.OnSearchChanged(it)) }
         )
 
         val assets = state.filteredAssets
@@ -111,35 +103,16 @@ fun AssetsScreen(
                     )
                 }
             } else{
-                items(assets) { asset ->
-                    AssetRow(asset)
+                items(assets){
+                    asset ->
+                    AssetRow(
+                        asset = asset,
+                        floorMapName = floorMapName,
+                        onClick = { id ->
+                            onAction(MainAction.NavigateTo(Route.AssetDetail(id)))
+                        }
+                    )
                 }
-            }
-        }
-
-
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            contentAlignment = Alignment.BottomStart
-        ) {
-            Button(
-                onClick = { onAction(MainAction.NavigateBack()) },
-                colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2B85ED),
-                contentColor = Color.White
-            )
-            ) {
-                Text(
-                    text = "Back",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                    .padding(8.dp)
-                    .clickable{ onAction(MainAction.NavigateBack()) }
-                )
             }
         }
     }
@@ -167,18 +140,26 @@ private fun AssetSearchBar(
 
 
 @Composable
-fun AssetRow(asset: Asset) {
+fun AssetRow(
+    asset: Asset,
+    floorMapName: String,
+    onClick:(Long) -> Unit
+) {
     val color = try {
         Color(android.graphics.Color.parseColor(asset.colorHex ?: "#888888"))
     } catch (e: Exception) {
         Color.Gray
     }
 
+    val statusText = if(asset.active) "Active" else "Inactive"
+    val statusColor = if(asset.active) Color(0xFF2ECC71) else Color(0xFFE74C3C)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
+            .clickable{ onClick(asset.id)}
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -191,16 +172,22 @@ fun AssetRow(asset: Asset) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(asset.name, style = MaterialTheme.typography.titleMedium)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = asset.active,
-                    onCheckedChange = { /* TODO */ }
-                )
-                Text("Active")
-            }
+            Text(
+                asset.name,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Text(
+                text = statusText,
+                color = statusColor,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
         }
 
-        Text(asset.floorMapId.toString(), color = Color.Gray)
+        Text(
+            text = floorMapName,
+            color = Color.Gray,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
