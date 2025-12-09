@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,16 +32,24 @@ class AssetsViewModel(
         loadAssets(id)
     }
 
-    fun execute(action: AssetAction) {
-        when(action) {
-            is AssetAction.OnSearchChanged -> updateSearchQuery(action.query)
+    fun execute(action: AssetsAction) {
+        when (action) {
+            is AssetsAction.OnSearchChanged -> updateSearchQuery(action.query)
+            AssetsAction.OnBackClicked -> {
+                appNavigator.navigateBack()
+            }
+
+            is AssetsAction.OnAssetClicked -> {
+                appNavigator.navigateTo(Route.AssetDetail(action.assetId))
+            }
         }
     }
-    private fun loadAssets(floorMapId: Long){
+
+    private fun loadAssets(floorMapId: Long) {
 
         _state.update { it.copy(isLoading = true, errorResource = null) }
 
-        viewModelScope.launch{
+        viewModelScope.launch {
             repository.getAssetsByFloorMap(floorMapId).fold(
                 onSuccess = { assets ->
                     _state.update {
@@ -71,8 +80,9 @@ class AssetsViewModel(
             )
         }
     }
-    private fun applyFilter(assets: List<Asset>, query: String): List<Asset>{
-        if(query.isBlank()) return assets
+
+    private fun applyFilter(assets: List<Asset>, query: String): List<Asset> {
+        if (query.isBlank()) return assets
         return assets.filter { it.name.contains(query, ignoreCase = true) }
     }
 }

@@ -2,15 +2,20 @@ package co.be4you.indoorlocalization.view.assets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,14 +27,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.ui.components.DefaultButton
+import co.be4you.indoorlocalization.view.common.DefaultTopBar
+import co.be4you.indoorlocalization.viewmodel.assets.AssetsAction
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import org.koin.androidx.compose.koinViewModel
-import co.be4you.indoorlocalization.viewmodel.assets.AssetAction
 
 @Composable
 fun AssetsScreen(
@@ -50,7 +57,7 @@ fun AssetsScreen(
     ) {
         DefaultTopBar(
             title = "Assets",
-            onBack = {onAction(MainAction.NavigateBack())}
+            onBack = { viewModel.execute(AssetsAction.OnBackClicked) }
         )
 
         DefaultButton(
@@ -78,7 +85,7 @@ fun AssetsScreen(
 
         AssetSearchBar(
             query = state.searchQuery,
-            onQueryChanged = { viewModel.execute(AssetAction.OnSearchChanged(it)) }
+            onQueryChanged = { viewModel.execute(AssetsAction.OnSearchChanged(it)) }
         )
 
         val assets = state.filteredAssets
@@ -97,14 +104,13 @@ fun AssetsScreen(
                         modifier = Modifier.padding(top = 16.dp)
                     )
                 }
-            } else{
-                items(assets){
-                    asset ->
+            } else {
+                items(assets) { asset ->
                     AssetRow(
                         asset = asset,
                         floorMapName = floorMapName,
                         onClick = { id ->
-                            onAction(MainAction.NavigateTo(Route.AssetDetail(id)))
+                            viewModel.execute(AssetsAction.OnAssetClicked(id))
                         }
                     )
                 }
@@ -138,7 +144,7 @@ private fun AssetSearchBar(
 fun AssetRow(
     asset: Asset,
     floorMapName: String,
-    onClick:(Long) -> Unit
+    onClick: (Long) -> Unit
 ) {
     val color = try {
         Color(android.graphics.Color.parseColor(asset.colorHex ?: "#888888"))
@@ -146,15 +152,15 @@ fun AssetRow(
         Color.Gray
     }
 
-    val statusText = if(asset.active) "Active" else "Inactive"
-    val statusColor = if(asset.active) Color(0xFF2ECC71) else Color(0xFFE74C3C)
+    val statusText = if (asset.active) "Active" else "Inactive"
+    val statusColor = if (asset.active) Color(0xFF2ECC71) else Color(0xFFE74C3C)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
-            .clickable{ onClick(asset.id)}
+            .clickable { onClick(asset.id) }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
