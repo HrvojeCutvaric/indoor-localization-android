@@ -12,6 +12,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,11 +37,10 @@ import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
-import coil3.compose.AsyncImage
-import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.LaunchedEffect
-import kotlinx.coroutines.flow.collectLatest
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
+import coil3.compose.AsyncImage
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DashboardScreen(
@@ -248,6 +248,7 @@ private fun DashboardScreenPreview() {
                     heightInMeters = 0
                 ),
                 isDropdownExpanded = true,
+                floorMapAssets = emptyList(),
             ),
             onAction = { },
         )
