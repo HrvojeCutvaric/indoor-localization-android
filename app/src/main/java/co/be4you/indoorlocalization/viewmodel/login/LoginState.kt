@@ -1,9 +1,8 @@
 package co.be4you.indoorlocalization.viewmodel.login
 
+import co.be4you.core.domain.utils.login.LoginHandler
+
 data class LoginState(
-    val username: String,
-    val password: String,
-    val isPasswordVisible: Boolean,
-    val errorResource: Int?,
-    val isButtonLoading: Boolean,
+    val loginHandlers: List<LoginHandler<*, *>>,
+    val loginHandler: LoginHandler<*, *>?,
 )

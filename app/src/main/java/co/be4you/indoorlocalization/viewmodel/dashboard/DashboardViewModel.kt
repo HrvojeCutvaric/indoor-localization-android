@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.FloorMapRepository
-import co.be4you.indoorlocalization.navigation.Route
+import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class DashboardViewModel(
     private val floorMapRepository: FloorMapRepository,
+    private val appNavigator: AppNavigator,
     private val assetRepository: AssetRepository,
 ) : ViewModel() {
 
@@ -100,13 +102,11 @@ class DashboardViewModel(
                 )
             }
 
-            is DashboardAction.OnNavigateToAssets -> viewModelScope.launch(Dispatchers.IO) {
-                _event.emit(
-                    MainAction.NavigateTo(
-                        route = Route.Assets(
-                            floorMapId = action.floorMapId,
-                            floorMapName = action.floorMapName
-                        )
+            is DashboardAction.OnNavigateToAssets -> {
+                appNavigator.navigateTo(
+                    Route.Assets(
+                        floorMapId = action.floorMapId,
+                        floorMapName = action.floorMapName
                     )
                 )
             }

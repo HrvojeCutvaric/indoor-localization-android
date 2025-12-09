@@ -26,8 +26,6 @@ class AuthInterceptor(
             .header(Constants.AUTHORIZATION_HEADER, "${Constants.BEARER_TOKEN_PREFIX}$accessToken")
             .build()
 
-        //android.util.Log.d(TAG, "Adding token to request ${newRequest.url}")
-
         return chain.proceed(newRequest)
     }
 }

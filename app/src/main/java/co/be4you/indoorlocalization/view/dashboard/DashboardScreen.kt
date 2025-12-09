@@ -33,10 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.FloorMap
+import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.DefaultDropdownSelector
+import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.R
-import co.be4you.indoorlocalization.ui.theme.IndoorLocalizationTheme
-import co.be4you.indoorlocalization.view.common.DefaultButton
-import co.be4you.indoorlocalization.view.common.DefaultDropdownSelector
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
@@ -114,7 +114,6 @@ private fun DashboardLayout(
                 PinchToZoomView(
                     modifier = Modifier.fillMaxSize(),
                     floorMap = floorMap,
-                    assets = state.floorMapAssets,
                 )
             } ?: run {
                 Text(
@@ -153,7 +152,6 @@ private fun DashboardLayout(
 fun PinchToZoomView(
     modifier: Modifier,
     floorMap: FloorMap,
-    assets: List<Asset>,
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -263,7 +261,6 @@ private fun DrawAssetsOverlay(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun DashboardScreenPreview() {
@@ -288,7 +285,7 @@ private fun DashboardScreenPreview() {
                     imageWidthPx = 0,
                     imageHeightPx = 0,
                     widthInMeters = 0.0,
-                    heightInMeters = 0.0
+                    heightInMeters = 0.0,
                 ),
                 isDropdownExpanded = true,
                 floorMapAssets = emptyList(),

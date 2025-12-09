@@ -13,4 +13,8 @@ interface AuthService {
     ): Result<Unit>
 
     suspend fun login(username: String, password: String): Result<LoginResponse>
+
+    suspend fun requestOtp(email: String): Result<Unit>
+
+    suspend fun verifyOtp(email: String, otp: String): Result<LoginResponse>
 }

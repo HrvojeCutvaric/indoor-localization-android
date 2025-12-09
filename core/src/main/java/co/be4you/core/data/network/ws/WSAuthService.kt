@@ -91,4 +91,25 @@ class WSAuthService(
 
         return Result.success(loginResponseDto.toLoginResponse())
     }
+
+    override suspend fun requestOtp(email: String): Result<Unit> {
+        // TODO: replace this with backend call
+        return Result.success(Unit)
+    }
+
+    override suspend fun verifyOtp(
+        email: String,
+        otp: String
+    ): Result<LoginResponse> {
+        // TODO: replace this with backend call
+        return Result.success(
+            LoginResponse(
+                accessToken = "",
+                refreshToken = "",
+                userId = 1,
+                username = "",
+                email = ""
+            )
+        )
+    }
 }
