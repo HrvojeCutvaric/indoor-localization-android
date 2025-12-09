@@ -6,6 +6,7 @@ import co.be4you.core.data.network.ws.api.mappers.toLoginResponse
 import co.be4you.core.data.network.ws.api.models.auth.LoginRequestBody
 import co.be4you.core.data.network.ws.api.models.auth.RegisterRequestBody
 import co.be4you.core.data.network.ws.api.models.auth.SendOtpRequestBody
+import co.be4you.core.data.network.ws.api.models.auth.VerifyOtpRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.core.domain.utils.RegisterThrowable
@@ -116,15 +117,24 @@ class WSAuthService(
         email: String,
         otp: String
     ): Result<LoginResponse> {
-        // TODO: replace this with backend call
-        return Result.success(
-            LoginResponse(
-                accessToken = "",
-                refreshToken = "",
-                userId = 1,
-                username = "",
-                email = ""
-            )
-        )
+        try {
+            val result =
+                authApi.verifyOtp(requestBody = VerifyOtpRequestBody(email = email, otp = otp))
+
+            return when (result.isSuccessful) {
+                true -> {
+                    val body = result.body() ?: return Result.failure(Throwable("Body is null"))
+
+                    return Result.success(body.toLoginResponse())
+                }
+
+                false -> {
+                    Result.failure(Throwable(message = "Failed to verify otp"))
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            return Result.failure(e)
+        }
     }
 }
