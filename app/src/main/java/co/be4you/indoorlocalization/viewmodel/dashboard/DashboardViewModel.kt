@@ -106,11 +106,21 @@ class DashboardViewModel(
         assetsJob?.cancel()
 
         assetsJob = viewModelScope.launch(Dispatchers.IO) {
-            assetTrackingRepository.assetsPosition(floorMapId)
-                .collectLatest { floorMapAssets ->
+            assetTrackingRepository.assetPosition(floorMapId)
+                .collectLatest { newAsset ->
+                    val current = _state.value?.floorMapAssets?.toMutableList() ?: mutableListOf()
+
+                    val index = current.indexOfFirst { it.id == newAsset.id }
+
+                    if (index >= 0) {
+                        current[index] = newAsset
+                    } else {
+                        current.add(newAsset)
+                    }
+
                     _state.update {
                         it?.copy(
-                            floorMapAssets = floorMapAssets
+                            floorMapAssets = current
                         )
                     }
                 }

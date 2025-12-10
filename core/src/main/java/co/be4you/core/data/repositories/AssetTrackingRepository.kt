@@ -8,7 +8,7 @@ class AssetTrackingRepository(
     private val assetTrackingService: AssetTrackingService,
 ) {
 
-    fun assetsPosition(floorMapId: Long): Flow<List<Asset>> {
-        return assetTrackingService.assetsPosition(floorMapId = floorMapId)
+    fun assetPosition(floorMapId: Long): Flow<Asset> {
+        return assetTrackingService.assetPosition(floorMapId = floorMapId)
     }
 }

@@ -1,6 +1,8 @@
 package co.be4you.core.data.network.ws.mqtt
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.ws.mqtt.mappers.toAsset
 import co.be4you.core.data.network.ws.mqtt.models.MqttAssetDto
@@ -31,7 +33,7 @@ class MqttAssetTrackingService(
 
     companion object {
         private fun assetListType() =
-            object : TypeToken<List<Asset>>() {}.type
+            object : TypeToken<Asset>() {}.type
     }
 
     private val persistence = MemoryPersistence()
@@ -39,14 +41,14 @@ class MqttAssetTrackingService(
     private val client: MqttAsyncClient =
         MqttAsyncClient(Constants.MQTT_SERVER_URL, MqttClient.generateClientId(), persistence)
 
-    override fun assetsPosition(floorMapId: Long): Flow<List<Asset>> = callbackFlow {
+    override fun assetPosition(floorMapId: Long): Flow<Asset> = callbackFlow {
         val topic = "air/assets/updates"
 
         val callback = object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 try {
                     val json = message?.payload?.toString(Charsets.UTF_8) ?: return
-                    val assets: List<Asset> = gson.fromJson(json, assetListType())
+                    val assets: Asset = gson.fromJson(json, assetListType())
                     trySend(assets)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -82,15 +84,14 @@ class MqttAssetTrackingService(
         }
 
         client.subscribe(topic, 1, object : IMqttMessageListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 try {
                     val json = message?.payload?.toString(Charsets.UTF_8) ?: return
-
-                    val listType = object : TypeToken<List<MqttAssetDto>>() {}.type
-                    val dtos: List<MqttAssetDto> = gson.fromJson(json, listType)
-                    val assets: List<Asset> = dtos.map { it.toAsset() }
-                    Log.v("MQTT", "Assets: $assets")
-                    trySend(assets)
+                    val mqttAssetType = object : TypeToken<MqttAssetDto>() {}.type
+                    val dto: MqttAssetDto = gson.fromJson(json, mqttAssetType)
+                    val asset: Asset = dto.toAsset()
+                    trySend(asset)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

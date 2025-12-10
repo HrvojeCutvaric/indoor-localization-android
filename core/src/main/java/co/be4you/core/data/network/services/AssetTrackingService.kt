@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface AssetTrackingService {
 
-    fun assetsPosition(floorMapId: Long): Flow<List<Asset>>
+    fun assetPosition(floorMapId: Long): Flow<Asset>
 }
