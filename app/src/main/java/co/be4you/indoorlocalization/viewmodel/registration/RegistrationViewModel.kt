@@ -94,7 +94,10 @@ class RegistrationViewModel(
                                 error = null,
                             )
                         }
-                        appNavigator.navigateTo(route = Route.Login)
+                        appNavigator.navigateTo(
+                            route = Route.Login,
+                            removeRoutes = listOf(Route.Registration),
+                        )
                     },
                     onFailure = { throwable ->
                         _state.update {
@@ -115,7 +118,10 @@ class RegistrationViewModel(
             }
 
             RegistrationAction.OnLoginClicked -> viewModelScope.launch {
-                appNavigator.navigateTo(Route.Login)
+                appNavigator.navigateTo(
+                    route = Route.Login,
+                    removeRoutes = listOf(Route.Registration),
+                )
             }
 
             is RegistrationAction.OnFirstNameChanged -> {

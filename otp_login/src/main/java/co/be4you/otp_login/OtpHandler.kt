@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.data.repositories.AuthRepository
+import co.be4you.core.domain.utils.VerifyOtpThrowable
 import co.be4you.core.domain.utils.login.LoginHandler
+import co.be4you.core.domain.validators.EmailValidator
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
 import kotlinx.coroutines.CoroutineScope
@@ -48,13 +50,21 @@ class OtpHandler(
                 ).fold(
                     onSuccess = {
                         state.update { it.copy(isButtonLoading = false, errorResource = null) }
-                        appNavigator.navigateTo(Route.Dashboard)
+                        appNavigator.navigateTo(
+                            route = Route.Dashboard,
+                            removeRoutes = listOf(Route.Login),
+                        )
                     },
-                    onFailure = {
+                    onFailure = { error ->
+                        val errorMessage = when (error) {
+                            VerifyOtpThrowable.InvalidOtp -> R.string.invalid_otp_code
+                            else -> co.be4you.core.R.string.generic_error_message
+                        }
+
                         state.update {
                             it.copy(
                                 isButtonLoading = false,
-                                errorResource = co.be4you.core.R.string.generic_error_message
+                                errorResource = errorMessage,
                             )
                         }
                     }
@@ -62,11 +72,25 @@ class OtpHandler(
             }
 
             OtpLoginUiAction.OnRegisterClicked -> {
-                appNavigator.navigateTo(Route.Registration)
+                appNavigator.navigateTo(
+                    route = Route.Registration,
+                    removeRoutes = listOf(Route.Login),
+                )
             }
 
             OtpLoginUiAction.OnRequestOtpClicked -> scope.launch {
                 state.update { it.copy(isButtonLoading = true) }
+
+                if (EmailValidator.isEmailValid(state.value.email).not()) {
+                    state.update {
+                        it.copy(
+                            email = "",
+                            isButtonLoading = false,
+                            errorResource = co.be4you.core.R.string.invalid_email
+                        )
+                    }
+                    return@launch
+                }
 
                 authRepository.requestOtp(
                     email = state.value.email,
@@ -90,6 +114,17 @@ class OtpHandler(
                         }
                     }
                 )
+            }
+
+            OtpLoginUiAction.OnChangeEmailClicked -> {
+                state.update {
+                    it.copy(
+                        email = "",
+                        code = "",
+                        isOtpSend = false,
+                        errorResource = null,
+                    )
+                }
             }
         }
     }

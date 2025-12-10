@@ -8,4 +8,5 @@ sealed interface OtpLoginUiAction : LoginUiAction {
     data object OnRequestOtpClicked : OtpLoginUiAction
     data object OnVerifyOtpClicked : OtpLoginUiAction
     data object OnRegisterClicked : OtpLoginUiAction
+    data object OnChangeEmailClicked : OtpLoginUiAction
 }

@@ -7,4 +7,7 @@
     <string name="send_otp_code">Send OTP</string>
     <string name="login_with_one_time_code">Login with one-time code</string>
     <string name="failed_to_send_otp_code">Failed to send OTP code.</string>
+    <string name="invalid_otp_code">Invalid OTP code.</string>
+    <string name="wrong_email">Wrong e-mail?</string>
+    <string name="change">Change</string>
 </resources>
