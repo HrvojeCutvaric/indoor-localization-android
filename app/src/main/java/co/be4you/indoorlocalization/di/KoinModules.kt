@@ -3,6 +3,7 @@ package co.be4you.indoorlocalization.di
 import co.be4you.core.data.network.AuthInterceptor
 import co.be4you.core.data.network.TokenAuthenticator
 import co.be4you.core.data.network.services.AssetService
+import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.ws.WSAssetService
@@ -11,7 +12,9 @@ import co.be4you.core.data.network.ws.WSFloorMapService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.FloorMapApi
+import co.be4you.core.data.network.ws.mqtt.MockMqttAssetTrackingService
 import co.be4you.core.data.repositories.AssetRepository
+import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
@@ -62,6 +65,8 @@ val modules = module {
     singleOf(::PasswordHandler).bind<LoginHandler<PasswordLoginUiState, PasswordLoginUiAction>>()
     singleOf(::OtpHandler).bind<LoginHandler<OtpLoginUiState, OtpLoginUiAction>>()
     singleOf(::AppNavigator).bind<AppNavigator>()
+    singleOf(::MockMqttAssetTrackingService).bind<AssetTrackingService>()
+    singleOf(::AssetTrackingRepository).bind<AssetTrackingRepository>()
 
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
