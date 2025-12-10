@@ -5,5 +5,4 @@ object Constants {
     const val MIN_PASSWORD_LENGTH = 6
     const val BEARER_TOKEN_PREFIX = "Bearer "
     const val AUTHORIZATION_HEADER = "Authorization"
-    const val MQTT_SERVER_URL = "tcp://test.mosquitto.org:1883"
 }

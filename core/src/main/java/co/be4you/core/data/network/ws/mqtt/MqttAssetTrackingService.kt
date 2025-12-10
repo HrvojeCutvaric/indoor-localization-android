@@ -7,7 +7,6 @@ import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.ws.mqtt.mappers.toAsset
 import co.be4you.core.data.network.ws.mqtt.models.MqttAssetDto
 import co.be4you.core.domain.models.Asset
-import co.be4you.core.domain.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlin.coroutines.resume
@@ -34,16 +33,18 @@ class MqttAssetTrackingService(
     companion object {
         private fun assetType() =
             object : TypeToken<Asset>() {}.type
+
+        private const val MQTT_SERVER_URL = "tcp://test.mosquitto.org:1883"
+        private const val TOPIC = "air/assets/updates"
+        private const val QOS = 1
     }
 
     private val persistence = MemoryPersistence()
 
     private val client: MqttAsyncClient =
-        MqttAsyncClient(Constants.MQTT_SERVER_URL, MqttClient.generateClientId(), persistence)
+        MqttAsyncClient(MQTT_SERVER_URL, MqttClient.generateClientId(), persistence)
 
     override fun assetPosition(floorMapId: Long): Flow<Asset> = callbackFlow {
-        val topic = "air/assets/updates"
-
         val callback = object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 try {
@@ -83,7 +84,7 @@ class MqttAssetTrackingService(
             })
         }
 
-        client.subscribe(topic, 1, object : IMqttMessageListener {
+        client.subscribe(TOPIC, QOS, object : IMqttMessageListener {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 try {
@@ -99,7 +100,7 @@ class MqttAssetTrackingService(
         })
 
         awaitClose {
-            client.unsubscribe(topic)
+            client.unsubscribe(TOPIC)
             client.setCallback(null)
         }
     }
