@@ -32,7 +32,7 @@ class MqttAssetTrackingService(
 ) : AssetTrackingService {
 
     companion object {
-        private fun assetListType() =
+        private fun assetType() =
             object : TypeToken<Asset>() {}.type
     }
 
@@ -48,8 +48,8 @@ class MqttAssetTrackingService(
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 try {
                     val json = message?.payload?.toString(Charsets.UTF_8) ?: return
-                    val assets: Asset = gson.fromJson(json, assetListType())
-                    trySend(assets)
+                    val asset: Asset = gson.fromJson(json, assetType())
+                    if (asset.floorMapId == floorMapId) trySend(asset)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -91,7 +91,7 @@ class MqttAssetTrackingService(
                     val mqttAssetType = object : TypeToken<MqttAssetDto>() {}.type
                     val dto: MqttAssetDto = gson.fromJson(json, mqttAssetType)
                     val asset: Asset = dto.toAsset()
-                    trySend(asset)
+                    if (asset.floorMapId == floorMapId) trySend(asset)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
