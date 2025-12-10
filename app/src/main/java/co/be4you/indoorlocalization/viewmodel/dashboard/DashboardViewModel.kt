@@ -81,14 +81,13 @@ class DashboardViewModel(
             }
 
             is DashboardAction.OnFloorMapSelected -> viewModelScope.launch(Dispatchers.IO) {
-                _state.update {
-                    it?.copy(
-                        selectedFloorMap = action.floorMap,
-                        isDropdownExpanded = false,
-                    )
-                }
+                _state.update { it?.copy(isDropdownExpanded = false) }
 
-                observeAssets(action.floorMap.id)
+                if (action.floorMap != _state.value?.selectedFloorMap) {
+                    _state.update { it?.copy(selectedFloorMap = action.floorMap) }
+
+                    observeAssets(action.floorMap.id)
+                }
             }
 
             is DashboardAction.OnNavigateToAssets -> {
