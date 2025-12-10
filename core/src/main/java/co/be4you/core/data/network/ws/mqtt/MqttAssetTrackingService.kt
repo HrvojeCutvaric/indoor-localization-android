@@ -2,6 +2,7 @@ package co.be4you.core.data.network.ws.mqtt
 
 import android.os.Build
 import android.util.Log
+import android.util.Log.e
 import androidx.annotation.RequiresApi
 import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.ws.mqtt.mappers.toAsset
@@ -23,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttAsyncClient
 import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
+import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
@@ -102,6 +104,7 @@ class MqttAssetTrackingService(
         awaitClose {
             client.unsubscribe(TOPIC)
             client.setCallback(null)
+            client.disconnect()
         }
     }
 }
