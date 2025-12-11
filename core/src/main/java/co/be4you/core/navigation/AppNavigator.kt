@@ -19,6 +19,7 @@ class AppNavigator {
     fun navigateBack(
         route: Route? = null,
     ) {
+        if (backStack.size <= 1) return
         route?.let {
             val index = backStack.indexOf(it)
             backStack.subList(index - 1, backStack.size).clear()

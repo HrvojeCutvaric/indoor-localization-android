@@ -3,6 +3,7 @@ package co.be4you.indoorlocalization.di
 import co.be4you.core.data.network.AuthInterceptor
 import co.be4you.core.data.network.TokenAuthenticator
 import co.be4you.core.data.network.services.AssetService
+import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.ws.WSAssetService
@@ -11,7 +12,9 @@ import co.be4you.core.data.network.ws.WSFloorMapService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.FloorMapApi
+import co.be4you.core.data.network.ws.mqtt.MqttAssetTrackingService
 import co.be4you.core.data.repositories.AssetRepository
+import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
@@ -32,6 +35,7 @@ import co.be4you.otp_login.OtpLoginUiState
 import co.be4you.password_login.PasswordHandler
 import co.be4you.password_login.PasswordLoginUiAction
 import co.be4you.password_login.PasswordLoginUiState
+import com.google.gson.Gson
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -62,6 +66,9 @@ val modules = module {
     singleOf(::PasswordHandler).bind<LoginHandler<PasswordLoginUiState, PasswordLoginUiAction>>()
     singleOf(::OtpHandler).bind<LoginHandler<OtpLoginUiState, OtpLoginUiAction>>()
     singleOf(::AppNavigator).bind<AppNavigator>()
+    singleOf(::MqttAssetTrackingService).bind<AssetTrackingService>()
+    singleOf(::AssetTrackingRepository).bind<AssetTrackingRepository>()
+    single { Gson() }
 
     viewModelOf(::MainViewModel)
     viewModelOf(::RegistrationViewModel)
@@ -69,7 +76,6 @@ val modules = module {
     viewModelOf(::DashboardViewModel)
     viewModelOf(::AssetsViewModel)
     viewModelOf(::AssetDetailViewModel)
-
 
     factoryOf(::RegisterUseCase)
 

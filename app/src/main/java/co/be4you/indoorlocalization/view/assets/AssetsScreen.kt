@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.ui.components.DefaultButton
@@ -146,11 +147,13 @@ fun AssetRow(
     floorMapName: String,
     onClick: (Long) -> Unit
 ) {
-    val color = try {
-        Color(android.graphics.Color.parseColor(asset.colorHex ?: "#888888"))
-    } catch (e: Exception) {
-        Color.Gray
-    }
+    val color = asset.colorHex?.let { colorHex ->
+        try {
+            Color(colorHex.toColorInt())
+        } catch (_: Exception) {
+            Color.Gray
+        }
+    } ?: Color.Gray
 
     val statusText = if (asset.active) "Active" else "Inactive"
     val statusColor = if (asset.active) Color(0xFF2ECC71) else Color(0xFFE74C3C)

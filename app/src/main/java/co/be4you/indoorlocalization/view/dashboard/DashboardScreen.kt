@@ -1,12 +1,15 @@
 package co.be4you.indoorlocalization.view.dashboard
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -20,15 +23,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultDropdownSelector
@@ -111,6 +122,7 @@ private fun DashboardLayout(
                 PinchToZoomView(
                     modifier = Modifier.fillMaxSize(),
                     floorMap = floorMap,
+                    assets = state.floorMapAssets,
                 )
             } ?: run {
                 Text(
@@ -146,9 +158,10 @@ private fun DashboardLayout(
 }
 
 @Composable
-private fun PinchToZoomView(
+fun PinchToZoomView(
     modifier: Modifier,
     floorMap: FloorMap,
+    assets: List<Asset>,
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -158,35 +171,39 @@ private fun PinchToZoomView(
     val maxScale = 4f
 
     var initialOffset by remember { mutableStateOf(Offset(0f, 0f)) }
-
     val slowMovement = 0.5f
+
+    val aspectRatio = if (floorMap.imageWidthPx <= 0 || floorMap.imageHeightPx <= 0) {
+        1f
+    } else floorMap.imageWidthPx.toFloat() / floorMap.imageHeightPx.toFloat()
 
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .aspectRatio(aspectRatio)
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, zoom, _ ->
-                    val newScale = scale * zoom
-                    scale = newScale.coerceIn(minScale, maxScale)
+                    val newScale = (scale * zoom).coerceIn(minScale, maxScale)
 
                     val centerX = size.width / 2
                     val centerY = size.height / 2
+
                     val offsetXChange = (centerX - offsetX) * (newScale / scale - 1)
                     val offsetYChange = (centerY - offsetY) * (newScale / scale - 1)
 
-                    val maxOffsetX = (size.width / 2) * (scale - 1)
+                    val maxOffsetX = (size.width / 2) * (newScale - 1)
                     val minOffsetX = -maxOffsetX
-                    val maxOffsetY = (size.height / 2) * (scale - 1)
+                    val maxOffsetY = (size.height / 2) * (newScale - 1)
                     val minOffsetY = -maxOffsetY
 
-                    if (scale * zoom <= maxScale) {
-                        offsetX = (offsetX + pan.x * scale * slowMovement + offsetXChange)
-                            .coerceIn(minOffsetX, maxOffsetX)
-                        offsetY = (offsetY + pan.y * scale * slowMovement + offsetYChange)
-                            .coerceIn(minOffsetY, maxOffsetY)
-                    }
+                    offsetX = (offsetX + pan.x * scale * slowMovement + offsetXChange)
+                        .coerceIn(minOffsetX, maxOffsetX)
+                    offsetY = (offsetY + pan.y * scale * slowMovement + offsetYChange)
+                        .coerceIn(minOffsetY, maxOffsetY)
 
-                    if (pan != Offset(0f, 0f) && initialOffset == Offset(0f, 0f)) {
+                    scale = newScale
+
+                    if (pan != Offset.Zero && initialOffset == Offset.Zero) {
                         initialOffset = Offset(offsetX, offsetY)
                     }
                 }
@@ -204,22 +221,77 @@ private fun PinchToZoomView(
                     }
                 )
             }
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-                translationX = offsetX
-                translationY = offsetY
-            },
-        contentAlignment = Alignment.Center,
     ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxSize(0.95f),
-            model = floorMap.imageUrl,
-            contentDescription = floorMap.name,
-            contentScale = ContentScale.FillWidth,
-        )
+
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                    translationX = offsetX
+                    translationY = offsetY
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            var imageSize by remember { mutableStateOf(IntSize.Zero) }
+
+            AsyncImage(
+                modifier = Modifier
+                    .onGloballyPositioned { coords ->
+                        imageSize = coords.size
+                    },
+                model = floorMap.imageUrl,
+                contentDescription = floorMap.name,
+                contentScale = ContentScale.None,
+            )
+
+            DrawAssetsOverlay(
+                modifier = Modifier
+                    .size(
+                        width = with(LocalDensity.current) { imageSize.width.toDp() },
+                        height = with(LocalDensity.current) { imageSize.height.toDp() }
+                    )
+                    .clip(RectangleShape),
+                assets = assets,
+                floorMap = floorMap
+            )
+        }
     }
 }
+
+@Composable
+private fun DrawAssetsOverlay(
+    modifier: Modifier = Modifier,
+    assets: List<Asset>,
+    floorMap: FloorMap,
+) {
+    Canvas(
+        modifier = modifier,
+    ) {
+        val imageWidth = floorMap.imageWidthPx
+        val imageHeight = floorMap.imageHeightPx
+
+        assets.forEach { asset ->
+            val x = asset.x ?: return@forEach
+            val y = asset.y ?: return@forEach
+
+            val pxX = ((x / floorMap.widthInMeters) * imageWidth).toFloat()
+            val pxY = ((y / floorMap.heightInMeters) * imageHeight).toFloat()
+
+            val color = asset.colorHex?.let { hex ->
+                runCatching { Color(hex.toColorInt()) }.getOrElse { Color.Gray }
+            } ?: Color.Gray
+
+            drawCircle(
+                color = color,
+                radius = 12f,
+                center = Offset(pxX, pxY)
+            )
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -248,6 +320,7 @@ private fun DashboardScreenPreview() {
                     heightInMeters = 0.0,
                 ),
                 isDropdownExpanded = true,
+                floorMapAssets = emptyList(),
             ),
             onAction = { },
         )
