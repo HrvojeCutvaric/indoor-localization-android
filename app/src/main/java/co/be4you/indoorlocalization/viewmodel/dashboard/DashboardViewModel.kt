@@ -36,16 +36,13 @@ class DashboardViewModel(
             floorMapRepository.getFloorMaps().fold(
                 onSuccess = { floorMaps ->
                     floorMaps.firstOrNull()?.let { firstFloorMap ->
-                        val firstFloorMap = floorMaps.firstOrNull()
-
                         _state.value = DashboardState(
                             floorMaps = floorMaps,
                             selectedFloorMap = firstFloorMap,
                             isDropdownExpanded = false,
                             floorMapAssets = emptyList(),
                         )
-
-                        firstFloorMap?.let { observeAssets(it.id) }
+                        observeAssets(firstFloorMap.id)
                     } ?: run {
                         _state.value = DashboardState(
                             floorMaps = floorMaps,
@@ -80,7 +77,7 @@ class DashboardViewModel(
                 }
             }
 
-            is DashboardAction.OnFloorMapSelected -> viewModelScope.launch(Dispatchers.IO) {
+            is DashboardAction.OnFloorMapSelected -> {
                 _state.update { it?.copy(isDropdownExpanded = false) }
 
                 if (action.floorMap != _state.value?.selectedFloorMap) {
@@ -105,24 +102,30 @@ class DashboardViewModel(
         assetsJob?.cancel()
 
         assetsJob = viewModelScope.launch(Dispatchers.IO) {
-            assetTrackingRepository.assetPosition(floorMapId)
-                .collectLatest { newAsset ->
-                    val current = _state.value?.floorMapAssets?.toMutableList() ?: mutableListOf()
+            try {
+                assetTrackingRepository.assetPosition(floorMapId)
+                    .collectLatest { newAsset ->
+                        val current =
+                            _state.value?.floorMapAssets?.toMutableList() ?: mutableListOf()
 
-                    val index = current.indexOfFirst { it.id == newAsset.id }
+                        val index = current.indexOfFirst { it.id == newAsset.id }
 
-                    if (index >= 0) {
-                        current[index] = newAsset
-                    } else {
-                        current.add(newAsset)
+                        if (index >= 0) {
+                            current[index] = newAsset
+                        } else {
+                            current.add(newAsset)
+                        }
+
+                        _state.update {
+                            it?.copy(
+                                floorMapAssets = current
+                            )
+                        }
                     }
-
-                    _state.update {
-                        it?.copy(
-                            floorMapAssets = current
-                        )
-                    }
-                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                null
+            }
         }
     }
 }
