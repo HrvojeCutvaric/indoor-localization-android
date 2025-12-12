@@ -34,7 +34,7 @@ class MqttAssetTrackingService(
         private fun assetType() =
             object : TypeToken<Asset>() {}.type
 
-        private const val MQTT_SERVER_URL = "tcp://test.mosquitto.org:1883"
+        private const val MQTT_SERVER_URL = "tcp://broker.hivemq.com:1883"
         private const val TOPIC = "air/assets/updates"
         private const val QOS = 1
     }
