@@ -1,0 +1,14 @@
+package co.be4you.core.domain.utils
+
+sealed class RegisterThrowable() : Throwable() {
+
+    data object ConfirmPasswordNotMatch : RegisterThrowable()
+
+    data object InvalidEmail : RegisterThrowable()
+
+    data object WeakPassword : RegisterThrowable()
+
+    data object EmailExists : RegisterThrowable()
+
+    data object UsernameExists: RegisterThrowable()
+}
