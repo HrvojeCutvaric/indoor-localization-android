@@ -81,7 +81,12 @@ class DashboardViewModel(
                 _state.update { it?.copy(isDropdownExpanded = false) }
 
                 if (action.floorMap != _state.value?.selectedFloorMap) {
-                    _state.update { it?.copy(selectedFloorMap = action.floorMap) }
+                    _state.update {
+                        it?.copy(
+                            selectedFloorMap = action.floorMap,
+                            floorMapAssets = emptyList(),
+                        )
+                    }
 
                     observeAssets(action.floorMap.id)
                 }
