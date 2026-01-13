@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.FloorMapRepository
+import co.be4you.core.domain.utils.mockZones
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
@@ -41,6 +42,7 @@ class DashboardViewModel(
                             selectedFloorMap = firstFloorMap,
                             isDropdownExpanded = false,
                             floorMapAssets = emptyList(),
+                            floorMapZones = mockZones.filter { it.floorMapId == firstFloorMap.id },
                         )
                         observeAssets(firstFloorMap.id)
                     } ?: run {
@@ -49,6 +51,7 @@ class DashboardViewModel(
                             selectedFloorMap = null,
                             isDropdownExpanded = false,
                             floorMapAssets = emptyList(),
+                            floorMapZones = emptyList(),
                         )
                     }
                 },
@@ -85,6 +88,7 @@ class DashboardViewModel(
                         it?.copy(
                             selectedFloorMap = action.floorMap,
                             floorMapAssets = emptyList(),
+                            floorMapZones = mockZones.filter { zone -> zone.floorMapId == action.floorMap.id },
                         )
                     }
 

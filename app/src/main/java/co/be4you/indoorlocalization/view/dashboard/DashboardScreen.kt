@@ -26,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -41,6 +43,8 @@ import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.FloorMap
+import co.be4you.core.domain.models.Zone
+import co.be4you.core.domain.utils.mockZones
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultDropdownSelector
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
@@ -123,6 +127,7 @@ private fun DashboardLayout(
                     modifier = Modifier.fillMaxSize(),
                     floorMap = floorMap,
                     assets = state.floorMapAssets,
+                    zones = state.floorMapZones,
                 )
             } ?: run {
                 Text(
@@ -162,6 +167,7 @@ fun PinchToZoomView(
     modifier: Modifier,
     floorMap: FloorMap,
     assets: List<Asset>,
+    zones: List<Zone>
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -256,6 +262,16 @@ fun PinchToZoomView(
                 assets = assets,
                 floorMap = floorMap
             )
+
+            DrawZonesOverlay(
+                modifier = Modifier
+                    .size(
+                        width = with(LocalDensity.current) { imageSize.width.toDp() },
+                        height = with(LocalDensity.current) { imageSize.height.toDp() }
+                    )
+                    .clip(RectangleShape),
+                zones = zones,
+            )
         }
     }
 }
@@ -292,6 +308,47 @@ private fun DrawAssetsOverlay(
     }
 }
 
+@Composable
+private fun DrawZonesOverlay(
+    modifier: Modifier = Modifier,
+    zones: List<Zone>,
+) {
+    Canvas(modifier = modifier) {
+
+        zones.forEach { zone ->
+            if (zone.points.size < 3) return@forEach
+
+            val path = Path()
+
+            zone.points
+                .sortedBy { it.ordinalNumber }
+                .forEachIndexed { index, point ->
+
+                    val x = point.x.toFloat()
+                    val y = point.y.toFloat()
+
+                    if (index == 0) {
+                        path.moveTo(x, y)
+                    } else {
+                        path.lineTo(x, y)
+                    }
+                }
+
+            path.close()
+
+            drawPath(
+                path = path,
+                color = Color(0x5533B5E5)
+            )
+
+            drawPath(
+                path = path,
+                color = Color(0xFF2196F3),
+                style = Stroke(width = 3f)
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -321,6 +378,7 @@ private fun DashboardScreenPreview() {
                 ),
                 isDropdownExpanded = true,
                 floorMapAssets = emptyList(),
+                floorMapZones = mockZones,
             ),
             onAction = { },
         )
