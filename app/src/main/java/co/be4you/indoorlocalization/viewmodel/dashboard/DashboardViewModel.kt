@@ -6,6 +6,7 @@ import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
+import co.be4you.core.navigation.Route.*
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -94,11 +95,15 @@ class DashboardViewModel(
 
             is DashboardAction.OnNavigateToAssets -> {
                 appNavigator.navigateTo(
-                    Route.Assets(
+                    Assets(
                         floorMapId = action.floorMapId,
                         floorMapName = action.floorMapName
                     )
                 )
+            }
+
+            DashboardAction.OnLogoutClicked -> {
+                appNavigator.navigateTo(route = Login, clearBackStack = true)
             }
         }
     }

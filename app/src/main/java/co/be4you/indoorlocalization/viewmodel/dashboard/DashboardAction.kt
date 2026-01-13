@@ -8,6 +8,8 @@ sealed interface DashboardAction {
 
     data object OnDismissRequest : DashboardAction
 
+    data object OnLogoutClicked : DashboardAction
+
     data class OnFloorMapSelected(val floorMap: FloorMap) : DashboardAction
 
     data class OnNavigateToAssets(
