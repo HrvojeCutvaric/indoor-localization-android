@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class LoginViewModel(
     private val loginHandlers: List<LoginHandler<*, *>>,
@@ -37,6 +38,12 @@ class LoginViewModel(
                     route = Route.Registration,
                     removeRoutes = listOf(Route.Login),
                 )
+            }
+
+            LoginAction.OnChangeLoginOptionCliked -> {
+                _state.update {
+                    it.copy(loginHandler = null)
+                }
             }
         }
     }

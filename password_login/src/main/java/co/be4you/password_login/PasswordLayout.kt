@@ -29,11 +29,12 @@ import co.be4you.core.ui.theme.IndoorLocalizationTheme
 
 @Composable
 fun PasswordLoginLayout(
+    modifier: Modifier = Modifier,
     state: PasswordLoginUiState,
     onAction: (PasswordLoginUiAction) -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Center,
