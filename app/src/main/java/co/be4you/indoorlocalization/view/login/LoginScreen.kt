@@ -2,6 +2,7 @@ package co.be4you.indoorlocalization.view.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,8 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,7 +57,34 @@ private fun LoginLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
-    state.loginHandler?.LoginLayout() ?: run {
+    state.loginHandler?.let { loginHandler ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.background,
+            topBar = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = { onAction(LoginAction.OnChangeLoginOptionCliked) },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary,
+                        )
+                    ) {
+                        Text(
+                            text = "Change login method",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    }
+                }
+            }
+        ) { paddingValues ->
+            loginHandler.LoginLayout(
+                modifier = Modifier.padding(paddingValues),
+            )
+        }
+    } ?: run {
         Column(
             modifier = Modifier
                 .fillMaxSize()

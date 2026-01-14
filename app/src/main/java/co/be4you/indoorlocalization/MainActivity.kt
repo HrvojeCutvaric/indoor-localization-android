@@ -11,7 +11,9 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
@@ -41,6 +43,10 @@ class MainActivity : ComponentActivity() {
                     transitionSpec = {
                         fadeIn(tween(300)) togetherWith fadeOut(tween(300))
                     },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator(),
+                    ),
                     entryProvider = entryProvider {
                         entry<Route.Registration> {
                             RegistrationScreen(onAction = mainViewModel::execute)

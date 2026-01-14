@@ -6,4 +6,6 @@ sealed interface LoginAction {
     data class OnLoginHandlerClicked(val loginHandler: LoginHandler<*, *>) : LoginAction
 
     data object OnRegisterClicked : LoginAction
+
+    data object OnChangeLoginOptionCliked : LoginAction
 }
