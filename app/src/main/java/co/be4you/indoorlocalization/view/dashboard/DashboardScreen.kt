@@ -3,8 +3,10 @@ package co.be4you.indoorlocalization.view.dashboard
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +37,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,76 +90,98 @@ private fun DashboardLayout(
     state: DashboardState,
     onAction: (DashboardAction) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        DefaultDropdownSelector(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            selectedValue = state.selectedFloorMap?.name.orEmpty(),
-            placeholder = R.string.select_floor_map,
-            isExpanded = state.isDropdownExpanded,
-            onExpandedChange = { onAction(DashboardAction.OnDropdownExpandedChanged) },
-            onDismissRequest = { onAction(DashboardAction.OnDismissRequest) },
-        ) {
-            state.floorMaps.forEach { floorMap ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = floorMap.name,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
-                            ),
-                        )
-                    },
-                    onClick = {
-                        onAction(DashboardAction.OnFloorMapSelected(floorMap = floorMap))
-                    },
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            state.selectedFloorMap?.let { floorMap ->
-                PinchToZoomView(
-                    modifier = Modifier.fillMaxSize(),
-                    floorMap = floorMap,
-                    assets = state.floorMapAssets,
-                )
-            } ?: run {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.please_select_floor_map),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    ),
-                )
-            }
-        }
-
-        DefaultButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            label = R.string.assets,
-            isButtonEnabled = state.selectedFloorMap != null,
-            isButtonLoading = false,
-            onButtonClicked = {
-                state.selectedFloorMap?.let { map ->
-                    onAction(
-                        DashboardAction.OnNavigateToAssets(
-                            floorMapId = map.id,
-                            floorMapName = map.name
-                        )
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                IconButton(
+                    onClick = { onAction(DashboardAction.OnLogoutClicked) },
+                    enabled = state.isButtonLoading.not(),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_logout),
+                        contentDescription = null,
                     )
                 }
             }
-        )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            DefaultDropdownSelector(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                selectedValue = state.selectedFloorMap?.name.orEmpty(),
+                placeholder = R.string.select_floor_map,
+                isExpanded = state.isDropdownExpanded,
+                onExpandedChange = { onAction(DashboardAction.OnDropdownExpandedChanged) },
+                onDismissRequest = { onAction(DashboardAction.OnDismissRequest) },
+            ) {
+                state.floorMaps.forEach { floorMap ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = floorMap.name,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                ),
+                            )
+                        },
+                        onClick = {
+                            onAction(DashboardAction.OnFloorMapSelected(floorMap = floorMap))
+                        },
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center,
+            ) {
+                state.selectedFloorMap?.let { floorMap ->
+                    PinchToZoomView(
+                        modifier = Modifier.fillMaxSize(),
+                        floorMap = floorMap,
+                        assets = state.floorMapAssets,
+                    )
+                } ?: run {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.please_select_floor_map),
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                    )
+                }
+            }
+
+            DefaultButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                label = R.string.assets,
+                isButtonEnabled = state.selectedFloorMap != null,
+                isButtonLoading = false,
+                onButtonClicked = {
+                    state.selectedFloorMap?.let { map ->
+                        onAction(
+                            DashboardAction.OnNavigateToAssets(
+                                floorMapId = map.id,
+                                floorMapName = map.name
+                            )
+                        )
+                    }
+                }
+            )
+        }
     }
 }
 
