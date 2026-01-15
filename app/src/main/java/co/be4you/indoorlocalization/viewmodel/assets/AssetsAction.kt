@@ -7,4 +7,6 @@ sealed interface AssetsAction {
     data class OnAssetClicked(val assetId: Long) : AssetsAction
 
     data object OnBackClicked : AssetsAction
+
+    data object OnLogoutClicked : AssetsAction
 }

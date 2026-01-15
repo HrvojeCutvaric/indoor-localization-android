@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.be4you.core.R
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
+import co.be4you.core.ui.theme.BrandLightBlue
+import co.be4you.core.ui.theme.CommonBlue
 
 @Composable
 fun DefaultButton(
@@ -36,9 +38,10 @@ fun DefaultButton(
     isButtonEnabled: Boolean = true,
     isButtonLoading: Boolean = false,
     buttonColors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = Color(0xFF2B85ED),
+        containerColor = CommonBlue,
         contentColor = Color.White,
-        disabledContentColor = Color(0xFF75AEE8)
+        disabledContainerColor = CommonBlue.copy(alpha = 0.35f),
+        disabledContentColor = Color.White.copy(alpha = 0.7f),
     ),
     onButtonClicked: () -> Unit,
     content: (@Composable () -> Unit)? = null,
@@ -55,7 +58,7 @@ fun DefaultButton(
             CircularProgressIndicator(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
                 strokeWidth = 1.dp,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = Color.White
             )
         } else {
             when {
@@ -108,7 +111,7 @@ fun LabelWithTextButton(
             style = TextStyle(
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.outline,
+                color = BrandLightBlue
             )
         )
 

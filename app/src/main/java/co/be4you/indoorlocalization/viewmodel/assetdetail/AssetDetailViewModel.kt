@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
+import co.be4you.core.navigation.Route
 class AssetDetailViewModel(
     private val repository: AssetRepository,
     private val appNavigator: AppNavigator,
@@ -25,6 +25,10 @@ class AssetDetailViewModel(
         when (action) {
             AssetDetailAction.OnBackClicked -> {
                 appNavigator.navigateBack()
+            }
+
+            AssetDetailAction.OnLogoutClicked -> {
+                appNavigator.navigateTo(route = Route.Login, clearBackStack = true)
             }
         }
     }

@@ -23,4 +23,5 @@
     <string name="failed_to_fetch_floor_maps">Failed to fetch floor maps.</string>
     <string name="failed_to_load_floor_map">Failed to load floor map.</string>
     <string name="select_a_login_method">Select a login method</string>
+    <string name="enter_credentials">Enter credentials:</string>
 </resources>
