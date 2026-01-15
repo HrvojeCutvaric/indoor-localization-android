@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -53,6 +52,7 @@ import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultDropdownSelector
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.R
+import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardAction
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
@@ -60,7 +60,6 @@ import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
-import co.be4you.indoorlocalization.view.common.DefaultTopBar
 
 @Composable
 fun DashboardScreen(
@@ -149,17 +148,19 @@ private fun DashboardLayout(
                     modifier = Modifier.fillMaxSize(),
                     floorMap = floorMap,
                     assets = state.floorMapAssets,
-                ) } ?: run {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.please_select_floor_map),
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
-                    )
-                }
+                    zones = state.floorMapZones,
+                )
+            } ?: run {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.please_select_floor_map),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                )
             }
+        }
 
         DefaultButton(
             modifier = Modifier
