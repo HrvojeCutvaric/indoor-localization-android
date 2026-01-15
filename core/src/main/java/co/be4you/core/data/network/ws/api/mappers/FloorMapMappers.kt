@@ -7,7 +7,7 @@ import co.be4you.core.domain.utils.Constants
 fun FloorMapDto.toFloorMap(): FloorMap =
     FloorMap(
         id = id,
-        name = if (id == 2L) "Test-2" else name,
+        name = name,
         imageUrl = "${Constants.BASE_URL}${imageUrl.orEmpty()}",
         imageWidthPx = imageWidthPx ?: 0,
         imageHeightPx = imageHeightPx ?: 0,

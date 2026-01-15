@@ -88,7 +88,6 @@ class DashboardViewModel(
                         it?.copy(
                             selectedFloorMap = action.floorMap,
                             floorMapAssets = emptyList(),
-                            floorMapZones = mockZones.filter { zone -> zone.floorMapId == action.floorMap.id },
                         )
                     }
 
