@@ -9,6 +9,6 @@ data class DashboardState(
     val selectedFloorMap: FloorMap?,
     val isDropdownExpanded: Boolean,
     val floorMapAssets: List<Asset>,
-    val isButtonLoading: Boolean = false,
+    val isFloorMapLoading: Boolean,
     val floorMapZones: List<Zone>,
 )

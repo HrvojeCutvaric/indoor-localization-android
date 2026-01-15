@@ -47,7 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.core.domain.models.Zone
-import co.be4you.core.domain.utils.mockZones
+import co.be4you.core.domain.models.ZonePoint
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultDropdownSelector
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
@@ -58,6 +58,7 @@ import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import coil3.compose.AsyncImage
+import kotlin.random.Random
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -143,22 +144,28 @@ private fun DashboardLayout(
             modifier = Modifier.weight(1f),
             contentAlignment = Alignment.Center,
         ) {
-            state.selectedFloorMap?.let { floorMap ->
-                PinchToZoomView(
-                    modifier = Modifier.fillMaxSize(),
-                    floorMap = floorMap,
-                    assets = state.floorMapAssets,
-                    zones = state.floorMapZones,
-                )
-            } ?: run {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.please_select_floor_map),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    ),
-                )
+            if (state.isFloorMapLoading.not()) {
+                state.selectedFloorMap?.let { floorMap ->
+                    PinchToZoomView(
+                        modifier = Modifier.fillMaxSize(),
+                        floorMap = floorMap,
+                        assets = state.floorMapAssets,
+                        zones = state.floorMapZones,
+                    )
+                } ?: run {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.please_select_floor_map),
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                    )
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             }
         }
 
@@ -336,8 +343,8 @@ private fun DrawZonesOverlay(
 ) {
     Canvas(modifier = modifier) {
 
-        zones.forEach { zone ->
-            if (zone.points.size < 3) return@forEach
+        zones.forEachIndexed { index, zone ->
+            if (zone.points.size < 3) return@forEachIndexed
 
             val path = Path()
 
@@ -357,14 +364,23 @@ private fun DrawZonesOverlay(
 
             path.close()
 
-            drawPath(
-                path = path,
-                color = Color(0x5533B5E5)
+            val random = Random(index)
+
+            val zoneColor = Color(
+                red = random.nextInt(256),
+                green = random.nextInt(256),
+                blue = random.nextInt(256),
+                alpha = 255
             )
 
             drawPath(
                 path = path,
-                color = Color(0xFF2196F3),
+                color = zoneColor.copy(alpha = 0.33f),
+            )
+
+            drawPath(
+                path = path,
+                color = zoneColor,
                 style = Stroke(width = 3f)
             )
         }
@@ -398,8 +414,43 @@ private fun DashboardScreenPreview() {
                     heightInMeters = 0.0,
                 ),
                 isDropdownExpanded = true,
+                isFloorMapLoading = false,
                 floorMapAssets = emptyList(),
-                floorMapZones = mockZones,
+                floorMapZones = listOf(
+                    Zone(
+                        id = 1L,
+                        floorMapId = 1L,
+                        name = "Entrance Area",
+                        points = listOf(
+                            ZonePoint(x = 50.0, y = 550.0, ordinalNumber = 1),
+                            ZonePoint(x = 300.0, y = 550.0, ordinalNumber = 2),
+                            ZonePoint(x = 300.0, y = 650.0, ordinalNumber = 3),
+                            ZonePoint(x = 50.0, y = 650.0, ordinalNumber = 4)
+                        )
+                    ),
+                    Zone(
+                        id = 2L,
+                        floorMapId = 1L,
+                        name = "Main Hall",
+                        points = listOf(
+                            ZonePoint(x = 200.0, y = 150.0, ordinalNumber = 1),
+                            ZonePoint(x = 550.0, y = 150.0, ordinalNumber = 2),
+                            ZonePoint(x = 600.0, y = 400.0, ordinalNumber = 3),
+                            ZonePoint(x = 250.0, y = 420.0, ordinalNumber = 4)
+                        )
+                    ),
+                    Zone(
+                        id = 3L,
+                        floorMapId = 1L,
+                        name = "Office Zone",
+                        points = listOf(
+                            ZonePoint(x = 50.0, y = 50.0, ordinalNumber = 1),
+                            ZonePoint(x = 250.0, y = 50.0, ordinalNumber = 2),
+                            ZonePoint(x = 250.0, y = 200.0, ordinalNumber = 3),
+                            ZonePoint(x = 50.0, y = 200.0, ordinalNumber = 4)
+                        )
+                    )
+                ),
             ),
             onAction = { },
         )

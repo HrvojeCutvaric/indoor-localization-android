@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.FloorMapRepository
-import co.be4you.core.domain.utils.mockZones
+import co.be4you.core.data.repositories.ZoneRepository
 import co.be4you.core.navigation.AppNavigator
-import co.be4you.core.navigation.Route
-import co.be4you.core.navigation.Route.*
+import co.be4you.core.navigation.Route.Assets
+import co.be4you.core.navigation.Route.Login
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,6 +24,7 @@ class DashboardViewModel(
     private val floorMapRepository: FloorMapRepository,
     private val appNavigator: AppNavigator,
     private val assetTrackingRepository: AssetTrackingRepository,
+    private val zoneRepository: ZoneRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DashboardState?>(null)
@@ -38,12 +39,27 @@ class DashboardViewModel(
             floorMapRepository.getFloorMaps().fold(
                 onSuccess = { floorMaps ->
                     floorMaps.firstOrNull()?.let { firstFloorMap ->
-                        _state.value = DashboardState(
-                            floorMaps = floorMaps,
-                            selectedFloorMap = firstFloorMap,
-                            isDropdownExpanded = false,
-                            floorMapAssets = emptyList(),
-                            floorMapZones = mockZones.filter { it.floorMapId == firstFloorMap.id },
+                        zoneRepository.getZones(firstFloorMap.id).fold(
+                            onSuccess = { zones ->
+                                _state.value = DashboardState(
+                                    floorMaps = floorMaps,
+                                    selectedFloorMap = firstFloorMap,
+                                    isDropdownExpanded = false,
+                                    floorMapAssets = emptyList(),
+                                    floorMapZones = zones,
+                                    isFloorMapLoading = false,
+                                )
+                            },
+                            onFailure = {
+                                _state.value = DashboardState(
+                                    floorMaps = floorMaps,
+                                    selectedFloorMap = null,
+                                    isDropdownExpanded = false,
+                                    floorMapAssets = emptyList(),
+                                    floorMapZones = emptyList(),
+                                    isFloorMapLoading = false,
+                                )
+                            }
                         )
                         observeAssets(firstFloorMap.id)
                     } ?: run {
@@ -53,6 +69,7 @@ class DashboardViewModel(
                             isDropdownExpanded = false,
                             floorMapAssets = emptyList(),
                             floorMapZones = emptyList(),
+                            isFloorMapLoading = false,
                         )
                     }
                 },
@@ -85,10 +102,28 @@ class DashboardViewModel(
                 _state.update { it?.copy(isDropdownExpanded = false) }
 
                 if (action.floorMap != _state.value?.selectedFloorMap) {
-                    _state.update {
-                        it?.copy(
-                            selectedFloorMap = action.floorMap,
-                            floorMapAssets = emptyList(),
+                    _state.update { it?.copy(isFloorMapLoading = true) }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        zoneRepository.getZones(action.floorMap.id).fold(
+                            onSuccess = { zones ->
+                                _state.update {
+                                    it?.copy(
+                                        selectedFloorMap = action.floorMap,
+                                        floorMapZones = zones,
+                                        isFloorMapLoading = false,
+                                    )
+
+                                }
+                            },
+                            onFailure = {
+                                _state.update {
+                                    it?.copy(
+                                        selectedFloorMap = action.floorMap,
+                                        floorMapZones = emptyList(),
+                                        isFloorMapLoading = false,
+                                    )
+                                }
+                            }
                         )
                     }
 
