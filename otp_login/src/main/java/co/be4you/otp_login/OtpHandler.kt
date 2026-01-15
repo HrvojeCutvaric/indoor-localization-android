@@ -2,6 +2,7 @@ package co.be4you.otp_login
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.domain.utils.VerifyOtpThrowable
@@ -130,9 +131,12 @@ class OtpHandler(
     }
 
     @Composable
-    override fun LoginLayout() {
+    override fun LoginLayout(
+        modifier: Modifier,
+    ) {
         val state by state.collectAsStateWithLifecycle()
         OtpLayout(
+            modifier = modifier,
             state = state,
             onAction = ::execute
         )

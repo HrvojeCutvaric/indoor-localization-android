@@ -9,10 +9,12 @@ class AppNavigator {
     fun navigateTo(
         route: Route,
         removeRoutes: List<Route>? = null,
+        clearBackStack: Boolean = false,
     ) {
         removeRoutes?.let {
             backStack.removeAll(it)
         }
+        if (clearBackStack) backStack.clear()
         backStack.add(route)
     }
 

@@ -1,6 +1,7 @@
 package co.be4you.core.domain.utils.login
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface LoginHandler<State : LoginUiState, Action : LoginUiAction> {
@@ -8,7 +9,9 @@ interface LoginHandler<State : LoginUiState, Action : LoginUiAction> {
     fun execute(action: Action)
 
     @Composable
-    fun LoginLayout()
+    fun LoginLayout(
+        modifier: Modifier = Modifier,
+    )
 
     val buttonTextResource: Int
 }
