@@ -35,7 +35,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AssetDetailScreen(
     assetId: Long,
-    onAction: (MainAction) -> Unit,
     viewModel: AssetDetailViewModel = koinViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
@@ -51,6 +50,7 @@ fun AssetDetailScreen(
         DefaultTopBar(
             title = "Asset Details",
             onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
+            onLogout = {viewModel.execute(AssetDetailAction.OnLogoutClicked)}
         )
 
         when {

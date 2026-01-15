@@ -63,15 +63,13 @@ class MainActivity : ComponentActivity() {
                         entry<Route.Assets> { assets ->
                             AssetsScreen(
                                 floorMapId = assets.floorMapId,
-                                floorMapName = assets.floorMapName,
-                                onAction = mainViewModel::execute
+                                floorMapName = assets.floorMapName
                             )
                         }
 
                         entry<Route.AssetDetail> { detail ->
                             AssetDetailScreen(
-                                assetId = detail.assetId,
-                                onAction = mainViewModel::execute
+                                assetId = detail.assetId
                             )
                         }
                     }

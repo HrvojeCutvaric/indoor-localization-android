@@ -1,17 +1,13 @@
 package co.be4you.password_login
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -23,10 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.be4you.core.R
 import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.DefaultLabel
 import co.be4you.core.ui.components.DefaultTextField
-import co.be4you.core.ui.components.LabelWithTextButton
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
-
 @Composable
 fun PasswordLoginLayout(
     modifier: Modifier = Modifier,
@@ -34,25 +29,14 @@ fun PasswordLoginLayout(
     onAction: (PasswordLoginUiAction) -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxWidth()
     ) {
-        Text(
+        DefaultLabel(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.login),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            text = stringResource(R.string.enter_credentials),
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Box(modifier = Modifier.height(24.dp)) {
+        Box(modifier = Modifier.height(1.dp)) {
             state.errorResource?.let {
                 Text(
                     text = stringResource(it),
@@ -86,7 +70,7 @@ fun PasswordLoginLayout(
             onTrailingIconClicked = { onAction(PasswordLoginUiAction.OnPasswordVisibilityChanged) },
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         DefaultButton(
             modifier = Modifier.fillMaxWidth(),
@@ -94,15 +78,6 @@ fun PasswordLoginLayout(
             onButtonClicked = { onAction(PasswordLoginUiAction.OnLoginClicked) },
             isButtonLoading = state.isButtonLoading,
             isButtonEnabled = state.isButtonLoading.not() && state.username.isNotEmpty() && state.password.isNotEmpty(),
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LabelWithTextButton(
-            label = stringResource(R.string.dont_have_an_account),
-            buttonLabel = stringResource(R.string.registration),
-            isButtonLoading = state.isButtonLoading,
-            onTextButtonClicked = { onAction(PasswordLoginUiAction.OnRegisterClicked) }
         )
     }
 }

@@ -1,6 +1,5 @@
 package co.be4you.indoorlocalization.viewmodel.assets
 
-import android.content.res.Resources
 import co.be4you.core.domain.models.Asset
 
 data class AssetsState(

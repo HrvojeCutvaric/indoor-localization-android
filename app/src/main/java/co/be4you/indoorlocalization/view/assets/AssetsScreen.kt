@@ -43,7 +43,6 @@ import org.koin.androidx.compose.koinViewModel
 fun AssetsScreen(
     floorMapId: Long,
     floorMapName: String,
-    onAction: (MainAction) -> Unit,
     viewModel: AssetsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -52,13 +51,15 @@ fun AssetsScreen(
         viewModel.setFloorMapId(floorMapId)
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         DefaultTopBar(
             title = "Assets",
-            onBack = { viewModel.execute(AssetsAction.OnBackClicked) }
+            onBack = { viewModel.execute(AssetsAction.OnBackClicked) },
+            onLogout = { viewModel.execute(AssetsAction.OnLogoutClicked) }
         )
 
         DefaultButton(

@@ -14,9 +14,8 @@ import kotlinx.coroutines.launch
 
 class AssetsViewModel(
     private val repository: AssetRepository,
-    private val appNavigator: AppNavigator,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(
         AssetsState(
             isLoading = false,
@@ -35,12 +34,19 @@ class AssetsViewModel(
     fun execute(action: AssetsAction) {
         when (action) {
             is AssetsAction.OnSearchChanged -> updateSearchQuery(action.query)
+
+            is AssetsAction.OnAssetClicked -> {
+                viewModelScope.launch {
+                    appNavigator.navigateTo(Route.AssetDetail(action.assetId))
+                }
+            }
+
             AssetsAction.OnBackClicked -> {
                 appNavigator.navigateBack()
             }
 
-            is AssetsAction.OnAssetClicked -> {
-                appNavigator.navigateTo(Route.AssetDetail(action.assetId))
+            AssetsAction.OnLogoutClicked -> {
+                appNavigator.navigateTo(route = Route.Login, clearBackStack = true)
             }
         }
     }

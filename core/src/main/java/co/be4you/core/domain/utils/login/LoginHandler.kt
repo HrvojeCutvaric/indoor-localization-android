@@ -14,5 +14,6 @@ interface LoginHandler<State : LoginUiState, Action : LoginUiAction> {
     )
 
     val buttonTextResource: Int
+    val titleTextResource: Int
 }
 
