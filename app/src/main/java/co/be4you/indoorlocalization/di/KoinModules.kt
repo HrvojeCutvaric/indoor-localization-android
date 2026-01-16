@@ -6,6 +6,8 @@ import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
+import co.be4you.core.data.network.services.ZoneService
+import co.be4you.core.data.network.test.TestZoneService
 import co.be4you.core.data.network.ws.WSAssetService
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.network.ws.WSFloorMapService
@@ -17,6 +19,7 @@ import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
+import co.be4you.core.data.repositories.ZoneRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.core.domain.utils.Constants
@@ -68,6 +71,8 @@ val modules = module {
     singleOf(::AppNavigator).bind<AppNavigator>()
     singleOf(::MqttAssetTrackingService).bind<AssetTrackingService>()
     singleOf(::AssetTrackingRepository).bind<AssetTrackingRepository>()
+    singleOf(::TestZoneService).bind<ZoneService>()
+    singleOf(::ZoneRepository).bind<ZoneRepository>()
     single { Gson() }
 
     viewModelOf(::MainViewModel)
