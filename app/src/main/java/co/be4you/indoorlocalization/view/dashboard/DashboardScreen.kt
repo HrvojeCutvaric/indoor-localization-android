@@ -6,7 +6,6 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -192,7 +191,7 @@ private fun DashboardLayout(
 
 @Composable
 fun PinchToZoomView(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     floorMap: FloorMap,
     assets: List<Asset>,
     zones: List<Zone>
@@ -207,14 +206,9 @@ fun PinchToZoomView(
     var initialOffset by remember { mutableStateOf(Offset(0f, 0f)) }
     val slowMovement = 0.5f
 
-    val aspectRatio = if (floorMap.imageWidthPx <= 0 || floorMap.imageHeightPx <= 0) {
-        1f
-    } else floorMap.imageWidthPx.toFloat() / floorMap.imageHeightPx.toFloat()
-
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(aspectRatio)
+            .clip(RectangleShape)
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, zoom, _ ->
                     val newScale = (scale * zoom).coerceIn(minScale, maxScale)
