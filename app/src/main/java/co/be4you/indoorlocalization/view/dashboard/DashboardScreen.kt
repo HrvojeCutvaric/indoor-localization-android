@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -44,7 +45,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +67,7 @@ import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardState
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import coil3.compose.AsyncImage
+import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
@@ -312,32 +316,44 @@ private fun DrawAssetsOverlay(
     floorMap: FloorMap,
 ) {
     val density = LocalDensity.current
-    val fontSize = 8
+    val fontSize = 8.sp
+    val labelMaxWidth = 56.dp
+    val dotSize = 4.dp
+    val spacing = 4.dp
 
-    assets.forEach { asset ->
-        val x = asset.x ?: return@forEach
-        val y = asset.y ?: return@forEach
+    Box(modifier = modifier.fillMaxSize()) {
+        assets.forEach { asset ->
+            val x = asset.x ?: return@forEach
+            val y = asset.y ?: return@forEach
 
-        val pxX = ((x / floorMap.widthInMeters) * floorMap.imageWidthPx).toFloat()
-        val pxY = ((y / floorMap.heightInMeters) * floorMap.imageHeightPx).toFloat()
+            val pxX = ((x / floorMap.widthInMeters) * floorMap.imageWidthPx).toFloat()
+            val pxY = ((y / floorMap.heightInMeters) * floorMap.imageHeightPx).toFloat()
 
-        val offsetX = with(density) { pxX.toDp() }
-        val offsetY = with(density) { pxY.toDp() }
+            val color = asset.colorHex?.let { hex ->
+                runCatching { Color(hex.toColorInt()) }.getOrElse { Color.Gray }
+            } ?: Color.Gray
 
-        val color = asset.colorHex?.let { hex ->
-            runCatching { Color(hex.toColorInt()) }
-                .getOrElse { Color.Gray }
-        } ?: Color.Gray
+            val labelSizePx = remember(asset.id) { mutableStateOf(IntSize.Zero) }
 
-        Box(modifier = modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .offset(x = offsetX, y = offsetY)
-                    .offset(x = (-(fontSize * 2)).dp, y = (-(fontSize * 2)).dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier.offset {
+                    IntOffset(pxX.roundToInt(), pxY.roundToInt())
+                }
             ) {
                 Text(
                     modifier = Modifier
+                        .onGloballyPositioned { coords -> labelSizePx.value = coords.size }
+                        .offset {
+                            val w = labelSizePx.value.width
+                            val h = labelSizePx.value.height
+                            val spacingPx = with(density) { spacing.roundToPx() }
+
+                            IntOffset(
+                                x = -w / 2,
+                                y = -(h + spacingPx)
+                            )
+                        }
+                        .widthIn(max = labelMaxWidth)
                         .background(
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                             shape = RoundedCornerShape(4.dp)
@@ -346,15 +362,22 @@ private fun DrawAssetsOverlay(
                         .padding(horizontal = 4.dp, vertical = 2.dp),
                     text = asset.name,
                     style = TextStyle(
-                        fontSize = fontSize.sp,
+                        fontSize = fontSize,
                         color = MaterialTheme.colorScheme.onPrimary,
                     ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false,
                 )
 
                 Box(
                     modifier = Modifier
-                        .size(4.dp)
-                        .background(color, CircleShape),
+                        .offset {
+                            val r = with(density) { (dotSize / 2).roundToPx() }
+                            IntOffset(-r, -r)
+                        }
+                        .size(dotSize)
+                        .background(color, CircleShape)
                 )
             }
         }
