@@ -1,5 +1,6 @@
 package co.be4you.indoorlocalization.view.dashboard
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -276,10 +278,7 @@ fun PinchToZoomView(
             var imageSize by remember { mutableStateOf(IntSize.Zero) }
 
             AsyncImage(
-                modifier = Modifier
-                    .onGloballyPositioned { coords ->
-                        imageSize = coords.size
-                    },
+                modifier = Modifier.onGloballyPositioned { coords -> imageSize = coords.size },
                 model = floorMap.imageUrl,
                 contentDescription = floorMap.name,
                 contentScale = ContentScale.None,
@@ -303,7 +302,8 @@ fun PinchToZoomView(
                     )
                     .clip(RectangleShape),
                 assets = assets,
-                floorMap = floorMap
+                floorMap = floorMap,
+                scale = scale,
             )
         }
     }
@@ -314,12 +314,21 @@ private fun DrawAssetsOverlay(
     modifier: Modifier = Modifier,
     assets: List<Asset>,
     floorMap: FloorMap,
+    scale: Float,
 ) {
     val density = LocalDensity.current
     val fontSize = 8.sp
     val labelMaxWidth = 56.dp
     val dotSize = 4.dp
     val spacing = 4.dp
+    val startFadingAt = 2.6f
+    val fullyHiddenAt = 3.6f
+
+    val t = ((scale - startFadingAt) / (fullyHiddenAt - startFadingAt))
+        .coerceIn(0f, 1f)
+
+    val targetAlpha = 1f - t
+    val alpha by animateFloatAsState(targetAlpha, label = "labelAlpha")
 
     Box(modifier = modifier.fillMaxSize()) {
         assets.forEach { asset ->
@@ -340,35 +349,38 @@ private fun DrawAssetsOverlay(
                     IntOffset(pxX.roundToInt(), pxY.roundToInt())
                 }
             ) {
-                Text(
-                    modifier = Modifier
-                        .onGloballyPositioned { coords -> labelSizePx.value = coords.size }
-                        .offset {
-                            val w = labelSizePx.value.width
-                            val h = labelSizePx.value.height
-                            val spacingPx = with(density) { spacing.roundToPx() }
+                if (alpha > 0.02f) {
+                    Text(
+                        modifier = Modifier
+                            .alpha(alpha)
+                            .onGloballyPositioned { coords -> labelSizePx.value = coords.size }
+                            .offset {
+                                val w = labelSizePx.value.width
+                                val h = labelSizePx.value.height
+                                val spacingPx = with(density) { spacing.roundToPx() }
 
-                            IntOffset(
-                                x = -w / 2,
-                                y = -(h + spacingPx)
+                                IntOffset(
+                                    x = -w / 2,
+                                    y = -(h + spacingPx)
+                                )
+                            }
+                            .widthIn(max = labelMaxWidth)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                                shape = RoundedCornerShape(4.dp)
                             )
-                        }
-                        .widthIn(max = labelMaxWidth)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .border(1.dp, Color.White, RoundedCornerShape(4.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp),
-                    text = asset.name,
-                    style = TextStyle(
-                        fontSize = fontSize,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    softWrap = false,
-                )
+                            .border(1.dp, Color.White, RoundedCornerShape(4.dp))
+                            .padding(horizontal = 4.dp, vertical = 2.dp),
+                        text = asset.name,
+                        style = TextStyle(
+                            fontSize = fontSize,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        softWrap = false,
+                    )
+                }
 
                 Box(
                     modifier = Modifier
