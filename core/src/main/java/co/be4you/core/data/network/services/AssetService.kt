@@ -7,4 +7,6 @@ interface AssetService {
     suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>>
 
     suspend fun getAsset(id: Long): Result<Asset>
+
+    suspend fun deleteAsset(id: Long): Result<Unit>
 }

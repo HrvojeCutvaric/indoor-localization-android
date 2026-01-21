@@ -30,6 +30,11 @@ class AssetDetailViewModel(
             AssetDetailAction.OnLogoutClicked -> {
                 appNavigator.navigateTo(route = Route.Login, clearBackStack = true)
             }
+
+            AssetDetailAction.OnDeleteClicked -> {
+                val id = assetId ?: return
+                deleteAsset(id)
+            }
         }
     }
 
@@ -59,6 +64,28 @@ class AssetDetailViewModel(
                             errorResource = R.string.generic_error_message
                         )
                     }
+                }
+            )
+        }
+    }
+
+    private fun deleteAsset(id: Long){
+
+        if(_state.value.isDeleting) return
+
+        _state.update { it.copy(isDeleting = true, errorResource = null) }
+
+        viewModelScope.launch(Dispatchers.IO){
+            repository.deleteAsset(id).fold(
+                onSuccess = {
+                    _state.update { it.copy(isDeleting = false) }
+                    appNavigator.navigateBack()
+                },
+                onFailure = {
+                    _state.update { it.copy(
+                        isDeleting = false,
+                        errorResource = R.string.error_deleting_asset
+                    ) }
                 }
             )
         }

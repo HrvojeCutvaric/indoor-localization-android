@@ -38,4 +38,18 @@ class WSAssetService (
             Result.failure(e)
         }
     }
+
+    override suspend fun deleteAsset(id: Long): Result<Unit> {
+        return try{
+            val response = assetApi.deleteAsset(id)
+
+            if(response.isSuccessful){
+                Result.success(Unit)
+            } else {
+                Result.failure(Throwable("Failed to delete asset"))
+            }
+        } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
 }
