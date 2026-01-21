@@ -7,13 +7,14 @@ import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.services.ZoneService
-import co.be4you.core.data.network.test.TestZoneService
 import co.be4you.core.data.network.ws.WSAssetService
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.network.ws.WSFloorMapService
+import co.be4you.core.data.network.ws.WSZoneService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.FloorMapApi
+import co.be4you.core.data.network.ws.api.ZoneApi
 import co.be4you.core.data.network.ws.mqtt.MqttAssetTrackingService
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.AssetTrackingRepository
@@ -71,7 +72,7 @@ val modules = module {
     singleOf(::AppNavigator).bind<AppNavigator>()
     singleOf(::MqttAssetTrackingService).bind<AssetTrackingService>()
     singleOf(::AssetTrackingRepository).bind<AssetTrackingRepository>()
-    singleOf(::TestZoneService).bind<ZoneService>()
+    singleOf(::WSZoneService).bind<ZoneService>()
     singleOf(::ZoneRepository).bind<ZoneRepository>()
     single { Gson() }
 
@@ -108,6 +109,7 @@ val modules = module {
     single { get<Retrofit>(named(RetrofitType.Default)).create(AuthApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(FloorMapApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetApi::class.java) }
+    single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneApi::class.java) }
 }
 
 private fun createDefaultOkHttpClient(): OkHttpClient.Builder =
