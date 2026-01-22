@@ -16,6 +16,7 @@
     <string name="username_exists">The username is already in use by another account</string>
     <string name="confirm_password_not_match">Confirm password doesn\'t match password</string>
     <string name="generic_error_message">Sorry, something went wrong.</string>
+    <string name="error_deleting_asset">Couldn’t delete asset. Please try again.</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="invalid_email_password">Incorrect email or password.</string>
     <string name="please_select_floor_map">Please select a floor map.</string>
@@ -29,5 +30,14 @@
     <string name="send_otp_code">Send OTP</string>
     <string name="assets">Assets</string>
     <string name="add_asset">Add Asset</string>
+    <string name="generic_name_label">Name</string>
+    <string name="generic_name_placeholder">Enter asset name</string>
+    <string name="generic_x_label">X position</string>
+    <string name="generic_x_placeholder">Enter X coordinate</string>
+    <string name="generic_y_label">Y position</string>
+    <string name="generic_y_placeholder">Enter Y coordinate</string>
+    <string name="generic_color_label">Color</string>
+    <string name="generic_color_placeholder">Enter color (e.g. #FF0000)</string>
+    <string name="generic_save">Save</string>
     <string name="back">Back</string>
 </resources>

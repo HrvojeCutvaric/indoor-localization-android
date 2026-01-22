@@ -16,6 +16,9 @@ class AssetsViewModel(
     private val repository: AssetRepository,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
+
+    private var floorMapId: Long? = null
+    private var floorMapName: String? = null
     private val _state = MutableStateFlow(
         AssetsState(
             isLoading = false,
@@ -27,7 +30,9 @@ class AssetsViewModel(
     )
     val state = _state.asStateFlow()
 
-    fun setFloorMapId(id: Long) {
+    fun setFloorMapId(id: Long, name: String) {
+        floorMapId = id
+        floorMapName = name
         loadAssets(id)
     }
 
@@ -39,6 +44,12 @@ class AssetsViewModel(
                 viewModelScope.launch {
                     appNavigator.navigateTo(Route.AssetDetail(action.assetId))
                 }
+            }
+
+            AssetsAction.OnAddAssetClicked -> {
+                val id = floorMapId ?: return
+                val name = floorMapName ?: ""
+                appNavigator.navigateTo(Route.CreateAsset(floorMapId = id, floorMapName = name))
             }
 
             AssetsAction.OnBackClicked -> {

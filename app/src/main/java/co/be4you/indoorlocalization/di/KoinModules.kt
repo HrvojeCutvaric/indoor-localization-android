@@ -52,6 +52,8 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
+
 
 enum class RetrofitType {
     Default, Authorized
@@ -82,6 +84,7 @@ val modules = module {
     viewModelOf(::DashboardViewModel)
     viewModelOf(::AssetsViewModel)
     viewModelOf(::AssetDetailViewModel)
+    viewModelOf(::AddAssetViewModel)
 
     factoryOf(::RegisterUseCase)
 

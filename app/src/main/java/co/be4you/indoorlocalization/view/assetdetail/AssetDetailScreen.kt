@@ -17,6 +17,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +33,11 @@ import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+
 
 @Composable
 fun AssetDetailScreen(
@@ -38,6 +45,8 @@ fun AssetDetailScreen(
     viewModel: AssetDetailViewModel = koinViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(assetId) {
         viewModel.setAssetId(assetId)
@@ -52,6 +61,33 @@ fun AssetDetailScreen(
             onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
             onLogout = {viewModel.execute(AssetDetailAction.OnLogoutClicked)}
         )
+
+        if(showDeleteDialog){
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false},
+                title = {Text("Delete this asset?")},
+                text = {Text("This action cannot be undone.")},
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            viewModel.execute(AssetDetailAction.OnDeleteClicked)
+                        },
+                        enabled = !state.isDeleting
+                    ) {
+                        Text("Delete")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showDeleteDialog = false },
+                        enabled = !state.isDeleting
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
 
         when {
             state.isLoading -> {
@@ -127,10 +163,14 @@ fun AssetDetailScreen(
                 .padding(20.dp)
         ) {
 
+            val isDeleting = state.isDeleting
+            val isBusy = state.isLoading || isDeleting
+
             DefaultButton(
                 modifier = Modifier.fillMaxWidth(),
                 label = null,
                 onButtonClicked = { /* TODO EDIT */ },
+                isButtonEnabled = !isBusy,
                 content = { Text("Edit", color = Color.White) }
             )
 
@@ -142,8 +182,10 @@ fun AssetDetailScreen(
                     containerColor = Color(0xFFC54B3C),
                     contentColor = Color.White
                 ),
-                onButtonClicked = { /* TODO DELETE */ },
-                content = { Text("Delete") }
+                onButtonClicked = { showDeleteDialog = true },
+                isButtonEnabled = !isBusy,
+                isButtonLoading = state.isDeleting,
+                content = { if(!state.isDeleting) Text("Delete")}
             )
         }
     }

@@ -6,4 +6,6 @@ sealed interface AssetDetailAction {
 
     data object OnBackClicked : AssetDetailAction
     data object OnLogoutClicked : AssetDetailAction
+
+    data object OnDeleteClicked : AssetDetailAction
 }

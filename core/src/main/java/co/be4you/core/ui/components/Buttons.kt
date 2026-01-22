@@ -48,7 +48,7 @@ fun DefaultButton(
 ) {
     Button(
         modifier = modifier,
-        enabled = isButtonEnabled,
+        enabled = isButtonEnabled && !isButtonLoading,
         shape = ShapeDefaults.Small,
         contentPadding = PaddingValues(16.dp),
         onClick = onButtonClicked,
