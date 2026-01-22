@@ -3,6 +3,7 @@ package co.be4you.core.data.network.ws
 import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.mappers.toAsset
+import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
 import co.be4you.core.domain.models.Asset
 
 class WSAssetService (
@@ -49,6 +50,20 @@ class WSAssetService (
                 Result.failure(Throwable("Failed to delete asset"))
             }
         } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun createAsset(request: CreateAssetRequestDto): Result<Unit>{
+        return try{
+            val response = assetApi.createAsset(request)
+
+            if(response.isSuccessful){
+                Result.success(Unit)
+            }else{
+                Result.failure(Throwable("Failed to create asset"))
+            }
+        }catch(e: Exception){
             Result.failure(e)
         }
     }

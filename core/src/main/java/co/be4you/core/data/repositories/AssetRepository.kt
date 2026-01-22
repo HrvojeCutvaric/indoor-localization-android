@@ -1,5 +1,6 @@
 package co.be4you.core.data.repositories
 import co.be4you.core.data.network.services.AssetService
+import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
 import co.be4you.core.domain.models.Asset
 
 class AssetRepository(
@@ -15,6 +16,10 @@ class AssetRepository(
 
     suspend fun deleteAsset(id: Long): Result<Unit> {
         return assetService.deleteAsset(id)
+    }
+
+    suspend fun createAsset(request: CreateAssetRequestDto): Result<Unit>{
+        return assetService.createAsset(request)
     }
 
 }

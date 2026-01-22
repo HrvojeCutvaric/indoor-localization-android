@@ -26,6 +26,7 @@ import co.be4you.indoorlocalization.view.registration.RegistrationScreen
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import co.be4you.indoorlocalization.view.createasset.AddAssetScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,13 @@ class MainActivity : ComponentActivity() {
                         entry<Route.AssetDetail> { detail ->
                             AssetDetailScreen(
                                 assetId = detail.assetId
+                            )
+                        }
+
+                        entry<Route.CreateAsset> { create ->
+                            AddAssetScreen(
+                                floorMapId = create.floorMapId,
+                                floorMapName = create.floorMapName
                             )
                         }
                     }

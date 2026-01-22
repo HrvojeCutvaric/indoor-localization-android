@@ -30,5 +30,14 @@
     <string name="send_otp_code">Send OTP</string>
     <string name="assets">Assets</string>
     <string name="add_asset">Add Asset</string>
+    <string name="generic_name_label">Name</string>
+    <string name="generic_name_placeholder">Enter asset name</string>
+    <string name="generic_x_label">X position</string>
+    <string name="generic_x_placeholder">Enter X coordinate</string>
+    <string name="generic_y_label">Y position</string>
+    <string name="generic_y_placeholder">Enter Y coordinate</string>
+    <string name="generic_color_label">Color</string>
+    <string name="generic_color_placeholder">Enter color (e.g. #FF0000)</string>
+    <string name="generic_save">Save</string>
     <string name="back">Back</string>
 </resources>

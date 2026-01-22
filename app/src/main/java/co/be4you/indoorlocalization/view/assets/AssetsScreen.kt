@@ -51,15 +51,15 @@ fun AssetsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(floorMapId) {
-        viewModel.setFloorMapId(floorMapId)
+    LaunchedEffect(floorMapId, floorMapName) {
+        viewModel.setFloorMapId(floorMapId, floorMapName)
     }
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner, floorMapId) {
         val observer = LifecycleEventObserver  {_, event ->
             if(event == Lifecycle.Event.ON_RESUME){
-                viewModel.setFloorMapId(floorMapId)
+                viewModel.setFloorMapId(floorMapId, floorMapName)
             }
         }
 
@@ -82,7 +82,7 @@ fun AssetsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            onButtonClicked = {/*TODO*/ },
+            onButtonClicked = { viewModel.execute(AssetsAction.OnAddAssetClicked) },
             label = null,
             content = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
