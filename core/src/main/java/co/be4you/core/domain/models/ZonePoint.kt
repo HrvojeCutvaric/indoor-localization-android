@@ -1,7 +1,9 @@
 package co.be4you.core.domain.models
 
+import com.google.gson.annotations.SerializedName
+
 data class ZonePoint(
-    val x: Double,
-    val y: Double,
-    val ordinalNumber: Int
+    @SerializedName("X") val x: Double,
+    @SerializedName("Y") val y: Double,
+    @SerializedName("OrdinalNumber") val ordinalNumber: Int,
 )
