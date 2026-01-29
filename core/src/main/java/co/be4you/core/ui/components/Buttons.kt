@@ -1,6 +1,7 @@
 package co.be4you.core.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -126,6 +129,48 @@ fun LabelWithTextButton(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                 )
+            )
+        }
+    }
+}
+
+@Composable
+fun SecondaryButton(
+    modifier: Modifier = Modifier,
+    label: String,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
+        contentColor = MaterialTheme.colorScheme.primary,
+    ),
+    borderStroke: BorderStroke = BorderStroke(
+        width = 1.dp,
+        color = MaterialTheme.colorScheme.outlineVariant
+    ),
+    onButtonClicked: () -> Unit,
+) {
+    OutlinedButton(
+        modifier = modifier,
+        colors = colors,
+        border = borderStroke,
+        shape = ShapeDefaults.Small,
+        enabled = isEnabled,
+        contentPadding = PaddingValues(16.dp),
+        onClick = onButtonClicked,
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                strokeWidth = 1.dp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            Text(
+                text = label,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
             )
         }
     }

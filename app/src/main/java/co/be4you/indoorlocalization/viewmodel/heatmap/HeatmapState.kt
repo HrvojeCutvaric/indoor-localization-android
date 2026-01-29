@@ -1,6 +1,5 @@
 package co.be4you.indoorlocalization.viewmodel.heatmap
 
-import androidx.compose.ui.graphics.ImageBitmap
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.core.domain.models.Zone
@@ -8,25 +7,16 @@ import co.be4you.indoorlocalization.utils.HeatmapScreenMode
 
 data class HeatmapState(
     val mode: HeatmapScreenMode = HeatmapScreenMode.FILTERS,
-
     val floorMap: FloorMap? = null,
-
     val assets: List<Asset> = emptyList(),
     val selectedAssets: List<Asset> = emptyList(),
-
     val showZones: Boolean = false,
-
+    val zones: List<Zone> = emptyList(),
     val fromDateTime: Long? = null,
     val toDateTime: Long? = null,
-
     val errorRes: Int? = null,
-
-    val heatmapBitmap: ImageBitmap? = null,
-    val zones: List<Zone> = emptyList(),
-
-    val isFloorMapDropdownExpanded: Boolean = false,
-
-    val activeDateTimeOption: DateTimeOption? = null
+    val activeDateTimeOption: DateTimeOption? = null,
+    val isButtonLoading: Boolean = false,
 ) {
     companion object {
         enum class DateTimeOption {

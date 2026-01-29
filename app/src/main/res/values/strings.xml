@@ -48,4 +48,7 @@
     <string name="time">Time</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="generate">Generate</string>
+    <string name="back_to_dashboard">Back to Dashboard</string>
+    <string name="heatmap">Heatmap</string>
 </resources>

@@ -1,9 +1,10 @@
 package co.be4you.indoorlocalization.viewmodel.heatmap
 
 sealed interface HeatmapAction {
-    data object OnFromDateClicked : HeatmapAction
 
-    data object OnToDateClicked : HeatmapAction
+    data object OnGenerateClicked : HeatmapAction
+
+    data object OnBackToDashboardClicked : HeatmapAction
 
     data object OnCloseDateTimePicker : HeatmapAction
 

@@ -8,6 +8,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -181,24 +183,40 @@ private fun DashboardLayout(
             }
         }
 
-        DefaultButton(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            label = R.string.assets,
-            isButtonEnabled = state.selectedFloorMap != null,
-            isButtonLoading = false,
-            onButtonClicked = {
-                state.selectedFloorMap?.let { map ->
-                    onAction(
-                        DashboardAction.OnNavigateToAssets(
-                            floorMapId = map.id,
-                            floorMapName = map.name
+                .padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            DefaultButton(
+                modifier = Modifier.weight(1f),
+                label = R.string.assets,
+                isButtonEnabled = state.selectedFloorMap != null,
+                isButtonLoading = false,
+                onButtonClicked = {
+                    state.selectedFloorMap?.let { map ->
+                        onAction(
+                            DashboardAction.OnNavigateToAssets(
+                                floorMapId = map.id,
+                                floorMapName = map.name
+                            )
                         )
-                    )
+                    }
                 }
-            }
-        )
+            )
+
+            DefaultButton(
+                modifier = Modifier.weight(1f),
+                label = R.string.heatmap,
+                isButtonEnabled = state.selectedFloorMap != null,
+                isButtonLoading = false,
+                onButtonClicked = { onAction(DashboardAction.OnHeatmapClicked) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 

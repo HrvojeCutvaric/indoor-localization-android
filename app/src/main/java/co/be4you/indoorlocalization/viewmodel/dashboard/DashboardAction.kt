@@ -10,10 +10,12 @@ sealed interface DashboardAction {
 
     data object OnLogoutClicked : DashboardAction
 
+    data object OnHeatmapClicked : DashboardAction
+
     data class OnFloorMapSelected(val floorMap: FloorMap) : DashboardAction
 
     data class OnNavigateToAssets(
         val floorMapId: Long,
-        val floorMapName: String
-    ): DashboardAction
+        val floorMapName: String,
+    ) : DashboardAction
 }

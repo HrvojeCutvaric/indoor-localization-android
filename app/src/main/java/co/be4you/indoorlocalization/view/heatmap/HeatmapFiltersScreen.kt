@@ -1,5 +1,6 @@
 package co.be4you.indoorlocalization.view.heatmap
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.SecondaryButton
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.formatDate
@@ -108,6 +113,32 @@ fun HeatmapFiltersScreen(
             },
         )
 
+        Spacer(modifier = Modifier.height(32.dp))
+
+        DefaultButton(
+            modifier = Modifier.fillMaxWidth(),
+            label = R.string.generate,
+            onButtonClicked = { onAction(HeatmapAction.OnGenerateClicked) },
+            isButtonLoading = state.isButtonLoading,
+            isButtonEnabled = state.isButtonLoading.not(),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        SecondaryButton(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.back_to_dashboard),
+            onButtonClicked = { onAction(HeatmapAction.OnBackToDashboardClicked) },
+            isLoading = state.isButtonLoading,
+            isEnabled = state.isButtonLoading.not(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.outline,
+            ),
+            borderStroke = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline
+            ),
+        )
     }
 }
 

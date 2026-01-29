@@ -29,7 +29,9 @@ import co.be4you.core.navigation.AppNavigator
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
+import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
+import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
@@ -52,7 +54,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
 
 
 enum class RetrofitType {
@@ -85,6 +86,7 @@ val modules = module {
     viewModelOf(::AssetsViewModel)
     viewModelOf(::AssetDetailViewModel)
     viewModelOf(::AddAssetViewModel)
+    viewModelOf(::HeatmapViewModel)
 
     factoryOf(::RegisterUseCase)
 
