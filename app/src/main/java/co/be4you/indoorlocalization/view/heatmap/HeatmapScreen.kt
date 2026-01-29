@@ -50,5 +50,9 @@ fun HeatmapLayout(
         HeatmapScreenMode.REPORT -> {
             // TODO: implement
         }
+
+        HeatmapScreenMode.SELECT_ASSETS -> {
+            // TODO: implement
+        }
     }
 }

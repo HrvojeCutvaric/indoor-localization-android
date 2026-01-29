@@ -183,6 +183,14 @@ class HeatmapViewModel(
             HeatmapAction.OnGenerateClicked -> {
                 // TODO: implement on generate clicked
             }
+
+            is HeatmapAction.OnRemoveAssetClicked -> {
+                _state.update { it?.copy(selectedAssets = it.selectedAssets - action.asset) }
+            }
+
+            HeatmapAction.OnAddAssetClicked -> {
+                _state.update { it?.copy(mode = HeatmapScreenMode.SELECT_ASSETS) }
+            }
         }
     }
 }

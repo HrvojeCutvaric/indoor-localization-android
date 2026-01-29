@@ -1,21 +1,34 @@
 package co.be4you.indoorlocalization.view.heatmap
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import co.be4you.core.domain.models.Asset
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.SecondaryButton
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
@@ -69,6 +82,26 @@ fun HeatmapFiltersScreen(
             .fillMaxSize()
             .padding(horizontal = 12.dp),
     ) {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            state.selectedAssets.forEach { asset ->
+                AssetTag(
+                    asset = asset,
+                    onRemove = { onAction(HeatmapAction.OnRemoveAssetClicked(asset)) },
+                )
+            }
+
+            AddAssetTag(
+                label = stringResource(R.string.add_asset),
+                onClick = { onAction(HeatmapAction.OnAddAssetClicked) },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         DateTimeRowSection(
             dateText = state.fromDateTime?.formatDate().orEmpty(),
             timeText = state.fromDateTime?.formatTime().orEmpty(),
@@ -141,6 +174,85 @@ fun HeatmapFiltersScreen(
         )
     }
 }
+
+@Composable
+fun AssetTag(
+    asset: Asset,
+    onRemove: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surface, CircleShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+            .clickable(onClick = onRemove)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .clip(CircleShape)
+                .background(asset.color)
+                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape)
+        )
+
+        Spacer(Modifier.width(8.dp))
+
+        Text(
+            text = asset.name,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            maxLines = 1
+        )
+
+        Spacer(Modifier.width(8.dp))
+
+        Text(
+            text = "×",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        )
+    }
+}
+
+@Composable
+fun AddAssetTag(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "+",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Spacer(Modifier.width(8.dp))
+
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            maxLines = 1
+        )
+    }
+}
+
 
 @Composable
 fun DateTimeRowSection(
