@@ -20,8 +20,6 @@ import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetAction
 import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.res.stringResource
 
 @Composable
@@ -59,37 +57,17 @@ fun AddAssetScreen(
                 onValueChange = { viewModel.execute(AddAssetAction.OnNameChanged(it)) }
             )
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(17.dp))
 
-            DefaultTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.x,
-                label = R.string.generic_x_label,
-                placeholder = R.string.generic_x_placeholder,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                onValueChange = { viewModel.execute(AddAssetAction.OnXChanged(it)) }
+            ColorPickerSection(
+                colorHex = state.color,
+                onColorHexChanged = { hex ->
+                    val normalized = if (hex.startsWith("#")) hex else "#$hex"
+                    viewModel.execute(AddAssetAction.OnColorChanged(normalized))
+                }
             )
 
             Spacer(Modifier.height(12.dp))
-
-            DefaultTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.y,
-                label = R.string.generic_y_label,
-                placeholder = R.string.generic_y_placeholder,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                onValueChange = { viewModel.execute(AddAssetAction.OnYChanged(it)) }
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            DefaultTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.color,
-                label = R.string.generic_color_label,
-                placeholder = R.string.generic_color_placeholder,
-                onValueChange = { viewModel.execute(AddAssetAction.OnColorChanged(it)) }
-            )
 
             state.errorResource?.let { resId ->
                 Spacer(Modifier.height(12.dp))
