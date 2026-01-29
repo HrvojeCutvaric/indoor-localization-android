@@ -1,5 +1,6 @@
 package co.be4you.indoorlocalization.viewmodel.heatmap
 
+import androidx.compose.ui.graphics.ImageBitmap
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.domain.models.AssetPositionHistory
 import co.be4you.core.domain.models.FloorMap
@@ -22,6 +23,7 @@ data class HeatmapState(
     val unselectedAssets: List<Asset> = emptyList(),
     val searchQuery: String,
     val assetPositionHistory: List<AssetPositionHistory> = emptyList(),
+    val heatmapBitmap: ImageBitmap? = null,
 ) {
     companion object {
         enum class DateTimeOption {

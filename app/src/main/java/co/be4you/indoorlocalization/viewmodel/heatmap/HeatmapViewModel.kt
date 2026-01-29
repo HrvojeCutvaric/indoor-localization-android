@@ -1,6 +1,7 @@
 package co.be4you.indoorlocalization.viewmodel.heatmap
 
 import android.util.Log
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetPositionHistoryRepository
@@ -8,7 +9,9 @@ import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
+import co.be4you.indoorlocalization.utils.HeatPointPx
 import co.be4you.indoorlocalization.utils.HeatmapScreenMode
+import co.be4you.indoorlocalization.utils.generateHeatmapBitmapTrailLike
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -20,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -188,37 +192,61 @@ class HeatmapViewModel(
 
             HeatmapAction.OnGenerateClicked -> {
                 _state.value?.let { currentState ->
-                    if (currentState.fromDateTime == null || currentState.toDateTime == null) {
-                        return
-                    }
+                    val from = currentState.fromDateTime ?: return
+                    val to = currentState.toDateTime ?: return
+                    val floorMap = currentState.floorMap ?: return
 
-                    if (currentState.floorMap == null) {
-                        return
-                    }
+                    val mapW = floorMap.imageWidthPx
+                    val mapH = floorMap.imageHeightPx
+
+                    _state.update { it?.copy(isButtonLoading = true) }
 
                     viewModelScope.launch {
                         assetPositionHistoryRepository.getAssetPositionHistory(
                             floorMapId = currentState.floorMap.id,
-                            from = currentState.fromDateTime,
-                            to = currentState.toDateTime,
+                            from = from,
+                            to = to,
                         ).fold(
                             onSuccess = { assetPositionHistory ->
-                                val filteredAssetPositionHistory =
-                                    assetPositionHistory.filterNot { assetPosition ->
-                                        currentState.selectedAssets.none { it.id == assetPosition.assetId }
+                                val selectedIds = currentState.selectedAssets.map { it.id }.toSet()
+
+                                val filtered = if (selectedIds.isEmpty()) {
+                                    assetPositionHistory
+                                } else {
+                                    assetPositionHistory.filter { it.assetId in selectedIds }
+                                }
+
+                                val heatBmp = withContext(Dispatchers.Default) {
+                                    val pointsPx = filtered.map { p ->
+                                        val pxX = (p.x / floorMap.widthInMeters) * mapW
+                                        val pxY = (p.y / floorMap.heightInMeters) * mapH
+                                        HeatPointPx(pxX.toFloat(), pxY.toFloat())
                                     }
+
+                                    generateHeatmapBitmapTrailLike(
+                                        pointsPx = pointsPx,
+                                        mapW = mapW,
+                                        mapH = mapH,
+                                        radiusPx = 16,     // tune
+                                        intensity = 1.2f   // tune
+                                    )
+                                }
 
                                 _state.update {
                                     it?.copy(
-                                        assetPositionHistory = filteredAssetPositionHistory,
+                                        isButtonLoading = false,
+                                        assetPositionHistory = filtered,
+                                        heatmapBitmap = heatBmp.asImageBitmap(),
+                                        mode = HeatmapScreenMode.REPORT // if you use 2-step flow
                                     )
                                 }
                             },
-                            onFailure = {
+                            onFailure = { throwable ->
                                 Log.e(
                                     "HeatmapViewModel",
-                                    "Failed to fetch asset position history: ${it.message}"
+                                    "Failed to fetch asset position history: ${throwable.message}"
                                 )
+                                _state.update { it?.copy(isButtonLoading = false) }
                             }
                         )
                     }
@@ -283,6 +311,10 @@ class HeatmapViewModel(
 
             HeatmapAction.OnShowZonesClicked -> {
                 _state.update { it?.copy(showZones = it.showZones.not()) }
+            }
+
+            HeatmapAction.OnBackToFiltersClicked -> {
+                _state.update { it?.copy(mode = HeatmapScreenMode.FILTERS) }
             }
         }
     }

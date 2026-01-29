@@ -16,6 +16,8 @@ sealed interface HeatmapAction {
 
     data object OnShowZonesClicked : HeatmapAction
 
+    data object OnBackToFiltersClicked : HeatmapAction
+
     data class OnRemoveAssetClicked(val asset: Asset) : HeatmapAction
 
     data class OnDateSelected(val date: Long?) : HeatmapAction
