@@ -19,18 +19,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.SecondaryButton
+import co.be4you.core.ui.theme.BrandLightBlue
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.formatDate
@@ -145,6 +151,33 @@ fun HeatmapFiltersScreen(
                 )
             },
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.show_zone),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                ),
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Switch(
+                checked = state.showZones,
+                onCheckedChange = { onAction(HeatmapAction.OnShowZonesClicked) },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = BrandLightBlue,
+                    checkedTrackColor = BrandLightBlue.copy(alpha = 0.3f),
+                    uncheckedBorderColor = Color.Transparent
+                ),
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 

@@ -54,4 +54,5 @@
     <string name="info_select_assets">Select one or more assets.</string>
     <string name="asset_search_label">Search assets</string>
     <string name="asset_search_placeholder">Type an asset name…</string>
+    <string name="show_zone">Show zones</string>
 </resources>

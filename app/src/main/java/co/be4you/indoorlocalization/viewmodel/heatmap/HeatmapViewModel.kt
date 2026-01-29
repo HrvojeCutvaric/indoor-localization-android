@@ -237,6 +237,10 @@ class HeatmapViewModel(
 
                 }
             }
+
+            HeatmapAction.OnShowZonesClicked -> {
+                _state.update { it?.copy(showZones = it.showZones.not()) }
+            }
         }
     }
 }
