@@ -2,20 +2,24 @@ package co.be4you.indoorlocalization.di
 
 import co.be4you.core.data.network.AuthInterceptor
 import co.be4you.core.data.network.TokenAuthenticator
+import co.be4you.core.data.network.services.AssetPositionHistoryService
 import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.services.ZoneService
+import co.be4you.core.data.network.ws.WSAssetPositionHistoryService
 import co.be4you.core.data.network.ws.WSAssetService
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.network.ws.WSFloorMapService
 import co.be4you.core.data.network.ws.WSZoneService
 import co.be4you.core.data.network.ws.api.AssetApi
+import co.be4you.core.data.network.ws.api.AssetPositionHistoryApi
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.FloorMapApi
 import co.be4you.core.data.network.ws.api.ZoneApi
 import co.be4you.core.data.network.ws.mqtt.MqttAssetTrackingService
+import co.be4you.core.data.repositories.AssetPositionHistoryRepository
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.AuthRepository
@@ -77,6 +81,9 @@ val modules = module {
     singleOf(::AssetTrackingRepository).bind<AssetTrackingRepository>()
     singleOf(::WSZoneService).bind<ZoneService>()
     singleOf(::ZoneRepository).bind<ZoneRepository>()
+    singleOf(::WSAssetPositionHistoryService).bind<AssetPositionHistoryService>()
+    singleOf(::AssetPositionHistoryRepository).bind<AssetPositionHistoryRepository>()
+
     single { Gson() }
 
     viewModelOf(::MainViewModel)
@@ -115,6 +122,7 @@ val modules = module {
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(FloorMapApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneApi::class.java) }
+    single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetPositionHistoryApi::class.java) }
 }
 
 private fun createDefaultOkHttpClient(): OkHttpClient.Builder =

@@ -1,6 +1,7 @@
 package co.be4you.indoorlocalization.viewmodel.heatmap
 
 import co.be4you.core.domain.models.Asset
+import co.be4you.core.domain.models.AssetPositionHistory
 import co.be4you.core.domain.models.FloorMap
 import co.be4you.core.domain.models.Zone
 import co.be4you.indoorlocalization.utils.HeatmapScreenMode
@@ -20,6 +21,7 @@ data class HeatmapState(
     val preselectedAssets: List<Asset> = emptyList(),
     val unselectedAssets: List<Asset> = emptyList(),
     val searchQuery: String,
+    val assetPositionHistory: List<AssetPositionHistory> = emptyList(),
 ) {
     companion object {
         enum class DateTimeOption {

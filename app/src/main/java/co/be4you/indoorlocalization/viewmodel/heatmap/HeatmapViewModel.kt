@@ -1,7 +1,9 @@
 package co.be4you.indoorlocalization.viewmodel.heatmap
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.be4you.core.data.repositories.AssetPositionHistoryRepository
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.navigation.AppNavigator
@@ -28,6 +30,7 @@ class HeatmapViewModel(
     private val appNavigator: AppNavigator,
     private val floorMapRepository: FloorMapRepository,
     private val assetRepository: AssetRepository,
+    private val assetPositionHistoryRepository: AssetPositionHistoryRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow<HeatmapState?>(null)
     val state: StateFlow<HeatmapState?> = _state
@@ -184,7 +187,42 @@ class HeatmapViewModel(
             }
 
             HeatmapAction.OnGenerateClicked -> {
-                // TODO: implement on generate clicked
+                _state.value?.let { currentState ->
+                    if (currentState.fromDateTime == null || currentState.toDateTime == null) {
+                        return
+                    }
+
+                    if (currentState.floorMap == null) {
+                        return
+                    }
+
+                    viewModelScope.launch {
+                        assetPositionHistoryRepository.getAssetPositionHistory(
+                            floorMapId = currentState.floorMap.id,
+                            from = currentState.fromDateTime,
+                            to = currentState.toDateTime,
+                        ).fold(
+                            onSuccess = { assetPositionHistory ->
+                                val filteredAssetPositionHistory =
+                                    assetPositionHistory.filterNot { assetPosition ->
+                                        currentState.selectedAssets.none { it.id == assetPosition.assetId }
+                                    }
+
+                                _state.update {
+                                    it?.copy(
+                                        assetPositionHistory = filteredAssetPositionHistory,
+                                    )
+                                }
+                            },
+                            onFailure = {
+                                Log.e(
+                                    "HeatmapViewModel",
+                                    "Failed to fetch asset position history: ${it.message}"
+                                )
+                            }
+                        )
+                    }
+                }
             }
 
             is HeatmapAction.OnRemoveAssetClicked -> {
@@ -206,7 +244,12 @@ class HeatmapViewModel(
 
             HeatmapAction.OnSaveSelectedAssetsClicked -> {
                 if (_state.value?.preselectedAssets.isNullOrEmpty()) {
-                    _state.update { it?.copy(mode = HeatmapScreenMode.FILTERS, searchQuery = "") }
+                    _state.update {
+                        it?.copy(
+                            mode = HeatmapScreenMode.FILTERS,
+                            searchQuery = ""
+                        )
+                    }
                 } else {
                     _state.update {
                         it?.copy(
