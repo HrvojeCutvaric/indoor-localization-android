@@ -52,4 +52,5 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":password_login"))
     implementation(project(":otp_login"))
+    implementation(libs.kotlinx.datetime)
 }

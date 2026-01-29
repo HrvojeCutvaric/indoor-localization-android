@@ -15,3 +15,4 @@ val BrandLightBlue = Color(0xFF75AEE8)
 
 val CommonBlue = Color(0xFF0099CC)
 
+val Grey500 = Color(0xFF9E9E9E)

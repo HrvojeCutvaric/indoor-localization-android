@@ -40,4 +40,12 @@
     <string name="generic_color_placeholder">Enter color (e.g. #FF0000)</string>
     <string name="generic_save">Save</string>
     <string name="back">Back</string>
+    <string name="to_date">To date</string>
+    <string name="to_time">To time</string>
+    <string name="from_date">From date</string>
+    <string name="from_time">From time</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>
