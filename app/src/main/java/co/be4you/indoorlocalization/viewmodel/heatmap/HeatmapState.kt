@@ -17,10 +17,14 @@ data class HeatmapState(
     val errorRes: Int? = null,
     val activeDateTimeOption: DateTimeOption? = null,
     val isButtonLoading: Boolean = false,
+    val preselectedAssets: List<Asset> = emptyList(),
+    val unselectedAssets: List<Asset> = emptyList(),
 ) {
     companion object {
         enum class DateTimeOption {
             FROM_DATE, FROM_TIME, TO_DATE, TO_TIME
         }
     }
+
+    fun isSelected(asset: Asset) = preselectedAssets.contains(asset)
 }

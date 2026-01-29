@@ -51,8 +51,6 @@ fun HeatmapLayout(
             // TODO: implement
         }
 
-        HeatmapScreenMode.SELECT_ASSETS -> {
-            // TODO: implement
-        }
+        HeatmapScreenMode.SELECT_ASSETS -> HeatmapSelectAssetsLayout(state, onAction)
     }
 }

@@ -4,6 +4,8 @@ import co.be4you.core.domain.models.Asset
 
 sealed interface HeatmapAction {
 
+    data object OnSaveSelectedAssetsClicked : HeatmapAction
+
     data object OnGenerateClicked : HeatmapAction
 
     data object OnBackToDashboardClicked : HeatmapAction
@@ -21,4 +23,6 @@ sealed interface HeatmapAction {
     data class OnDateTimeFieldClicked(
         val option: HeatmapState.Companion.DateTimeOption
     ) : HeatmapAction
+
+    data class OnAssetSelected(val asset: Asset) : HeatmapAction
 }

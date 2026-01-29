@@ -51,4 +51,5 @@
     <string name="generate">Generate</string>
     <string name="back_to_dashboard">Back to Dashboard</string>
     <string name="heatmap">Heatmap</string>
+    <string name="info_select_assets">Select one or more assets.</string>
 </resources>

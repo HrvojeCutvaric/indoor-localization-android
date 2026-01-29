@@ -53,6 +53,8 @@ class HeatmapViewModel(
                                 errorRes = null,
                                 zones = emptyList(),
                                 activeDateTimeOption = null,
+                                unselectedAssets = assets,
+                                preselectedAssets = emptyList(),
                             )
                         },
                         onFailure = {
@@ -185,11 +187,35 @@ class HeatmapViewModel(
             }
 
             is HeatmapAction.OnRemoveAssetClicked -> {
-                _state.update { it?.copy(selectedAssets = it.selectedAssets - action.asset) }
+                _state.update {
+                    it?.copy(
+                        selectedAssets = it.selectedAssets - action.asset,
+                        unselectedAssets = it.unselectedAssets + action.asset,
+                    )
+                }
             }
 
             HeatmapAction.OnAddAssetClicked -> {
                 _state.update { it?.copy(mode = HeatmapScreenMode.SELECT_ASSETS) }
+            }
+
+            is HeatmapAction.OnAssetSelected -> {
+                _state.update { it?.copy(preselectedAssets = it.preselectedAssets + action.asset) }
+            }
+
+            HeatmapAction.OnSaveSelectedAssetsClicked -> {
+                if (_state.value?.preselectedAssets.isNullOrEmpty()) {
+                    _state.update { it?.copy(mode = HeatmapScreenMode.FILTERS) }
+                } else {
+                    _state.update {
+                        it?.copy(
+                            unselectedAssets = it.unselectedAssets - it.preselectedAssets.toSet(),
+                            selectedAssets = it.selectedAssets + it.preselectedAssets.toSet(),
+                            preselectedAssets = emptyList(),
+                            mode = HeatmapScreenMode.FILTERS,
+                        )
+                    }
+                }
             }
         }
     }
