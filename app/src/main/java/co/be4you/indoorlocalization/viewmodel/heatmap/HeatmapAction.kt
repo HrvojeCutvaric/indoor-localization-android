@@ -25,4 +25,6 @@ sealed interface HeatmapAction {
     ) : HeatmapAction
 
     data class OnAssetSelected(val asset: Asset) : HeatmapAction
+
+    data class OnSearchChanged(val query: String) : HeatmapAction
 }

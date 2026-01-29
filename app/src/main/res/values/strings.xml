@@ -52,4 +52,6 @@
     <string name="back_to_dashboard">Back to Dashboard</string>
     <string name="heatmap">Heatmap</string>
     <string name="info_select_assets">Select one or more assets.</string>
+    <string name="asset_search_label">Search assets</string>
+    <string name="asset_search_placeholder">Type an asset name…</string>
 </resources>

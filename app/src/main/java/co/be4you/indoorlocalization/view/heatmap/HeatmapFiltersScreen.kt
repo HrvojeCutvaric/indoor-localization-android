@@ -288,7 +288,9 @@ fun DateTimeRowSection(
 private fun HeatmapFiltersScreenPreview() {
     IndoorLocalizationTheme {
         HeatmapFiltersScreen(
-            state = HeatmapState(),
+            state = HeatmapState(
+                searchQuery = ""
+            ),
             onAction = { }
         )
     }

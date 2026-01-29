@@ -55,6 +55,7 @@ class HeatmapViewModel(
                                 activeDateTimeOption = null,
                                 unselectedAssets = assets,
                                 preselectedAssets = emptyList(),
+                                searchQuery = "",
                             )
                         },
                         onFailure = {
@@ -205,7 +206,7 @@ class HeatmapViewModel(
 
             HeatmapAction.OnSaveSelectedAssetsClicked -> {
                 if (_state.value?.preselectedAssets.isNullOrEmpty()) {
-                    _state.update { it?.copy(mode = HeatmapScreenMode.FILTERS) }
+                    _state.update { it?.copy(mode = HeatmapScreenMode.FILTERS, searchQuery = "") }
                 } else {
                     _state.update {
                         it?.copy(
@@ -213,8 +214,27 @@ class HeatmapViewModel(
                             selectedAssets = it.selectedAssets + it.preselectedAssets.toSet(),
                             preselectedAssets = emptyList(),
                             mode = HeatmapScreenMode.FILTERS,
+                            searchQuery = "",
                         )
                     }
+                }
+            }
+
+            is HeatmapAction.OnSearchChanged -> {
+                _state.value?.let { currentState ->
+                    val filteredAssets = currentState.assets.filter {
+                        it.name.contains(
+                            action.query,
+                            ignoreCase = true
+                        )
+                    }
+                    _state.update {
+                        it?.copy(
+                            searchQuery = action.query,
+                            unselectedAssets = filteredAssets - currentState.selectedAssets.toSet(),
+                        )
+                    }
+
                 }
             }
         }

@@ -19,6 +19,7 @@ data class HeatmapState(
     val isButtonLoading: Boolean = false,
     val preselectedAssets: List<Asset> = emptyList(),
     val unselectedAssets: List<Asset> = emptyList(),
+    val searchQuery: String,
 ) {
     companion object {
         enum class DateTimeOption {

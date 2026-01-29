@@ -32,9 +32,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.DefaultTextField
 import co.be4you.core.ui.theme.BrandLightBlue
 import co.be4you.core.ui.theme.CommonBlue
-import co.be4you.core.ui.theme.White
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapAction
 import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapState
@@ -54,7 +54,18 @@ fun HeatmapSelectAssetsLayout(
                 infoText = stringResource(R.string.info_select_assets)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            DefaultTextField(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                value = state.searchQuery,
+                label = R.string.asset_search_label,
+                placeholder = R.string.asset_search_placeholder,
+                isSingleLine = true,
+                onValueChange = { onAction(HeatmapAction.OnSearchChanged(it)) },
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn(
                 contentPadding = PaddingValues(bottom = 100.dp)
