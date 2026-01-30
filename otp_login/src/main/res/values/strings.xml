@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sing_in_with_otp">One-Time Password</string>
     <string name="enter_your_email_to_receive_a_one_time_login_code">Enter your email to receive a one-time login code.</string>
     <string name="enter_the_code_sent_to_your_email">Please enter the code sent to %1$s:</string>
     <string name="code">Code</string>
     <string name="send_otp_code">Send OTP</string>
-    <string name="login_with_one_time_code">Login with one-time code</string>
     <string name="failed_to_send_otp_code">Failed to send OTP code.</string>
     <string name="invalid_otp_code">Invalid OTP code.</string>
     <string name="wrong_email">Wrong e-mail?</string>

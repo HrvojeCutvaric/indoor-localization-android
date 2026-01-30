@@ -100,9 +100,6 @@ class PasswordHandler(
         )
     }
 
-    override
-    val buttonTextResource: Int
-        get() = R.string.login_with_password
-    override val titleTextResource: Int
-        get() = co.be4you.core.R.string.login
+    override val iconResource: Int
+        get() = R.drawable.ic_password
 }

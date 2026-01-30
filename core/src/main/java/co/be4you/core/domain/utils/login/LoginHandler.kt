@@ -13,7 +13,6 @@ interface LoginHandler<State : LoginUiState, Action : LoginUiAction> {
         modifier: Modifier = Modifier,
     )
 
-    val buttonTextResource: Int
-    val titleTextResource: Int
+    val iconResource: Int
 }
 

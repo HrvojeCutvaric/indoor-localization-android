@@ -142,9 +142,7 @@ class OtpHandler(
         )
     }
 
-    override val buttonTextResource: Int
-        get() = R.string.login_with_one_time_code
-    override val titleTextResource: Int
-        get() = R.string.sing_in_with_otp
+    override val iconResource: Int
+        get() = R.drawable.ic_otp
 
 }

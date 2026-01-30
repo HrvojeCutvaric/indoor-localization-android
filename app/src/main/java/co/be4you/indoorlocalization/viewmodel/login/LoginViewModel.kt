@@ -19,7 +19,7 @@ class LoginViewModel(
     private val _state = MutableStateFlow(
         LoginState(
             loginHandlers = loginHandlers,
-            loginHandler = null,
+            loginHandler = loginHandlers.firstOrNull(),
         )
     )
     val state = _state.asStateFlow()
