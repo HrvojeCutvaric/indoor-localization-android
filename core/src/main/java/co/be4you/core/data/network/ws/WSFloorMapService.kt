@@ -3,50 +3,25 @@ package co.be4you.core.data.network.ws
 import co.be4you.core.data.network.services.FloorMapService
 import co.be4you.core.data.network.ws.api.FloorMapApi
 import co.be4you.core.data.network.ws.api.mappers.toFloorMap
+import co.be4you.core.data.network.ws.api.utils.apiCallListMap
+import co.be4you.core.data.network.ws.api.utils.apiCallMap
 import co.be4you.core.domain.models.FloorMap
 
 class WSFloorMapService(
     private val floorMapApi: FloorMapApi,
 ) : FloorMapService {
-    override suspend fun getFloorMap(id: Long): Result<FloorMap> {
-        try {
-            val result = floorMapApi.getFloorMap(id = id)
 
-            when (result.isSuccessful) {
-                true -> {
-                    val body = result.body() ?: return Result.failure(Throwable("Body is null"))
+    override suspend fun getFloorMap(id: Long): Result<FloorMap> =
+        apiCallMap(
+            call = { floorMapApi.getFloorMap(id = id) },
+            errorMessage = "Failed to fetch floor map",
+            mapper = { it.toFloorMap() }
+        )
 
-                    return Result.success(body.toFloorMap())
-                }
-
-                false -> {
-                    return Result.failure(Throwable(message = "Failed to fetch floor map"))
-                }
-            }
-        } catch (error: Throwable) {
-            return Result.failure(error)
-        }
-    }
-
-    override suspend fun getFloorMaps(): Result<List<FloorMap>> {
-        try {
-            val result = floorMapApi.getFloorMaps()
-
-            when (result.isSuccessful) {
-                true -> {
-                    val body = result.body() ?: return Result.failure(Throwable("Body is null"))
-
-                    val floorMaps = body.map { it.toFloorMap() }
-
-                    return Result.success(floorMaps)
-                }
-
-                false -> {
-                    return Result.failure(Throwable(message = "Failed to fetch floor map"))
-                }
-            }
-        } catch (error: Throwable) {
-            return Result.failure(error)
-        }
-    }
+    override suspend fun getFloorMaps(): Result<List<FloorMap>> =
+        apiCallListMap(
+            call = { floorMapApi.getFloorMaps() },
+            errorMessage = "Failed to fetch floor maps",
+            mapper = { it.toFloorMap() }
+        )
 }
