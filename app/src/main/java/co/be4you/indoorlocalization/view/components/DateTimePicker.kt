@@ -32,6 +32,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,75 +58,77 @@ fun IndoorLocalizationDatePickerDialog(
     onConfirmClicked: (Long?) -> Unit,
     onDismissRequested: () -> Unit
 ) {
-    val datePickerState = rememberDatePickerState(
-        initialDisplayedMonthMillis = dateTime ?: kotlin.time.Clock.System.now()
-            .toEpochMilliseconds(),
-        initialSelectedDateMillis = dateTime ?: kotlin.time.Clock.System.now()
-            .toEpochMilliseconds(),
-    )
+    val initial = dateTime ?: kotlin.time.Clock.System.now().toEpochMilliseconds()
 
-    AnimatedVisibility(isDatePickerVisible) {
-        DatePickerDialog(
-            onDismissRequest = onDismissRequested,
-            confirmButton = {
-                TextButton(
-                    onClick = { onConfirmClicked(datePickerState.selectedDateMillis) },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.primary,
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.ok),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = onDismissRequested,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    ),
-                ) {
-                    Text(
-                        stringResource(R.string.cancel),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                }
-            },
-            colors = DatePickerDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            )
-        ) {
-            DatePicker(
-                state = datePickerState,
-                title = {
-                    Text(
-                        modifier = Modifier
-                            .padding(PaddingValues(start = 24.dp, end = 12.dp, top = 16.dp)),
-                        text = stringResource(R.string.date).uppercase(),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+    key(initial) {
+        val datePickerState = rememberDatePickerState(
+            initialDisplayedMonthMillis = initial,
+            initialSelectedDateMillis = initial,
+        )
+
+        AnimatedVisibility(isDatePickerVisible) {
+            DatePickerDialog(
+                onDismissRequest = onDismissRequested,
+                confirmButton = {
+                    TextButton(
+                        onClick = { onConfirmClicked(datePickerState.selectedDateMillis) },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary,
                         ),
-                    )
+                    ) {
+                        Text(
+                            text = stringResource(R.string.ok),
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = onDismissRequested,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                    ) {
+                        Text(
+                            stringResource(R.string.cancel),
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+                    }
                 },
                 colors = DatePickerDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.surface,
+                )
+            ) {
+                DatePicker(
+                    state = datePickerState,
+                    title = {
+                        Text(
+                            modifier = Modifier
+                                .padding(PaddingValues(start = 24.dp, end = 12.dp, top = 16.dp)),
+                            text = stringResource(R.string.date).uppercase(),
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
+                        )
+                    },
+                    colors = DatePickerDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surface,
 
-                    selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
-                    selectedYearContainerColor = MaterialTheme.colorScheme.primary,
-                    currentYearContentColor = MaterialTheme.colorScheme.primary,
-                    selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
-                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
-                    todayContentColor = MaterialTheme.colorScheme.onSurface,
-                    todayDateBorderColor = MaterialTheme.colorScheme.onSurface,
-                    dateTextFieldColors = TextFieldDefaults.colors(
-                        focusedLabelColor = MaterialTheme.colorScheme.primary,
-                        cursorColor = MaterialTheme.colorScheme.primary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedYearContainerColor = MaterialTheme.colorScheme.primary,
+                        currentYearContentColor = MaterialTheme.colorScheme.primary,
+                        selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+                        todayContentColor = MaterialTheme.colorScheme.onSurface,
+                        todayDateBorderColor = MaterialTheme.colorScheme.onSurface,
+                        dateTextFieldColors = TextFieldDefaults.colors(
+                            focusedLabelColor = MaterialTheme.colorScheme.primary,
+                            cursorColor = MaterialTheme.colorScheme.primary,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        )
                     )
                 )
-            )
+            }
         }
     }
 }
@@ -143,44 +146,48 @@ fun IndoorLocalizationTimePicker(
             dateTime ?: kotlin.time.Clock.System.now().toEpochMilliseconds()
         )
     val localDateTime: LocalDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    key(
+        localDateTime.hour,
+        localDateTime.minute,
+    ) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = localDateTime.hour,
+            initialMinute = localDateTime.minute,
+            is24Hour = true,
+        )
 
-    val timePickerState = rememberTimePickerState(
-        initialHour = localDateTime.hour,
-        initialMinute = localDateTime.minute,
-        is24Hour = true,
-    )
+        var isTimeInputVisible by remember { mutableStateOf(true) }
 
-    var isTimeInputVisible by remember { mutableStateOf(true) }
-
-    AnimatedVisibility(isTimePickerVisible) {
-        AdvancedTimePickerDialog(
-            onDismissRequested = onDismiss,
-            onConfirmClicked = { onTimeConfirm(timePickerState.hour, timePickerState.minute) },
-            toggle = {
-                IconButton(
-                    onClick = { isTimeInputVisible = isTimeInputVisible.not() },
-                ) {
-                    Icon(
-                        painter = painterResource(if (isTimeInputVisible) R.drawable.ic_keyboard else R.drawable.ic_time),
-                        contentDescription = null,
+        AnimatedVisibility(isTimePickerVisible) {
+            AdvancedTimePickerDialog(
+                onDismissRequested = onDismiss,
+                onConfirmClicked = { onTimeConfirm(timePickerState.hour, timePickerState.minute) },
+                toggle = {
+                    IconButton(
+                        onClick = { isTimeInputVisible = isTimeInputVisible.not() },
+                    ) {
+                        Icon(
+                            painter = painterResource(if (isTimeInputVisible) R.drawable.ic_keyboard else R.drawable.ic_time),
+                            contentDescription = null,
+                        )
+                    }
+                },
+            ) {
+                if (isTimeInputVisible) {
+                    TimeInput(
+                        state = timePickerState,
+                        colors = TimePickerDefaults.colors(
+                            timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    )
+                } else {
+                    TimePicker(
+                        state = timePickerState,
+                        colors = TimePickerDefaults.colors(
+                            selectorColor = MaterialTheme.colorScheme.primary,
+                        )
                     )
                 }
-            },
-        ) {
-            if (isTimeInputVisible) {
-                TimeInput(
-                    state = timePickerState,
-                    colors = TimePickerDefaults.colors(
-                        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                    )
-                )
-            } else {
-                TimePicker(
-                    state = timePickerState,
-                    colors = TimePickerDefaults.colors(
-                        selectorColor = MaterialTheme.colorScheme.primary,
-                    )
-                )
             }
         }
     }
