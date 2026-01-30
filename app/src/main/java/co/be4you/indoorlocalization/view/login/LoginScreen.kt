@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,68 +62,61 @@ private fun LoginLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            AuthHeader(
-                bottomContent = {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        items(state.loginHandlers) {
-                            val isSelected = it == state.loginHandler
-                            val contentColor =
-                                if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-                            val containerColor =
-                                if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-                            val borderColor =
-                                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
-                            IconButton(
-                                modifier = Modifier
-                                    .size(52.dp)
-                                    .border(
-                                        width = 1.dp,
-                                        color = borderColor,
-                                        shape = ShapeDefaults.Small,
-                                    ),
-                                onClick = { onAction(LoginAction.OnLoginHandlerClicked(it)) },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    contentColor = contentColor,
-                                    containerColor = containerColor,
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        AuthHeader(
+            bottomContent = {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    items(state.loginHandlers) {
+                        val isSelected = it == state.loginHandler
+                        val contentColor =
+                            if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                        val containerColor =
+                            if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                        val borderColor =
+                            if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+                        IconButton(
+                            modifier = Modifier
+                                .size(52.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = borderColor,
+                                    shape = ShapeDefaults.Small,
                                 ),
-                                shape = ShapeDefaults.Small,
-                            ) {
-                                Icon(
-                                    modifier = Modifier.aspectRatio(0.6f),
-                                    painter = painterResource(it.iconResource),
-                                    contentDescription = null,
-                                )
-                            }
+                            onClick = { onAction(LoginAction.OnLoginHandlerClicked(it)) },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = contentColor,
+                                containerColor = containerColor,
+                            ),
+                            shape = ShapeDefaults.Small,
+                        ) {
+                            Icon(
+                                modifier = Modifier.aspectRatio(0.6f),
+                                painter = painterResource(it.iconResource),
+                                contentDescription = null,
+                            )
                         }
                     }
                 }
-            )
-
-            state.loginHandler?.let { loginHandler ->
-                loginHandler.LoginLayout(modifier = Modifier.padding(horizontal = 12.dp))
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                LabelWithTextButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = stringResource(R.string.dont_have_an_account),
-                    buttonLabel = stringResource(R.string.register),
-                    isButtonLoading = false,
-                    onTextButtonClicked = { onAction(LoginAction.OnRegisterClicked) },
-                )
             }
+        )
+
+        state.loginHandler?.let { loginHandler ->
+            loginHandler.LoginLayout(modifier = Modifier.padding(horizontal = 12.dp))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LabelWithTextButton(
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(R.string.dont_have_an_account),
+                buttonLabel = stringResource(R.string.register),
+                isButtonLoading = false,
+                onTextButtonClicked = { onAction(LoginAction.OnRegisterClicked) },
+            )
         }
     }
 }
