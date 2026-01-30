@@ -46,7 +46,7 @@ fun HeatmapLayout(
     onAction: (HeatmapAction) -> Unit
 ) {
     when (state.mode) {
-        HeatmapScreenMode.FILTERS -> HeatmapFiltersScreen(state, onAction)
+        HeatmapScreenMode.FILTERS -> HeatmapFiltersLayout(state, onAction)
         HeatmapScreenMode.REPORT -> HeatmapReportLayout(state, onAction)
         HeatmapScreenMode.SELECT_ASSETS -> HeatmapSelectAssetsLayout(state, onAction)
     }

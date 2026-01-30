@@ -47,7 +47,7 @@ import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapAction
 import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapState
 
 @Composable
-fun HeatmapFiltersScreen(
+fun HeatmapFiltersLayout(
     state: HeatmapState,
     onAction: (HeatmapAction) -> Unit
 ) {
@@ -318,9 +318,9 @@ fun DateTimeRowSection(
 
 @Preview(showBackground = true)
 @Composable
-private fun HeatmapFiltersScreenPreview() {
+private fun HeatmapFiltersLayoutPreview() {
     IndoorLocalizationTheme {
-        HeatmapFiltersScreen(
+        HeatmapFiltersLayout(
             state = HeatmapState(
                 searchQuery = ""
             ),
