@@ -55,4 +55,7 @@
     <string name="asset_search_label">Search assets</string>
     <string name="asset_search_placeholder">Type an asset name…</string>
     <string name="show_zone">Show zones</string>
+    <string name="heatmap_error_invalid_time_range">Invalid time range: “From” must be before “To”.</string>
+    <string name="heatmap_error_from_required">Please select the “From” date and time.</string>
+    <string name="heatmap_error_to_required">Please select the “To” date and time.</string>
 </resources>

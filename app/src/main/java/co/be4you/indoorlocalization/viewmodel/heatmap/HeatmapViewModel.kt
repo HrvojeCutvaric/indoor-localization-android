@@ -10,6 +10,7 @@ import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.data.repositories.ZoneRepository
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
+import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.HeatPointPx
 import co.be4you.indoorlocalization.utils.HeatmapScreenMode
 import co.be4you.indoorlocalization.utils.generateHeatmapBitmapTrailLike
@@ -194,9 +195,20 @@ class HeatmapViewModel(
 
             HeatmapAction.OnGenerateClicked -> {
                 _state.value?.let { currentState ->
-                    val from = currentState.fromDateTime ?: return
-                    val to = currentState.toDateTime ?: return
-                    val floorMap = currentState.floorMap ?: return
+                    val from = currentState.fromDateTime
+                        ?: return _state.update { it?.copy(errorRes = R.string.heatmap_error_from_required) }
+                    val to = currentState.toDateTime
+                        ?: return _state.update { it?.copy(errorRes = R.string.heatmap_error_to_required) }
+
+                    if (from >= to) {
+                        _state.update { it?.copy(errorRes = R.string.heatmap_error_invalid_time_range) }
+                        return
+                    }
+
+
+                    val floorMap = currentState.floorMap
+                        ?: return _state.update { it?.copy(errorRes = R.string.generic_error_message) }
+                    _state.update { it?.copy(errorRes = null) }
 
                     val mapW = floorMap.imageWidthPx
                     val mapH = floorMap.imageHeightPx
@@ -263,7 +275,12 @@ class HeatmapViewModel(
                                     "HeatmapViewModel",
                                     "Failed to fetch asset position history: ${throwable.message}"
                                 )
-                                _state.update { it?.copy(isButtonLoading = false) }
+                                _state.update {
+                                    it?.copy(
+                                        isButtonLoading = false,
+                                        errorRes = R.string.generic_error_message
+                                    )
+                                }
                             }
                         )
                     }

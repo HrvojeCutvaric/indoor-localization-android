@@ -89,6 +89,25 @@ fun HeatmapFiltersLayout(
             .background(color = MaterialTheme.colorScheme.background)
             .padding(horizontal = 12.dp),
     ) {
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            state.errorRes?.let {
+                Text(
+                    text = stringResource(it),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp),
