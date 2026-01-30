@@ -301,7 +301,14 @@ class HeatmapViewModel(
             }
 
             is HeatmapAction.OnAssetSelected -> {
-                _state.update { it?.copy(preselectedAssets = it.preselectedAssets + action.asset) }
+                _state.update {
+                    it?.let {
+                        val next = it.preselectedAssets.toMutableSet().apply {
+                            if (add(action.asset).not()) remove(action.asset)
+                        }.toList()
+                        it.copy(preselectedAssets = next)
+                    }
+                }
             }
 
             HeatmapAction.OnSaveSelectedAssetsClicked -> {
