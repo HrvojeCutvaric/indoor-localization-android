@@ -1,6 +1,5 @@
 package co.be4you.indoorlocalization.view.heatmap
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -35,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.be4you.core.domain.models.Asset
 import co.be4you.core.ui.components.DefaultButton
-import co.be4you.core.ui.components.SecondaryButton
 import co.be4you.core.ui.theme.BrandLightBlue
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.R
@@ -207,23 +204,6 @@ fun HeatmapFiltersLayout(
             onButtonClicked = { onAction(HeatmapAction.OnGenerateClicked) },
             isButtonLoading = state.isButtonLoading,
             isButtonEnabled = state.isButtonLoading.not(),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        SecondaryButton(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.back_to_dashboard),
-            onButtonClicked = { onAction(HeatmapAction.OnBackToDashboardClicked) },
-            isLoading = state.isButtonLoading,
-            isEnabled = state.isButtonLoading.not(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.outline,
-            ),
-            borderStroke = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline
-            ),
         )
     }
 }

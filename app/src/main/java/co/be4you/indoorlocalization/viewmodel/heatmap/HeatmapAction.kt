@@ -8,7 +8,7 @@ sealed interface HeatmapAction {
 
     data object OnGenerateClicked : HeatmapAction
 
-    data object OnBackToDashboardClicked : HeatmapAction
+    data object OnBackClicked : HeatmapAction
 
     data object OnCloseDateTimePicker : HeatmapAction
 

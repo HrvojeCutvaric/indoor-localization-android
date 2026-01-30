@@ -189,7 +189,7 @@ class HeatmapViewModel(
                 }
             }
 
-            HeatmapAction.OnBackToDashboardClicked -> {
+            HeatmapAction.OnBackClicked -> {
                 appNavigator.navigateBack()
             }
 
