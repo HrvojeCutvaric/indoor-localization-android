@@ -339,20 +339,15 @@ class HeatmapViewModel(
             }
 
             is HeatmapAction.OnSearchChanged -> {
-                _state.value?.let { currentState ->
-                    val filteredAssets = currentState.assets.filter {
-                        it.name.contains(
-                            action.query,
-                            ignoreCase = true
+                _state.update { currentState ->
+                    currentState?.let {
+                        val query = action.query
+                        val visible = it.assets.filter { asset -> asset.name.contains(query, ignoreCase = true) }
+                        it.copy(
+                            searchQuery = query,
+                            unselectedAssets = (visible.toSet() - it.selectedAssets.toSet()).toList()
                         )
                     }
-                    _state.update {
-                        it?.copy(
-                            searchQuery = action.query,
-                            unselectedAssets = filteredAssets - currentState.selectedAssets.toSet(),
-                        )
-                    }
-
                 }
             }
 
