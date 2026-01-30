@@ -312,21 +312,17 @@ class HeatmapViewModel(
             }
 
             HeatmapAction.OnSaveSelectedAssetsClicked -> {
-                if (_state.value?.preselectedAssets.isNullOrEmpty()) {
-                    _state.update {
-                        it?.copy(
-                            mode = HeatmapScreenMode.FILTERS,
-                            searchQuery = ""
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it?.copy(
-                            unselectedAssets = it.unselectedAssets - it.preselectedAssets.toSet(),
-                            selectedAssets = it.selectedAssets + it.preselectedAssets.toSet(),
+                _state.update { currentState ->
+                    currentState?.let {
+                        val newSelected = (it.selectedAssets + it.preselectedAssets).toSet()
+                        val newUnselected = (it.assets.toSet() - newSelected).toList()
+
+                        it.copy(
+                            selectedAssets = newSelected.toList(),
+                            unselectedAssets = newUnselected,
                             preselectedAssets = emptyList(),
-                            mode = HeatmapScreenMode.FILTERS,
                             searchQuery = "",
+                            mode = HeatmapScreenMode.FILTERS
                         )
                     }
                 }
