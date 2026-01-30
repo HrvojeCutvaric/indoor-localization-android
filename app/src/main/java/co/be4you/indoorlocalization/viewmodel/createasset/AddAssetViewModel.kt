@@ -59,15 +59,12 @@ class AddAssetViewModel(
             return
         }
 
-        val x = _state.value.x.trim().takeIf { it.isNotBlank() }?.toDoubleOrNull()
-        val y = _state.value.y.trim().takeIf { it.isNotBlank() }?.toDoubleOrNull()
-
         val color = _state.value.color.trim().takeIf { it.isNotBlank() }
 
         val request = CreateAssetRequestDto(
             name = name,
-            x = x,
-            y = y,
+            x = null,
+            y = null,
             floorMapId = fmId,
             active = _state.value.active,
             color = color
