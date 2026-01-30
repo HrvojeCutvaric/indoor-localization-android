@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetPositionHistoryRepository
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.FloorMapRepository
+import co.be4you.core.data.repositories.ZoneRepository
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.utils.HeatPointPx
@@ -35,6 +36,7 @@ class HeatmapViewModel(
     private val floorMapRepository: FloorMapRepository,
     private val assetRepository: AssetRepository,
     private val assetPositionHistoryRepository: AssetPositionHistoryRepository,
+    private val zoneRepository: ZoneRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow<HeatmapState?>(null)
     val state: StateFlow<HeatmapState?> = _state
@@ -208,6 +210,22 @@ class HeatmapViewModel(
                             to = to,
                         ).fold(
                             onSuccess = { assetPositionHistory ->
+                                if (currentState.showZones) {
+                                    zoneRepository.getZones(
+                                        floorMapId = floorMap.id,
+                                    ).fold(
+                                        onSuccess = { zones ->
+                                            _state.update { it?.copy(zones = zones) }
+                                        },
+                                        onFailure = {
+                                            Log.e(
+                                                "HeatmapViewModel",
+                                                "Failed to fetch zones: ${it.message}",
+                                            )
+                                        },
+                                    )
+                                }
+
                                 val selectedIds = currentState.selectedAssets.map { it.id }.toSet()
 
                                 val filtered = if (selectedIds.isEmpty()) {
@@ -227,17 +245,16 @@ class HeatmapViewModel(
                                         pointsPx = pointsPx,
                                         mapW = mapW,
                                         mapH = mapH,
-                                        radiusPx = 16,     // tune
-                                        intensity = 1.2f   // tune
+                                        radiusPx = 16,
+                                        intensity = 1.2f,
                                     )
                                 }
 
                                 _state.update {
                                     it?.copy(
                                         isButtonLoading = false,
-                                        assetPositionHistory = filtered,
                                         heatmapBitmap = heatBmp.asImageBitmap(),
-                                        mode = HeatmapScreenMode.REPORT // if you use 2-step flow
+                                        mode = HeatmapScreenMode.REPORT
                                     )
                                 }
                             },

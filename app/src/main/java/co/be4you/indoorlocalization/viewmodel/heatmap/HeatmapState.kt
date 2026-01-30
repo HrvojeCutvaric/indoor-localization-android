@@ -22,7 +22,6 @@ data class HeatmapState(
     val preselectedAssets: List<Asset> = emptyList(),
     val unselectedAssets: List<Asset> = emptyList(),
     val searchQuery: String,
-    val assetPositionHistory: List<AssetPositionHistory> = emptyList(),
     val heatmapBitmap: ImageBitmap? = null,
 ) {
     companion object {
