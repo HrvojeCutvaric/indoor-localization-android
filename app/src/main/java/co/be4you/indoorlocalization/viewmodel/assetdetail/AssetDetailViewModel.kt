@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import co.be4you.core.navigation.Route
+
 class AssetDetailViewModel(
     private val repository: AssetRepository,
     private val appNavigator: AppNavigator,
@@ -25,10 +25,6 @@ class AssetDetailViewModel(
         when (action) {
             AssetDetailAction.OnBackClicked -> {
                 appNavigator.navigateBack()
-            }
-
-            AssetDetailAction.OnLogoutClicked -> {
-                appNavigator.navigateTo(route = Route.Login, clearBackStack = true)
             }
 
             AssetDetailAction.OnDeleteClicked -> {
@@ -69,23 +65,25 @@ class AssetDetailViewModel(
         }
     }
 
-    private fun deleteAsset(id: Long){
+    private fun deleteAsset(id: Long) {
 
-        if(_state.value.isDeleting) return
+        if (_state.value.isDeleting) return
 
         _state.update { it.copy(isDeleting = true, errorResource = null) }
 
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAsset(id).fold(
                 onSuccess = {
                     _state.update { it.copy(isDeleting = false) }
                     appNavigator.navigateBack()
                 },
                 onFailure = {
-                    _state.update { it.copy(
-                        isDeleting = false,
-                        errorResource = R.string.error_deleting_asset
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isDeleting = false,
+                            errorResource = R.string.error_deleting_asset
+                        )
+                    }
                 }
             )
         }

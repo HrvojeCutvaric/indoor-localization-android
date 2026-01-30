@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.navigation.AppNavigator
-import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,29 +15,55 @@ import kotlinx.coroutines.launch
 class AddAssetViewModel(
     private val repository: AssetRepository,
     private val appNavigator: AppNavigator
-) : ViewModel(){
+) : ViewModel() {
 
     private var floorMapId: Long? = null
 
     private val _state = MutableStateFlow(AddAssetState())
     val state = _state.asStateFlow()
 
-    fun setFloorMapId(id: Long){
+    fun setFloorMapId(id: Long) {
         floorMapId = id
     }
 
     fun execute(action: AddAssetAction) {
         when (action) {
-            is AddAssetAction.OnNameChanged -> _state.update { it.copy(name = action.value, errorResource = null) }
-            is AddAssetAction.OnXChanged -> _state.update { it.copy(x = action.value, errorResource = null) }
-            is AddAssetAction.OnYChanged -> _state.update { it.copy(y = action.value, errorResource = null) }
-            is AddAssetAction.OnColorChanged -> _state.update { it.copy(color = action.value, errorResource = null) }
-            is AddAssetAction.OnActiveChanged -> _state.update { it.copy(active = action.value, errorResource = null) }
+            is AddAssetAction.OnNameChanged -> _state.update {
+                it.copy(
+                    name = action.value,
+                    errorResource = null
+                )
+            }
+
+            is AddAssetAction.OnXChanged -> _state.update {
+                it.copy(
+                    x = action.value,
+                    errorResource = null
+                )
+            }
+
+            is AddAssetAction.OnYChanged -> _state.update {
+                it.copy(
+                    y = action.value,
+                    errorResource = null
+                )
+            }
+
+            is AddAssetAction.OnColorChanged -> _state.update {
+                it.copy(
+                    color = action.value,
+                    errorResource = null
+                )
+            }
+
+            is AddAssetAction.OnActiveChanged -> _state.update {
+                it.copy(
+                    active = action.value,
+                    errorResource = null
+                )
+            }
 
             AddAssetAction.OnBackClicked -> appNavigator.navigateBack()
-
-            AddAssetAction.OnLogoutClicked ->
-                appNavigator.navigateTo(route = Route.Login, clearBackStack = true)
 
             AddAssetAction.OnSaveClicked -> save()
         }

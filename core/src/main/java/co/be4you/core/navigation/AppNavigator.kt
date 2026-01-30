@@ -1,10 +1,19 @@
 package co.be4you.core.navigation
 
 import androidx.compose.runtime.mutableStateListOf
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 
-class AppNavigator {
+class AppNavigator(
+    appEncryptedSharedPreferences: AppEncryptedSharedPreferences,
+) {
 
-    val backStack = mutableStateListOf<Route>(Route.Login)
+    val backStack = mutableStateListOf<Route>()
+
+    init {
+        val accessToken = appEncryptedSharedPreferences.getAccessToken()
+        if (accessToken != null) navigateTo(Route.Dashboard)
+        else navigateTo(Route.Login)
+    }
 
     fun navigateTo(
         route: Route,

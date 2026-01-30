@@ -9,6 +9,4 @@ sealed interface AssetsAction {
     data object OnAddAssetClicked: AssetsAction
 
     data object OnBackClicked : AssetsAction
-
-    data object OnLogoutClicked : AssetsAction
 }

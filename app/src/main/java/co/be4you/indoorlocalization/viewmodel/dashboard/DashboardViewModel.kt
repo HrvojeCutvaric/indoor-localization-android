@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.data.repositories.ZoneRepository
+import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
 import co.be4you.core.navigation.Route.Assets
@@ -26,6 +27,7 @@ class DashboardViewModel(
     private val appNavigator: AppNavigator,
     private val assetTrackingRepository: AssetTrackingRepository,
     private val zoneRepository: ZoneRepository,
+    private val appEncryptedSharedPreferences: AppEncryptedSharedPreferences,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DashboardState?>(null)
@@ -142,6 +144,7 @@ class DashboardViewModel(
             }
 
             DashboardAction.OnLogoutClicked -> {
+                appEncryptedSharedPreferences.clearTokens()
                 appNavigator.navigateTo(route = Login, clearBackStack = true)
             }
 
@@ -181,7 +184,6 @@ class DashboardViewModel(
                     }
             } catch (e: Throwable) {
                 e.printStackTrace()
-                null
             }
         }
     }
