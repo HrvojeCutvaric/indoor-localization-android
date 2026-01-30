@@ -10,7 +10,6 @@ import co.be4you.core.data.network.ws.api.models.auth.VerifyOtpRequestBody
 import co.be4you.core.domain.models.LoginResponse
 import co.be4you.core.domain.utils.LoginThrowable
 import co.be4you.core.domain.utils.RegisterThrowable
-import co.be4you.core.domain.utils.VerifyOtpThrowable
 import org.json.JSONObject
 
 
@@ -97,17 +96,11 @@ class WSAuthService(
 
     override suspend fun requestOtp(email: String): Result<Unit> {
         try {
-            val result = authApi.sendOtp(requestBody = SendOtpRequestBody(email = email))
+            val response = authApi.sendOtp(requestBody = SendOtpRequestBody(email = email))
 
-            return when (result.isSuccessful) {
-                true -> {
-                    Result.success(Unit)
-                }
+            if (response.success.not()) return Result.failure(Throwable(response.message))
 
-                false -> {
-                    Result.failure(Throwable(message = "Failed to send otp"))
-                }
-            }
+            return Result.success(Unit)
         } catch (e: Throwable) {
             e.printStackTrace()
             return Result.failure(e)
@@ -119,20 +112,18 @@ class WSAuthService(
         otp: String
     ): Result<LoginResponse> {
         try {
-            val result =
-                authApi.verifyOtp(requestBody = VerifyOtpRequestBody(email = email, otp = otp))
+            val response = authApi.verifyOtp(
+                requestBody = VerifyOtpRequestBody(
+                    email = email,
+                    otp = otp,
+                )
+            )
 
-            return when (result.isSuccessful) {
-                true -> {
-                    val body = result.body() ?: return Result.failure(Throwable("Body is null"))
+            if (response.success.not()) return Result.failure(Throwable(response.message))
 
-                    return Result.success(body.toLoginResponse())
-                }
+            val data = response.data ?: return Result.failure(Throwable("Data is null"))
 
-                false -> {
-                    Result.failure(VerifyOtpThrowable.InvalidOtp)
-                }
-            }
+            return Result.success(data.toLoginResponse())
         } catch (e: Throwable) {
             e.printStackTrace()
             return Result.failure(e)
