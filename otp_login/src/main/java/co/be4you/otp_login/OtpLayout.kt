@@ -16,6 +16,7 @@ import co.be4you.core.ui.components.DefaultLabel
 import co.be4you.core.ui.components.DefaultTextField
 import co.be4you.core.ui.components.LabelWithTextButton
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
+
 @Composable
 fun OtpLayout(
     modifier: Modifier = Modifier,
@@ -78,6 +79,7 @@ fun OtpLayout(
 
         if (state.isOtpSend) {
             LabelWithTextButton(
+                modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.wrong_email),
                 buttonLabel = stringResource(R.string.change),
                 isButtonLoading = state.isButtonLoading,
