@@ -52,6 +52,6 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":password_login"))
     implementation(project(":otp_login"))
-    implementation("com.github.skydoves:colorpicker-compose-android:1.1.3")
+    implementation(libs.colorpicker.compose.android)
     implementation(libs.kotlinx.datetime)
 }
