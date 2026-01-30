@@ -6,6 +6,7 @@ import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.data.repositories.ZoneRepository
 import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
 import co.be4you.core.navigation.Route.Assets
 import co.be4you.core.navigation.Route.Login
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
@@ -142,6 +143,14 @@ class DashboardViewModel(
 
             DashboardAction.OnLogoutClicked -> {
                 appNavigator.navigateTo(route = Login, clearBackStack = true)
+            }
+
+            DashboardAction.OnHeatmapClicked -> {
+                _state.value?.let { currentState ->
+                    currentState.selectedFloorMap?.let {
+                        appNavigator.navigateTo(route = Route.Heatmap(floorMapId = currentState.selectedFloorMap.id))
+                    }
+                }
             }
         }
     }

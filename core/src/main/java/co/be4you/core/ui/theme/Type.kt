@@ -2,33 +2,70 @@ package co.be4you.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
+
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.ExtraBold,
+    ),
+    titleMedium = TextStyle(
+        fontSize = 25.sp,
+        fontWeight = FontWeight.Bold,
+    ),
+    titleSmall = TextStyle(
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 17.sp,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal,
+    ),
+    bodySmall = TextStyle(
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Normal,
+    ),
+    labelLarge = TextStyle(
+        fontSize = 19.sp,
+        fontWeight = FontWeight.Normal
+    ),
+    labelMedium = TextStyle(
+        fontSize = 15.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 1.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        fontWeight = FontWeight.SemiBold,
+    ),
+    headlineLarge = TextStyle(
+        fontSize = 19.sp,
+        fontWeight = FontWeight.Bold
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Bold
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Bold
+    ),
+    displayLarge = TextStyle(
+        fontSize = 21.sp,
+        fontWeight = FontWeight.Normal,
+    ),
+    displayMedium = TextStyle(
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+    ),
+    displaySmall = TextStyle(
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
     )
-    */
 )

@@ -27,4 +27,9 @@ sealed interface Route : NavKey {
         val floorMapId: Long,
         val floorMapName: String
     ): Route
+
+    @Serializable
+    data class Heatmap(
+        val floorMapId: Long,
+    ): Route
 }

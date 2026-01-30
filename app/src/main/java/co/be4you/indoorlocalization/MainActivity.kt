@@ -27,6 +27,7 @@ import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import co.be4you.indoorlocalization.view.createasset.AddAssetScreen
+import co.be4you.indoorlocalization.view.heatmap.HeatmapScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +80,10 @@ class MainActivity : ComponentActivity() {
                                 floorMapId = create.floorMapId,
                                 floorMapName = create.floorMapName
                             )
+                        }
+
+                        entry<Route.Heatmap> {
+                            HeatmapScreen(onAction = mainViewModel::execute)
                         }
                     }
                 )

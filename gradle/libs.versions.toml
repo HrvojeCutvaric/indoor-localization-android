@@ -20,6 +20,8 @@ securityCrypto = "1.1.0-alpha06"
 iconsExtended = "1.7.8"
 mqttv3 = "1.2.5"
 pahoAndroidService = "1.1.1"
+datetime = "0.7.1"
+colorpickerComposeAndroid = "1.1.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +54,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 paho-client-mqttv3 = { group = "org.eclipse.paho", name = "org.eclipse.paho.client.mqttv3", version.ref = "mqttv3" }
 paho-android-service = { group = "org.eclipse.paho", name = "org.eclipse.paho.android.service", version.ref = "pahoAndroidService" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+colorpicker-compose-android = { module = "com.github.skydoves:colorpicker-compose-android", version.ref = "colorpickerComposeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
