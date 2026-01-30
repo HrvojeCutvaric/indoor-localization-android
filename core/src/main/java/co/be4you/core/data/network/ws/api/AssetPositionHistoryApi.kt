@@ -1,7 +1,7 @@
 package co.be4you.core.data.network.ws.api
 
 import co.be4you.core.data.network.ws.api.models.asset_position_history.AssetPositonHistoryDto
-import retrofit2.Response
+import co.be4you.core.data.network.ws.api.models.utils.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -13,5 +13,5 @@ interface AssetPositionHistoryApi {
         @Path("floorMapId") floorMapId: Long,
         @Query("from") from: String?,
         @Query("to") to: String?,
-    ): Response<List<AssetPositonHistoryDto>>
+    ): ApiResponse<List<AssetPositonHistoryDto>>
 }

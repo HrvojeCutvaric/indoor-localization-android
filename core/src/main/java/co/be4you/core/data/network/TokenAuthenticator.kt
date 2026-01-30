@@ -62,19 +62,19 @@ class TokenAuthenticator(
                     )
                 }
 
-                if (!refreshResponse.isSuccessful) {
-                    Log.d(TAG, "Refresh failed with code ${refreshResponse.code()}")
+                if (refreshResponse.success.not()) {
+                    Log.d(TAG, "Refresh failed with code ${refreshResponse.errorCode}")
                     appEncryptedSharedPreferences.clearTokens()
                     null
                 } else {
-                    val body = refreshResponse.body()
-                    if (body == null) {
-                        Log.d(TAG, "Refresh body null.")
+                    val refreshData = refreshResponse.data
+                    if (refreshData == null) {
+                        Log.d(TAG, "Refresh data null.")
                         appEncryptedSharedPreferences.clearTokens()
                         null
                     } else {
-                        val newAccess = body.accessToken.orEmpty()
-                        val newRefresh = body.refreshToken.orEmpty()
+                        val newAccess = refreshData.accessToken.orEmpty()
+                        val newRefresh = refreshData.refreshToken.orEmpty()
 
                         appEncryptedSharedPreferences.saveTokens(newAccess, newRefresh)
 

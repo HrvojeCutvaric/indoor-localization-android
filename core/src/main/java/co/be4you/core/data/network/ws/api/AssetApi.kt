@@ -2,7 +2,7 @@ package co.be4you.core.data.network.ws.api
 
 import co.be4you.core.data.network.ws.api.models.assets.AssetDto
 import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
-import retrofit2.Response
+import co.be4you.core.data.network.ws.api.models.utils.ApiResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -14,20 +14,20 @@ interface AssetApi {
     @GET("api/Asset/floormap/{floorMapId}")
     suspend fun getAssetsByFloor(
         @Path("floorMapId") floorMapId: Long
-    ): Response<List<AssetDto>>
+    ): ApiResponse<List<AssetDto>>
 
     @GET("api/Asset/{id}")
     suspend fun getAssetById(
         @Path("id") id: Long
-    ): Response<AssetDto>
+    ): ApiResponse<AssetDto>
 
     @DELETE("api/Asset/{id}")
     suspend fun deleteAsset(
         @Path("id") id: Long
-    ): Response<Unit>
+    ): ApiResponse<Unit>
 
     @POST("/api/Asset")
     suspend fun createAsset(
         @Body request: CreateAssetRequestDto
-    ): Response<Unit>
+    ): ApiResponse<Unit>
 }

@@ -4,67 +4,38 @@ import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.mappers.toAsset
 import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
+import co.be4you.core.data.network.ws.api.utils.apiCallListMap
+import co.be4you.core.data.network.ws.api.utils.apiCallMap
+import co.be4you.core.data.network.ws.api.utils.apiCallUnit
 import co.be4you.core.domain.models.Asset
 
-class WSAssetService (
+class WSAssetService(
     private val assetApi: AssetApi
-): AssetService{
-    override suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>> {
-        return try{
-            val response = assetApi.getAssetsByFloor(floorMapId)
+) : AssetService {
 
-            if(response.isSuccessful){
-                val body = response.body() ?: return Result.failure((Throwable("Body is null")))
-                Result.success(body.map{it.toAsset()})
-            }else{
-                Result.failure(Throwable("Failed to fetch assets"))
-            }
-        }catch(e: Exception){
-            Result.failure(e)
-        }
-    }
+    override suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>> =
+        apiCallListMap(
+            call = { assetApi.getAssetsByFloor(floorMapId) },
+            errorMessage = "Failed to fetch assets",
+            mapper = { it.toAsset() }
+        )
 
-    override suspend fun getAsset(id: Long): Result<Asset>{
-        return try{
+    override suspend fun getAsset(id: Long): Result<Asset> =
+        apiCallMap(
+            call = { assetApi.getAssetById(id) },
+            errorMessage = "Failed to fetch asset",
+            mapper = { it.toAsset() }
+        )
 
-            val response = assetApi.getAssetById(id)
+    override suspend fun deleteAsset(id: Long): Result<Unit> =
+        apiCallUnit(
+            call = { assetApi.deleteAsset(id) },
+            errorMessage = "Failed to delete asset"
+        )
 
-            if(response.isSuccessful){
-                val body = response.body() ?: return Result.failure(Throwable("Body is null"))
-                Result.success(body.toAsset())
-            } else {
-                Result.failure(Throwable("Failed to fetch asset"))
-            }
-        } catch (e: Exception){
-            Result.failure(e)
-        }
-    }
-
-    override suspend fun deleteAsset(id: Long): Result<Unit> {
-        return try{
-            val response = assetApi.deleteAsset(id)
-
-            if(response.isSuccessful){
-                Result.success(Unit)
-            } else {
-                Result.failure(Throwable("Failed to delete asset"))
-            }
-        } catch(e: Exception){
-            Result.failure(e)
-        }
-    }
-
-    override suspend fun createAsset(request: CreateAssetRequestDto): Result<Unit>{
-        return try{
-            val response = assetApi.createAsset(request)
-
-            if(response.isSuccessful){
-                Result.success(Unit)
-            }else{
-                Result.failure(Throwable("Failed to create asset"))
-            }
-        }catch(e: Exception){
-            Result.failure(e)
-        }
-    }
+    override suspend fun createAsset(request: CreateAssetRequestDto): Result<Unit> =
+        apiCallUnit(
+            call = { assetApi.createAsset(request) },
+            errorMessage = "Failed to create asset"
+        )
 }
