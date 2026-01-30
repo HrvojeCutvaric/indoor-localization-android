@@ -86,6 +86,7 @@ fun HeatmapFiltersLayout(
     Column(
         Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(horizontal = 12.dp),
     ) {
         FlowRow(
@@ -260,7 +261,7 @@ fun AddAssetTag(
     Row(
         modifier = modifier
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
+            .background(MaterialTheme.colorScheme.surface, CircleShape)
             .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -269,7 +270,7 @@ fun AddAssetTag(
         Text(
             text = "+",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
         )

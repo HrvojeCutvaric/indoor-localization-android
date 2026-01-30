@@ -46,7 +46,9 @@ fun HeatmapSelectAssetsLayout(
 ) {
     Box {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -57,7 +59,9 @@ fun HeatmapSelectAssetsLayout(
             Spacer(modifier = Modifier.height(8.dp))
 
             DefaultTextField(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 value = state.searchQuery,
                 label = R.string.asset_search_label,
                 placeholder = R.string.asset_search_placeholder,

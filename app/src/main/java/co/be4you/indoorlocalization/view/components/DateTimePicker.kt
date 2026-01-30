@@ -93,6 +93,9 @@ fun IndoorLocalizationDatePickerDialog(
                     )
                 }
             },
+            colors = DatePickerDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            )
         ) {
             DatePicker(
                 state = datePickerState,
@@ -107,6 +110,8 @@ fun IndoorLocalizationDatePickerDialog(
                     )
                 },
                 colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+
                     selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
                     selectedYearContainerColor = MaterialTheme.colorScheme.primary,
                     currentYearContentColor = MaterialTheme.colorScheme.primary,
