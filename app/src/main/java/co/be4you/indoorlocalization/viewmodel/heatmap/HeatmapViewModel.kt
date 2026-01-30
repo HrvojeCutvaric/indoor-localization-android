@@ -297,7 +297,17 @@ class HeatmapViewModel(
             }
 
             HeatmapAction.OnAddAssetClicked -> {
-                _state.update { it?.copy(mode = HeatmapScreenMode.SELECT_ASSETS) }
+                _state.update { currentState ->
+                    currentState?.let {
+                        val unselected = (it.assets.toSet() - it.selectedAssets.toSet()).toList()
+                        it.copy(
+                            mode = HeatmapScreenMode.SELECT_ASSETS,
+                            preselectedAssets = emptyList(),
+                            searchQuery = "",
+                            unselectedAssets = unselected
+                        )
+                    }
+                }
             }
 
             is HeatmapAction.OnAssetSelected -> {
