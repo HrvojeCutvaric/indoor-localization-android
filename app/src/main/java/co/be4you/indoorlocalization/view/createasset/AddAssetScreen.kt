@@ -38,7 +38,6 @@ fun AddAssetScreen(
         DefaultTopBar(
             title = "Add Asset",
             onBack = { viewModel.execute(AddAssetAction.OnBackClicked) },
-            onLogout = { viewModel.execute(AddAssetAction.OnLogoutClicked) }
         )
 
         Column(

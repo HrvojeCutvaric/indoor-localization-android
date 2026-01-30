@@ -59,7 +59,6 @@ fun AssetDetailScreen(
         DefaultTopBar(
             title = "Asset Details",
             onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
-            onLogout = {viewModel.execute(AssetDetailAction.OnLogoutClicked)}
         )
 
         if(showDeleteDialog){

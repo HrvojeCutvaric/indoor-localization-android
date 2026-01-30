@@ -75,7 +75,6 @@ fun AssetsScreen(
         DefaultTopBar(
             title = "Assets",
             onBack = { viewModel.execute(AssetsAction.OnBackClicked) },
-            onLogout = { viewModel.execute(AssetsAction.OnLogoutClicked) }
         )
 
         DefaultButton(

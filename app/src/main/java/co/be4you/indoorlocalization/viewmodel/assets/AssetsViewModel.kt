@@ -55,10 +55,6 @@ class AssetsViewModel(
             AssetsAction.OnBackClicked -> {
                 appNavigator.navigateBack()
             }
-
-            AssetsAction.OnLogoutClicked -> {
-                appNavigator.navigateTo(route = Route.Login, clearBackStack = true)
-            }
         }
     }
 
