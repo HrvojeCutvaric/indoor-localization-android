@@ -31,7 +31,6 @@ import co.be4you.core.ui.components.DefaultButton
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
-import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton

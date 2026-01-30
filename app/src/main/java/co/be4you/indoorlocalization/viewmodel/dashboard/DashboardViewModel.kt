@@ -184,7 +184,6 @@ class DashboardViewModel(
                     }
             } catch (e: Throwable) {
                 e.printStackTrace()
-                null
             }
         }
     }
