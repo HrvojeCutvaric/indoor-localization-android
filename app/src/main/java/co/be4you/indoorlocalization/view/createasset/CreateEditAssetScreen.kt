@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -45,6 +48,57 @@ private fun CreateEditAssetLayout(
 ) {
     val title =
         if (state.asset == null) stringResource(R.string.create_asset) else stringResource(R.string.edit_asset)
+
+    if (state.showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { onAction(CreateEditAssetAction.OnDismissDeleteClicked) },
+            containerColor = MaterialTheme.colorScheme.surface,
+            title = {
+                Text(
+                    text = stringResource(R.string.delete_this_asset),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.this_action_cannot_be_undone),
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { onAction(CreateEditAssetAction.OnConfirmDeleteClicked) },
+                    enabled = !state.isSaving,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete).uppercase(),
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { onAction(CreateEditAssetAction.OnDismissDeleteClicked) },
+                    enabled = !state.isSaving,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.cancel).uppercase(),
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                }
+            }
+        )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         DefaultTopBar(

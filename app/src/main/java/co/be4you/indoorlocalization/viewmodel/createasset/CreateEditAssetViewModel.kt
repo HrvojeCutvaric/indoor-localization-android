@@ -41,6 +41,7 @@ class CreateEditAssetViewModel(
                                 name = "",
                                 colorHex = "",
                                 errorResource = null,
+                                showDeleteDialog = false,
                             )
                             return@launch
                         }
@@ -54,6 +55,7 @@ class CreateEditAssetViewModel(
                                     name = asset.name,
                                     colorHex = asset.colorHex.orEmpty(),
                                     errorResource = null,
+                                    showDeleteDialog = false,
                                 )
                             },
                             onFailure = {
@@ -91,7 +93,17 @@ class CreateEditAssetViewModel(
 
             CreateEditAssetAction.OnSaveClicked -> save()
 
-            CreateEditAssetAction.OnDeleteClicked -> deleteAsset()
+            CreateEditAssetAction.OnDeleteClicked -> {
+                _state.update { it?.copy(showDeleteDialog = true) }
+            }
+
+            CreateEditAssetAction.OnConfirmDeleteClicked -> deleteAsset()
+
+            CreateEditAssetAction.OnDismissDeleteClicked -> _state.update {
+                it?.copy(
+                    showDeleteDialog = false
+                )
+            }
         }
     }
 
@@ -110,9 +122,14 @@ class CreateEditAssetViewModel(
                                 ),
                                 removeRoutes = listOf(
                                     Route.CreateEditAsset(
-                                        currentState.floorMap.id,
-                                        currentState.asset.id
-                                    )
+                                        floorMapId = currentState.floorMap.id,
+                                        assetId = currentState.asset.id
+                                    ),
+                                    Route.AssetDetail(assetId = currentState.asset.id),
+                                    Route.Assets(
+                                        floorMapId = currentState.floorMap.id,
+                                        floorMapName = currentState.floorMap.name,
+                                    ),
                                 )
                             )
                         },

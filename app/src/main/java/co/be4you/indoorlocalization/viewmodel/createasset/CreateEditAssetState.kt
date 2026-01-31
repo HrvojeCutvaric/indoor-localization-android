@@ -10,4 +10,5 @@ data class CreateEditAssetState(
     val name: String,
     val colorHex: String,
     val errorResource: Int?,
+    val showDeleteDialog: Boolean,
 )
