@@ -48,25 +48,52 @@ fun AssetDetailScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.delete_this_asset)) },
-            text = { Text(stringResource(R.string.this_action_cannot_be_undone)) },
+            containerColor = MaterialTheme.colorScheme.surface,
+            title = {
+                Text(
+                    text = stringResource(R.string.delete_this_asset),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.this_action_cannot_be_undone),
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
                         showDeleteDialog = false
                         viewModel.execute(AssetDetailAction.OnDeleteClicked)
                     },
-                    enabled = !state.isDeleting
+                    enabled = !state.isDeleting,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
                 ) {
-                    Text(stringResource(R.string.delete))
+                    Text(
+                        text = stringResource(R.string.delete).uppercase(),
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDeleteDialog = false },
-                    enabled = !state.isDeleting
+                    enabled = !state.isDeleting,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
                 ) {
-                    Text(stringResource(R.string.cancel))
+                    Text(
+                        text = stringResource(R.string.cancel).uppercase(),
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
                 }
             }
         )
