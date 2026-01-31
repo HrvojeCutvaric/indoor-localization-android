@@ -21,7 +21,9 @@ class CreateEditAssetViewModel(
     private val appNavigator: AppNavigator
 ) : ViewModel() {
 
-    private val floorMapId: Long? = appNavigator.getRouteOrNull<Route.CreateEditAsset>()?.floorMapId
+    private val route = appNavigator.getRouteOrNull<Route.CreateEditAsset>()
+    private val floorMapId: Long? = route?.floorMapId
+    private val assetId: Long? = route?.assetId
 
     private val _state = MutableStateFlow<CreateEditAssetState?>(null)
     val state = _state.asStateFlow()
@@ -31,12 +33,33 @@ class CreateEditAssetViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 floorMapRepository.getFloorMap(floorMapId).fold(
                     onSuccess = { floorMap ->
-                        _state.value = CreateEditAssetState(
-                            floorMap = floorMap,
-                            isSaving = false,
-                            name = "",
-                            colorHex = "",
-                            errorResource = null,
+                        if (assetId == null) {
+                            _state.value = CreateEditAssetState(
+                                floorMap = floorMap,
+                                asset = null,
+                                isSaving = false,
+                                name = "",
+                                colorHex = "",
+                                errorResource = null,
+                            )
+                            return@launch
+                        }
+
+                        assetRepository.getAsset(assetId).fold(
+                            onSuccess = { asset ->
+                                _state.value = CreateEditAssetState(
+                                    floorMap = floorMap,
+                                    asset = asset,
+                                    isSaving = false,
+                                    name = asset.name,
+                                    colorHex = asset.colorHex.orEmpty(),
+                                    errorResource = null,
+                                )
+                            },
+                            onFailure = {
+                                Log.e("AddAssetViewModel", "Error getting asset", it)
+                                appNavigator.navigateBack()
+                            },
                         )
                     },
                     onFailure = {
