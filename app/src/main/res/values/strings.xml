@@ -69,4 +69,8 @@
     <string name="floor_map">Floor Map</string>
     <string name="last_sync">Last Sync</string>
     <string name="unknown">Unknown</string>
+    <string name="create_asset">Create Asset</string>
+    <string name="edit_asset">Edit Asset</string>
+    <string name="create_edit_asset_floor_map">Floor map: %1$s</string>
+    <string name="create">Create</string>
 </resources>

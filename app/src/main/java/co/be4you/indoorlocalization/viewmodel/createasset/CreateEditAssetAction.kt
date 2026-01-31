@@ -9,4 +9,6 @@ interface CreateEditAssetAction {
     data object OnSaveClicked : CreateEditAssetAction
 
     data object OnBackClicked : CreateEditAssetAction
+
+    data object OnDeleteClicked : CreateEditAssetAction
 }

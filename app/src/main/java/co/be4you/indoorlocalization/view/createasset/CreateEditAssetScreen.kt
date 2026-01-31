@@ -1,11 +1,14 @@
 package co.be4you.indoorlocalization.view.createasset
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,6 +19,7 @@ import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultLabel
 import co.be4you.core.ui.components.DefaultTextField
 import co.be4you.core.ui.components.LoadingLayout
+import co.be4you.core.ui.components.SecondaryButton
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.createasset.CreateEditAssetAction
@@ -39,9 +43,12 @@ private fun CreateEditAssetLayout(
     state: CreateEditAssetState,
     onAction: (CreateEditAssetAction) -> Unit,
 ) {
+    val title =
+        if (state.asset == null) stringResource(R.string.create_asset) else stringResource(R.string.edit_asset)
+
     Column(modifier = Modifier.fillMaxSize()) {
         DefaultTopBar(
-            title = "Add Asset",
+            title = title,
             onBack = { onAction(CreateEditAssetAction.OnBackClicked) },
         )
 
@@ -50,7 +57,12 @@ private fun CreateEditAssetLayout(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            DefaultLabel(text = "Floor map: ${state.floorMap.name}")
+            DefaultLabel(
+                text = stringResource(
+                    R.string.create_edit_asset_floor_map,
+                    state.floorMap.name
+                )
+            )
             Spacer(Modifier.height(12.dp))
 
             DefaultTextField(
@@ -85,10 +97,29 @@ private fun CreateEditAssetLayout(
 
             DefaultButton(
                 modifier = Modifier.fillMaxWidth(),
-                label = R.string.generic_save,
+                label = if (state.asset == null) R.string.create else R.string.generic_save,
                 isButtonLoading = state.isSaving,
                 onButtonClicked = { onAction(CreateEditAssetAction.OnSaveClicked) }
             )
+
+            if (state.asset != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                SecondaryButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(R.string.delete),
+                    onButtonClicked = { onAction(CreateEditAssetAction.OnDeleteClicked) },
+                    isLoading = state.isSaving,
+                    isEnabled = state.isSaving.not(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error,
+                    ),
+                    borderStroke = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.error
+                    ),
+                )
+            }
         }
     }
 }

@@ -90,6 +90,43 @@ class CreateEditAssetViewModel(
             CreateEditAssetAction.OnBackClicked -> appNavigator.navigateBack()
 
             CreateEditAssetAction.OnSaveClicked -> save()
+
+            CreateEditAssetAction.OnDeleteClicked -> deleteAsset()
+        }
+    }
+
+    private fun deleteAsset() {
+        _state.value?.let { currentState ->
+            currentState.asset?.let { asset ->
+                _state.update { it?.copy(isSaving = true, errorResource = null) }
+
+                viewModelScope.launch(Dispatchers.IO) {
+                    assetRepository.deleteAsset(asset.id).fold(
+                        onSuccess = {
+                            appNavigator.navigateTo(
+                                route = Route.Assets(
+                                    floorMapId = currentState.floorMap.id,
+                                    floorMapName = currentState.floorMap.name,
+                                ),
+                                removeRoutes = listOf(
+                                    Route.CreateEditAsset(
+                                        currentState.floorMap.id,
+                                        currentState.asset.id
+                                    )
+                                )
+                            )
+                        },
+                        onFailure = {
+                            _state.update {
+                                it?.copy(
+                                    isSaving = false,
+                                    errorResource = R.string.error_deleting_asset
+                                )
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 
