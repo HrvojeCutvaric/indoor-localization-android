@@ -1,24 +1,17 @@
 package co.be4you.core.data.network.ws.mqtt.mappers
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import co.be4you.core.data.network.ws.api.mappers.toMillis
 import co.be4you.core.data.network.ws.mqtt.models.MqttAssetDto
 import co.be4you.core.domain.models.Asset
-import java.time.Instant
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun MqttAssetDto.toAsset(): Asset {
-
-    val lastSync = Instant.parse(lastSync)
-
-    return Asset(
-        id = id,
-        name = name,
-        colorHex = colorHex,
-        x = x,
-        y = y,
-        floorMapId = floorMapId,
-        active = active,
-        lastSync = lastSync,
+fun MqttAssetDto.toAsset(): Asset =
+    Asset(
+        id = this.id,
+        name = this.name,
+        colorHex = this.colorHex,
+        x = this.x,
+        y = this.y,
+        floorMapId = this.floorMapId,
+        active = this.active,
+        lastSync = this.lastSync.toMillis(),
     )
-}

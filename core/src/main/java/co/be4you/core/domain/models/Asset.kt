@@ -2,7 +2,6 @@ package co.be4you.core.domain.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
-import java.time.Instant
 
 data class Asset(
     val id: Long,
@@ -12,7 +11,7 @@ data class Asset(
     val y: Double?,
     val floorMapId: Long,
     val active: Boolean,
-    val lastSync: Instant?,
+    val lastSync: Long?,
 ) {
     val color: Color = colorHex?.let { colorHex ->
         try {
