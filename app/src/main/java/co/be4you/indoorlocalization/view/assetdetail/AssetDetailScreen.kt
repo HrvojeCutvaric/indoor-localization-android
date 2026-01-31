@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,16 +39,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AssetDetailScreen(
-    assetId: Long,
     viewModel: AssetDetailViewModel = koinViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(assetId) {
-        viewModel.setAssetId(assetId)
-    }
 
     Column(
         modifier = Modifier.fillMaxSize()

@@ -36,4 +36,8 @@ class AppNavigator(
             backStack.subList(index - 1, backStack.size).clear()
         } ?: backStack.removeLastOrNull()
     }
+
+    inline fun <reified T : Route> getRouteOrNull(): T? =
+        backStack.lastOrNull() as? T
+
 }

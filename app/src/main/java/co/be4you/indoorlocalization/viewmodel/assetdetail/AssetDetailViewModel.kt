@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.navigation.AppNavigator
+import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,10 +17,14 @@ class AssetDetailViewModel(
     private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
-    private var assetId: Long? = null
+    private val assetId: Long? = appNavigator.getRouteOrNull<Route.AssetDetail>()?.assetId
 
     private val _state = MutableStateFlow(AssetDetailState())
     val state = _state.asStateFlow()
+
+    init {
+        assetId?.let { loadAsset(it) }
+    }
 
     fun execute(action: AssetDetailAction) {
         when (action) {
@@ -32,12 +37,6 @@ class AssetDetailViewModel(
                 deleteAsset(id)
             }
         }
-    }
-
-    fun setAssetId(id: Long) {
-        if (assetId == id) return
-        assetId = id
-        loadAsset(id)
     }
 
     private fun loadAsset(id: Long) {

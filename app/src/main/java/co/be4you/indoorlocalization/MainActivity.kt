@@ -80,10 +80,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        entry<Route.AssetDetail> { detail ->
-                            AssetDetailScreen(
-                                assetId = detail.assetId
-                            )
+                        entry<Route.AssetDetail> {
+                            AssetDetailScreen()
                         }
 
                         entry<Route.CreateAsset> { create ->
