@@ -1,19 +1,18 @@
 package co.be4you.indoorlocalization.view.assetdetail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,12 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.formatDateTime
+import co.be4you.indoorlocalization.view.assetdetail.components.AssetHeaderCard
+import co.be4you.indoorlocalization.view.assetdetail.components.AssetInfoCard
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailState
@@ -47,8 +47,9 @@ fun AssetDetailScreen(
     AssetDetailLayout(state = state, onAction = viewModel::execute)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AssetDetailLayout(
+fun AssetDetailLayout(
     state: AssetDetailState,
     onAction: (AssetDetailAction) -> Unit,
 ) {
@@ -115,7 +116,8 @@ private fun AssetDetailLayout(
                 title = stringResource(R.string.asset_details),
                 onBack = { onAction(AssetDetailAction.OnBackClicked) },
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             when {
@@ -139,65 +141,27 @@ private fun AssetDetailLayout(
                     }
                 }
 
-
                 state.asset != null -> {
-                    val asset = state.asset
-
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
+                            .verticalScroll(rememberScrollState()),
                     ) {
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(
-                                        color = asset.color,
-                                        shape = MaterialTheme.shapes.medium
-                                    )
-                            )
-
-                            Spacer(Modifier.width(16.dp))
-
-                            Text(
-                                text = asset.name,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
-                            )
-                        }
-
-                        Spacer(Modifier.height(16.dp))
-
-                        InfoItem(
-                            label = stringResource(R.string.status),
-                            value = if (asset.active) stringResource(R.string.active)
-                            else stringResource(R.string.inactive)
+                        AssetHeaderCard(
+                            name = state.asset.name,
+                            isActive = state.asset.active,
+                            assetColor = state.asset.color,
                         )
 
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        InfoItem(
-                            label = stringResource(R.string.last_known_position),
-                            value = "(${asset.x}, ${asset.y})",
-                        )
-
-                        Spacer(Modifier.height(12.dp))
-
-                        InfoItem(
-                            label = stringResource(R.string.floor_map),
-                            value = asset.floorMapId.toString(),
-                        )
-
-                        Spacer(Modifier.height(12.dp))
-
-                        InfoItem(
-                            label = stringResource(R.string.last_sync),
-                            value = asset.lastSync?.formatDateTime()
+                        AssetInfoCard(
+                            lastPosition = "(${state.asset.x}, ${state.asset.y})",
+                            floorMapId = "${state.asset.floorMapId}",
+                            lastSync = state.asset.lastSync?.formatDateTime()
                                 ?: stringResource(R.string.unknown),
                         )
 
@@ -218,22 +182,5 @@ private fun AssetDetailLayout(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun InfoItem(label: String, value: String) {
-    Column {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.headlineLarge.copy(
-                color = MaterialTheme.colorScheme.secondary,
-            )
-        )
-
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelLarge,
-        )
     }
 }
