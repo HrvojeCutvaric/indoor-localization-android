@@ -11,14 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,15 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
+import co.be4you.indoorlocalization.utils.formatDateTime
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-
 
 @Composable
 fun AssetDetailScreen(
@@ -60,11 +60,11 @@ fun AssetDetailScreen(
             onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
         )
 
-        if(showDeleteDialog){
+        if (showDeleteDialog) {
             AlertDialog(
-                onDismissRequest = { showDeleteDialog = false},
-                title = {Text("Delete this asset?")},
-                text = {Text("This action cannot be undone.")},
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Delete this asset?") },
+                text = { Text("This action cannot be undone.") },
                 confirmButton = {
                     TextButton(
                         onClick = {
@@ -151,7 +151,7 @@ fun AssetDetailScreen(
                     InfoItem("Status", if (asset.active) "Active" else "Inactive")
                     InfoItem("Last Known Position", "(${asset.x}, ${asset.y})")
                     InfoItem("Floor Map", asset.floorMapId.toString())
-                    InfoItem("Last Sync", asset.lastSync?.toString() ?: "Unknown")
+                    InfoItem("Last Sync", asset.lastSync?.formatDateTime() ?: "Unknown")
                 }
             }
         }
@@ -183,7 +183,7 @@ fun AssetDetailScreen(
                 onButtonClicked = { showDeleteDialog = true },
                 isButtonEnabled = !isBusy,
                 isButtonLoading = state.isDeleting,
-                content = { if(!state.isDeleting) Text("Delete")}
+                content = { if (!state.isDeleting) Text("Delete") }
             )
         }
     }

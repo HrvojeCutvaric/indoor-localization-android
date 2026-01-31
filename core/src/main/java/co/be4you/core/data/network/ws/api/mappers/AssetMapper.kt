@@ -1,22 +1,16 @@
 package co.be4you.core.data.network.ws.api.mappers
 
-import android.util.Log
 import co.be4you.core.data.network.ws.api.models.assets.AssetDto
 import co.be4you.core.domain.models.Asset
-import java.time.Instant
 
-fun AssetDto.toAsset(): Asset {
-
-    return Asset(
-        id = id,
-        name = name,
-        colorHex = color,
-        x = x,
-        y = y,
-        floorMapId = floorMapId,
-        active = active,
-        lastSync = lastSync
-            ?.takeIf { it.isNotBlank() }
-            ?.let { Instant.parse(it)}
+fun AssetDto.toAsset(): Asset =
+    Asset(
+        id = this.id,
+        name = this.name,
+        colorHex = this.color,
+        x = this.x,
+        y = this.y,
+        floorMapId = this.floorMapId,
+        active = this.active,
+        lastSync = this.lastSync?.toMillis(),
     )
-}
