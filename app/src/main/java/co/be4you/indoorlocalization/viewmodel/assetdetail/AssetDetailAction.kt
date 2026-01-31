@@ -4,5 +4,5 @@ sealed interface AssetDetailAction {
 
     data object OnBackClicked : AssetDetailAction
 
-    data object OnDeleteClicked : AssetDetailAction
+    data object OnEditClicked : AssetDetailAction
 }

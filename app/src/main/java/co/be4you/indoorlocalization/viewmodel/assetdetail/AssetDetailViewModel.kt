@@ -32,9 +32,15 @@ class AssetDetailViewModel(
                 appNavigator.navigateBack()
             }
 
-            AssetDetailAction.OnDeleteClicked -> {
-                val id = assetId ?: return
-                deleteAsset(id)
+            AssetDetailAction.OnEditClicked -> {
+                _state.value.asset?.let { asset ->
+                    appNavigator.navigateTo(
+                        route = Route.CreateEditAsset(
+                            floorMapId = asset.floorMapId,
+                            assetId = asset.id,
+                        )
+                    )
+                }
             }
         }
     }
