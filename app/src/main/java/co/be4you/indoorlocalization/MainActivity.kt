@@ -9,7 +9,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -52,9 +51,7 @@ class MainActivity : ComponentActivity() {
             val appNavigator = koinInject<AppNavigator>()
             IndoorLocalizationTheme {
                 NavDisplay(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .navigationBarsPadding(),
+                    modifier = Modifier.statusBarsPadding(),
                     backStack = appNavigator.backStack,
                     transitionSpec = {
                         fadeIn(tween(300)) togetherWith fadeOut(tween(300))
