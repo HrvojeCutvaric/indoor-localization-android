@@ -73,4 +73,5 @@
     <string name="edit_asset">Edit Asset</string>
     <string name="create_edit_asset_floor_map">Floor map: %1$s</string>
     <string name="create">Create</string>
+    <string name="asset_error_name_required">Asset name is required.</string>
 </resources>

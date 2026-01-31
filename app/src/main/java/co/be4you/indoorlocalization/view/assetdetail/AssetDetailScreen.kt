@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.be4you.core.ui.components.HandleLifecycleEvents
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.formatDateTime
 import co.be4you.indoorlocalization.view.assetdetail.components.AssetHeaderCard
@@ -38,6 +39,8 @@ fun AssetDetailScreen(
     viewModel: AssetDetailViewModel = koinViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    HandleLifecycleEvents(onResume = viewModel::onResume)
 
     AssetDetailLayout(state = state, onAction = viewModel::execute)
 }

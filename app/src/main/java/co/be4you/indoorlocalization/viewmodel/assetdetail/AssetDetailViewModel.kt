@@ -70,27 +70,20 @@ class AssetDetailViewModel(
         }
     }
 
-    private fun deleteAsset(id: Long) {
-
-        if (_state.value.isDeleting) return
-
-        _state.update { it.copy(isDeleting = true, errorResource = null) }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAsset(id).fold(
-                onSuccess = {
-                    _state.update { it.copy(isDeleting = false) }
-                    appNavigator.navigateBack()
-                },
-                onFailure = {
-                    _state.update {
-                        it.copy(
-                            isDeleting = false,
-                            errorResource = R.string.error_deleting_asset
-                        )
-                    }
+    fun onResume() {
+        _state.value.let { currentState ->
+            currentState.asset?.let { assetFromState ->
+                viewModelScope.launch(Dispatchers.IO) {
+                    repository.getAsset(assetFromState.id).fold(
+                        onSuccess = { asset ->
+                            _state.update { it.copy(asset = asset) }
+                        },
+                        onFailure = {
+                            appNavigator.navigateBack()
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 }

@@ -153,7 +153,8 @@ private fun CreateEditAssetLayout(
                 modifier = Modifier.fillMaxWidth(),
                 label = if (state.asset == null) R.string.create else R.string.generic_save,
                 isButtonLoading = state.isSaving,
-                onButtonClicked = { onAction(CreateEditAssetAction.OnSaveClicked) }
+                isButtonEnabled = state.isSaving.not(),
+                onButtonClicked = { onAction(CreateEditAssetAction.OnConfirmClicked) }
             )
 
             if (state.asset != null) {

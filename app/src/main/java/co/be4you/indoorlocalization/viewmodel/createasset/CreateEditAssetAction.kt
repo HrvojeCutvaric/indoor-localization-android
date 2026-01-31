@@ -6,7 +6,7 @@ interface CreateEditAssetAction {
 
     data class OnColorChanged(val value: String) : CreateEditAssetAction
 
-    data object OnSaveClicked : CreateEditAssetAction
+    data object OnConfirmClicked : CreateEditAssetAction
 
     data object OnBackClicked : CreateEditAssetAction
 

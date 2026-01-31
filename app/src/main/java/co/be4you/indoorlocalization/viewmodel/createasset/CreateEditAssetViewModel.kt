@@ -3,9 +3,9 @@ package co.be4you.indoorlocalization.viewmodel.createasset
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
 import co.be4you.core.data.repositories.AssetRepository
 import co.be4you.core.data.repositories.FloorMapRepository
+import co.be4you.core.domain.models.Asset
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.core.navigation.Route
 import co.be4you.indoorlocalization.R
@@ -29,6 +29,44 @@ class CreateEditAssetViewModel(
     val state = _state.asStateFlow()
 
     init {
+        setState()
+    }
+
+    fun execute(action: CreateEditAssetAction) {
+        when (action) {
+            is CreateEditAssetAction.OnNameChanged -> _state.update {
+                it?.copy(
+                    name = action.value,
+                    errorResource = null
+                )
+            }
+
+            is CreateEditAssetAction.OnColorChanged -> _state.update {
+                it?.copy(
+                    colorHex = action.value,
+                    errorResource = null
+                )
+            }
+
+            CreateEditAssetAction.OnBackClicked -> appNavigator.navigateBack()
+
+            CreateEditAssetAction.OnConfirmClicked -> onConfirmClicked()
+
+            CreateEditAssetAction.OnDeleteClicked -> {
+                _state.update { it?.copy(showDeleteDialog = true) }
+            }
+
+            CreateEditAssetAction.OnConfirmDeleteClicked -> deleteAsset()
+
+            CreateEditAssetAction.OnDismissDeleteClicked -> _state.update {
+                it?.copy(
+                    showDeleteDialog = false
+                )
+            }
+        }
+    }
+
+    private fun setState() {
         floorMapId?.let { floorMapId ->
             viewModelScope.launch(Dispatchers.IO) {
                 floorMapRepository.getFloorMap(floorMapId).fold(
@@ -73,35 +111,46 @@ class CreateEditAssetViewModel(
         }
     }
 
-    fun execute(action: CreateEditAssetAction) {
-        when (action) {
-            is CreateEditAssetAction.OnNameChanged -> _state.update {
-                it?.copy(
-                    name = action.value,
-                    errorResource = null
-                )
+    private fun onConfirmClicked() {
+        _state.value?.let { currentState ->
+            _state.update { it?.copy(isSaving = true) }
+
+            if (currentState.name.isBlank()) {
+                _state.update { it?.copy(errorResource = R.string.asset_error_name_required) }
+                return
             }
 
-            is CreateEditAssetAction.OnColorChanged -> _state.update {
-                it?.copy(
-                    colorHex = action.value,
-                    errorResource = null
-                )
-            }
+            val color = currentState.colorHex.trim().takeIf { it.isNotBlank() }
 
-            CreateEditAssetAction.OnBackClicked -> appNavigator.navigateBack()
+            val newAsset = Asset(
+                id = assetId ?: 0,
+                name = currentState.name,
+                colorHex = color,
+                x = null,
+                y = null,
+                floorMapId = currentState.floorMap.id,
+                active = true,
+                lastSync = null,
+            )
 
-            CreateEditAssetAction.OnSaveClicked -> save()
+            _state.update { it?.copy(isSaving = true, errorResource = null) }
 
-            CreateEditAssetAction.OnDeleteClicked -> {
-                _state.update { it?.copy(showDeleteDialog = true) }
-            }
+            viewModelScope.launch(Dispatchers.IO) {
+                val call = if (assetId == null) assetRepository.createAsset(asset = newAsset)
+                else assetRepository.updateAsset(asset = newAsset)
 
-            CreateEditAssetAction.OnConfirmDeleteClicked -> deleteAsset()
-
-            CreateEditAssetAction.OnDismissDeleteClicked -> _state.update {
-                it?.copy(
-                    showDeleteDialog = false
+                call.fold(
+                    onSuccess = {
+                        appNavigator.navigateBack()
+                    },
+                    onFailure = {
+                        _state.update {
+                            it?.copy(
+                                isSaving = false,
+                                errorResource = R.string.generic_error_message
+                            )
+                        }
+                    }
                 )
             }
         }
@@ -115,23 +164,7 @@ class CreateEditAssetViewModel(
                 viewModelScope.launch(Dispatchers.IO) {
                     assetRepository.deleteAsset(asset.id).fold(
                         onSuccess = {
-                            appNavigator.navigateTo(
-                                route = Route.Assets(
-                                    floorMapId = currentState.floorMap.id,
-                                    floorMapName = currentState.floorMap.name,
-                                ),
-                                removeRoutes = listOf(
-                                    Route.CreateEditAsset(
-                                        floorMapId = currentState.floorMap.id,
-                                        assetId = currentState.asset.id
-                                    ),
-                                    Route.AssetDetail(assetId = currentState.asset.id),
-                                    Route.Assets(
-                                        floorMapId = currentState.floorMap.id,
-                                        floorMapName = currentState.floorMap.name,
-                                    ),
-                                )
-                            )
+                            appNavigator.navigateBack()
                         },
                         onFailure = {
                             _state.update {
@@ -143,54 +176,6 @@ class CreateEditAssetViewModel(
                         }
                     )
                 }
-            }
-        }
-    }
-
-    private fun save() {
-        _state.value?.let { currentState ->
-            if (currentState.isSaving) return
-
-            val fmId = floorMapId
-            if (fmId == null) {
-                _state.update { it?.copy(errorResource = R.string.generic_error_message) }
-                return
-            }
-
-            val name = currentState.name.trim()
-            if (name.isBlank()) {
-                _state.update { it?.copy(errorResource = R.string.generic_error_message) }
-                return
-            }
-
-            val color = currentState.colorHex.trim().takeIf { it.isNotBlank() }
-
-            val request = CreateAssetRequestDto(
-                name = name,
-                x = null,
-                y = null,
-                floorMapId = fmId,
-                active = true,
-                color = color
-            )
-
-            _state.update { it?.copy(isSaving = true, errorResource = null) }
-
-            viewModelScope.launch(Dispatchers.IO) {
-                assetRepository.createAsset(request).fold(
-                    onSuccess = {
-                        _state.update { it?.copy(isSaving = false) }
-                        appNavigator.navigateBack()
-                    },
-                    onFailure = {
-                        _state.update {
-                            it?.copy(
-                                isSaving = false,
-                                errorResource = R.string.generic_error_message
-                            )
-                        }
-                    }
-                )
             }
         }
     }
