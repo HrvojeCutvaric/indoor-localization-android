@@ -8,16 +8,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -28,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.Lifecycle
@@ -36,7 +34,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.domain.models.Asset
-import co.be4you.core.ui.components.DefaultButton
+import co.be4you.core.ui.components.IndoorLocalizationFloatingActionButton
+import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsAction
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
@@ -67,68 +66,64 @@ fun AssetsScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        DefaultTopBar(
-            title = "Assets",
-            onBack = { viewModel.execute(AssetsAction.OnBackClicked) },
-        )
 
-        DefaultButton(
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            DefaultTopBar(
+                title = "Assets",
+                onBack = { viewModel.execute(AssetsAction.OnBackClicked) },
+            )
+        },
+        floatingActionButton = {
+            IndoorLocalizationFloatingActionButton(
+                modifier = Modifier.padding(24.dp),
+                iconResource = R.drawable.ic_add,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                isEnabled = state.isLoading.not(),
+                onClick = { viewModel.execute(AssetsAction.OnAddAssetClicked) },
+            )
+        }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            onButtonClicked = { viewModel.execute(AssetsAction.OnAddAssetClicked) },
-            label = null,
-            content = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Asset",
-                        tint = Color.White
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Add Asset",
-                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
-                    )
-                }
-            }
-
-        )
-
-        AssetSearchBar(
-            query = state.searchQuery,
-            onQueryChanged = { viewModel.execute(AssetsAction.OnSearchChanged(it)) }
-        )
-
-        val assets = state.filteredAssets
-
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .fillMaxSize()
+                .padding(paddingValues),
         ) {
-            if (assets.isEmpty()) {
-                item {
-                    Text(
-                        text = "No asset matches your search",
-                        color = Color.Gray,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
-                }
-            } else {
-                items(assets) { asset ->
-                    AssetRow(
-                        asset = asset,
-                        floorMapName = floorMapName,
-                        onClick = { id ->
-                            viewModel.execute(AssetsAction.OnAssetClicked(id))
-                        }
-                    )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            AssetSearchBar(
+                query = state.searchQuery,
+                onQueryChanged = { viewModel.execute(AssetsAction.OnSearchChanged(it)) }
+            )
+
+            val assets = state.filteredAssets
+
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                if (assets.isEmpty()) {
+                    item {
+                        Text(
+                            text = "No asset matches your search",
+                            color = Color.Gray,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+                } else {
+                    items(assets) { asset ->
+                        AssetRow(
+                            asset = asset,
+                            floorMapName = floorMapName,
+                            onClick = { id ->
+                                viewModel.execute(AssetsAction.OnAssetClicked(id))
+                            }
+                        )
+                    }
                 }
             }
         }
