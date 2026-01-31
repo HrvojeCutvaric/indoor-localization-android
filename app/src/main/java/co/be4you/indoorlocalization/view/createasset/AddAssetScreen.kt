@@ -7,37 +7,42 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultLabel
 import co.be4you.core.ui.components.DefaultTextField
+import co.be4you.core.ui.components.LoadingLayout
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetAction
+import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetState
 import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.ui.res.stringResource
 
 @Composable
 fun AddAssetScreen(
-    floorMapId: Long,
-    floorMapName: String,
     viewModel: AddAssetViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(floorMapId) {
-        viewModel.setFloorMapId(floorMapId)
-    }
+    state?.let {
+        AddAssetLayout(state = it, onAction = viewModel::execute)
+    } ?: LoadingLayout()
+}
 
+@Composable
+private fun AddAssetLayout(
+    state: AddAssetState,
+    onAction: (AddAssetAction) -> Unit,
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         DefaultTopBar(
             title = "Add Asset",
-            onBack = { viewModel.execute(AddAssetAction.OnBackClicked) },
+            onBack = { onAction(AddAssetAction.OnBackClicked) },
         )
 
         Column(
@@ -45,7 +50,7 @@ fun AddAssetScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            DefaultLabel(text = "Floor map: $floorMapName")
+            DefaultLabel(text = "Floor map: ${state.floorMap.name}")
             Spacer(Modifier.height(12.dp))
 
             DefaultTextField(
@@ -53,16 +58,16 @@ fun AddAssetScreen(
                 value = state.name,
                 label = R.string.generic_name_label,
                 placeholder = R.string.generic_name_placeholder,
-                onValueChange = { viewModel.execute(AddAssetAction.OnNameChanged(it)) }
+                onValueChange = { onAction(AddAssetAction.OnNameChanged(it)) }
             )
 
             Spacer(Modifier.height(17.dp))
 
             ColorPickerSection(
-                colorHex = state.color,
+                colorHex = state.colorHex,
                 onColorHexChanged = { hex ->
                     val normalized = if (hex.startsWith("#")) hex else "#$hex"
-                    viewModel.execute(AddAssetAction.OnColorChanged(normalized))
+                    onAction(AddAssetAction.OnColorChanged(normalized))
                 }
             )
 
@@ -82,7 +87,7 @@ fun AddAssetScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = R.string.generic_save,
                 isButtonLoading = state.isSaving,
-                onButtonClicked = { viewModel.execute(AddAssetAction.OnSaveClicked) }
+                onButtonClicked = { onAction(AddAssetAction.OnSaveClicked) }
             )
         }
     }

@@ -87,11 +87,8 @@ class MainActivity : ComponentActivity() {
                             AssetDetailScreen()
                         }
 
-                        entry<Route.CreateAsset> { create ->
-                            AddAssetScreen(
-                                floorMapId = create.floorMapId,
-                                floorMapName = create.floorMapName
-                            )
+                        entry<Route.CreateAsset> {
+                            AddAssetScreen()
                         }
 
                         entry<Route.Heatmap> {

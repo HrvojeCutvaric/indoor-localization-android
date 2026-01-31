@@ -13,14 +13,15 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Dashboard : Route
+
     @Serializable
     data class Assets(
         val floorMapId: Long,
         val floorMapName: String
-    ):Route
+    ) : Route
 
     @Serializable
-    data class AssetDetail(val assetId: Long): Route
+    data class AssetDetail(val assetId: Long) : Route
 
     @Serializable
     data class CreateAsset(
@@ -31,5 +32,5 @@ sealed interface Route : NavKey {
     @Serializable
     data class Heatmap(
         val floorMapId: Long,
-    ): Route
+    ) : Route
 }
