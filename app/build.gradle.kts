@@ -54,4 +54,5 @@ dependencies {
     implementation(project(":otp_login"))
     implementation(libs.colorpicker.compose.android)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.androidx.core.splashscreen)
 }

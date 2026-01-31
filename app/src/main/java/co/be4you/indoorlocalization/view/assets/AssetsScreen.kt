@@ -193,13 +193,13 @@ fun AssetRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 asset.name,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Text(
                 text = statusText,
                 color = statusColor,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.labelMedium,
             )
         }
 
