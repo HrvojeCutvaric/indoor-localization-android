@@ -4,7 +4,7 @@
     <style name="Theme.IndoorLocalization" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenBackground">@color/common_blue</item>
 
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
 
