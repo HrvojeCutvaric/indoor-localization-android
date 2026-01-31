@@ -34,6 +34,7 @@ import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.formatDateTime
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
+import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailState
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -43,6 +44,14 @@ fun AssetDetailScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
+    AssetDetailLayout(state = state, onAction = viewModel::execute)
+}
+
+@Composable
+private fun AssetDetailLayout(
+    state: AssetDetailState,
+    onAction: (AssetDetailAction) -> Unit,
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -69,7 +78,7 @@ fun AssetDetailScreen(
                 TextButton(
                     onClick = {
                         showDeleteDialog = false
-                        viewModel.execute(AssetDetailAction.OnDeleteClicked)
+                        onAction(AssetDetailAction.OnDeleteClicked)
                     },
                     enabled = !state.isDeleting,
                     colors = ButtonDefaults.textButtonColors(
@@ -104,7 +113,7 @@ fun AssetDetailScreen(
         topBar = {
             DefaultTopBar(
                 title = stringResource(R.string.asset_details),
-                onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
+                onBack = { onAction(AssetDetailAction.OnBackClicked) },
             )
         }
     ) { paddingValues ->
@@ -142,19 +151,19 @@ fun AssetDetailScreen(
                         Spacer(modifier = Modifier.height(24.dp))
 
                         Row(
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(28.dp)
+                                    .size(32.dp)
                                     .background(
                                         color = asset.color,
                                         shape = MaterialTheme.shapes.medium
                                     )
                             )
 
-                            Spacer(Modifier.width(15.dp))
+                            Spacer(Modifier.width(16.dp))
 
                             Text(
                                 text = asset.name,
@@ -162,22 +171,34 @@ fun AssetDetailScreen(
                             )
                         }
 
-                        Spacer(Modifier.height(15.dp))
+                        Spacer(Modifier.height(16.dp))
 
                         InfoItem(
-                            stringResource(R.string.status),
-                            if (asset.active) stringResource(R.string.active) else stringResource(
-                                R.string.inactive
-                            )
+                            label = stringResource(R.string.status),
+                            value = if (asset.active) stringResource(R.string.active)
+                            else stringResource(R.string.inactive)
                         )
+
+                        Spacer(Modifier.height(12.dp))
+
                         InfoItem(
-                            stringResource(R.string.last_known_position),
-                            "(${asset.x}, ${asset.y})"
+                            label = stringResource(R.string.last_known_position),
+                            value = "(${asset.x}, ${asset.y})",
                         )
-                        InfoItem(stringResource(R.string.floor_map), asset.floorMapId.toString())
+
+                        Spacer(Modifier.height(12.dp))
+
                         InfoItem(
-                            stringResource(R.string.last_sync),
-                            asset.lastSync?.formatDateTime() ?: stringResource(R.string.unknown)
+                            label = stringResource(R.string.floor_map),
+                            value = asset.floorMapId.toString(),
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        InfoItem(
+                            label = stringResource(R.string.last_sync),
+                            value = asset.lastSync?.formatDateTime()
+                                ?: stringResource(R.string.unknown),
                         )
 
                         Spacer(Modifier.height(32.dp))
@@ -201,19 +222,18 @@ fun AssetDetailScreen(
 }
 
 @Composable
-fun InfoItem(label: String, value: String) {
-    Column(modifier = Modifier.padding(vertical = 10.dp)) {
-
+private fun InfoItem(label: String, value: String) {
+    Column {
         Text(
             text = label,
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
+            style = MaterialTheme.typography.headlineLarge.copy(
+                color = MaterialTheme.colorScheme.secondary,
+            )
         )
 
         Text(
             text = value,
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Light)
+            style = MaterialTheme.typography.labelLarge,
         )
-        Spacer(Modifier.height(12.dp))
     }
 }
