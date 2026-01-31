@@ -48,8 +48,7 @@ class AssetsViewModel(
 
             AssetsAction.OnAddAssetClicked -> {
                 val id = floorMapId ?: return
-                val name = floorMapName ?: ""
-                appNavigator.navigateTo(Route.CreateAsset(floorMapId = id, floorMapName = name))
+                appNavigator.navigateTo(Route.CreateEditAsset(floorMapId = id))
             }
 
             AssetsAction.OnBackClicked -> {

@@ -15,15 +15,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AddAssetViewModel(
+class CreateEditAssetViewModel(
     private val floorMapRepository: FloorMapRepository,
     private val assetRepository: AssetRepository,
     private val appNavigator: AppNavigator
 ) : ViewModel() {
 
-    private val floorMapId: Long? = appNavigator.getRouteOrNull<Route.CreateAsset>()?.floorMapId
+    private val floorMapId: Long? = appNavigator.getRouteOrNull<Route.CreateEditAsset>()?.floorMapId
 
-    private val _state = MutableStateFlow<AddAssetState?>(null)
+    private val _state = MutableStateFlow<CreateEditAssetState?>(null)
     val state = _state.asStateFlow()
 
     init {
@@ -31,7 +31,7 @@ class AddAssetViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 floorMapRepository.getFloorMap(floorMapId).fold(
                     onSuccess = { floorMap ->
-                        _state.value = AddAssetState(
+                        _state.value = CreateEditAssetState(
                             floorMap = floorMap,
                             isSaving = false,
                             name = "",
@@ -48,25 +48,25 @@ class AddAssetViewModel(
         }
     }
 
-    fun execute(action: AddAssetAction) {
+    fun execute(action: CreateEditAssetAction) {
         when (action) {
-            is AddAssetAction.OnNameChanged -> _state.update {
+            is CreateEditAssetAction.OnNameChanged -> _state.update {
                 it?.copy(
                     name = action.value,
                     errorResource = null
                 )
             }
 
-            is AddAssetAction.OnColorChanged -> _state.update {
+            is CreateEditAssetAction.OnColorChanged -> _state.update {
                 it?.copy(
                     colorHex = action.value,
                     errorResource = null
                 )
             }
 
-            AddAssetAction.OnBackClicked -> appNavigator.navigateBack()
+            CreateEditAssetAction.OnBackClicked -> appNavigator.navigateBack()
 
-            AddAssetAction.OnSaveClicked -> save()
+            CreateEditAssetAction.OnSaveClicked -> save()
         }
     }
 

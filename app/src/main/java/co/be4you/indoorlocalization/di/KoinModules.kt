@@ -33,7 +33,7 @@ import co.be4you.core.navigation.AppNavigator
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailViewModel
 import co.be4you.indoorlocalization.viewmodel.assets.AssetsViewModel
-import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
+import co.be4you.indoorlocalization.viewmodel.createasset.CreateEditAssetViewModel
 import co.be4you.indoorlocalization.viewmodel.dashboard.DashboardViewModel
 import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
@@ -92,7 +92,7 @@ val modules = module {
     viewModelOf(::DashboardViewModel)
     viewModelOf(::AssetsViewModel)
     viewModelOf(::AssetDetailViewModel)
-    viewModelOf(::AddAssetViewModel)
+    viewModelOf(::CreateEditAssetViewModel)
     viewModelOf(::HeatmapViewModel)
 
     factoryOf(::RegisterUseCase)

@@ -25,7 +25,7 @@ import co.be4you.core.ui.theme.CommonBlue
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.view.assetdetail.AssetDetailScreen
 import co.be4you.indoorlocalization.view.assets.AssetsScreen
-import co.be4you.indoorlocalization.view.createasset.AddAssetScreen
+import co.be4you.indoorlocalization.view.createasset.CreateEditAssetScreen
 import co.be4you.indoorlocalization.view.dashboard.DashboardScreen
 import co.be4you.indoorlocalization.view.heatmap.HeatmapScreen
 import co.be4you.indoorlocalization.view.login.LoginScreen
@@ -87,8 +87,8 @@ class MainActivity : ComponentActivity() {
                             AssetDetailScreen()
                         }
 
-                        entry<Route.CreateAsset> {
-                            AddAssetScreen()
+                        entry<Route.CreateEditAsset> {
+                            CreateEditAssetScreen()
                         }
 
                         entry<Route.Heatmap> {

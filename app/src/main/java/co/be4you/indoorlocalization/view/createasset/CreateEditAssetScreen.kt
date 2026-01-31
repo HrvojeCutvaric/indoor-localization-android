@@ -18,31 +18,31 @@ import co.be4you.core.ui.components.DefaultTextField
 import co.be4you.core.ui.components.LoadingLayout
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
-import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetAction
-import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetState
-import co.be4you.indoorlocalization.viewmodel.createasset.AddAssetViewModel
+import co.be4you.indoorlocalization.viewmodel.createasset.CreateEditAssetAction
+import co.be4you.indoorlocalization.viewmodel.createasset.CreateEditAssetState
+import co.be4you.indoorlocalization.viewmodel.createasset.CreateEditAssetViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AddAssetScreen(
-    viewModel: AddAssetViewModel = koinViewModel()
+fun CreateEditAssetScreen(
+    viewModel: CreateEditAssetViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     state?.let {
-        AddAssetLayout(state = it, onAction = viewModel::execute)
+        CreateEditAssetLayout(state = it, onAction = viewModel::execute)
     } ?: LoadingLayout()
 }
 
 @Composable
-private fun AddAssetLayout(
-    state: AddAssetState,
-    onAction: (AddAssetAction) -> Unit,
+private fun CreateEditAssetLayout(
+    state: CreateEditAssetState,
+    onAction: (CreateEditAssetAction) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         DefaultTopBar(
             title = "Add Asset",
-            onBack = { onAction(AddAssetAction.OnBackClicked) },
+            onBack = { onAction(CreateEditAssetAction.OnBackClicked) },
         )
 
         Column(
@@ -58,7 +58,7 @@ private fun AddAssetLayout(
                 value = state.name,
                 label = R.string.generic_name_label,
                 placeholder = R.string.generic_name_placeholder,
-                onValueChange = { onAction(AddAssetAction.OnNameChanged(it)) }
+                onValueChange = { onAction(CreateEditAssetAction.OnNameChanged(it)) }
             )
 
             Spacer(Modifier.height(17.dp))
@@ -67,7 +67,7 @@ private fun AddAssetLayout(
                 colorHex = state.colorHex,
                 onColorHexChanged = { hex ->
                     val normalized = if (hex.startsWith("#")) hex else "#$hex"
-                    onAction(AddAssetAction.OnColorChanged(normalized))
+                    onAction(CreateEditAssetAction.OnColorChanged(normalized))
                 }
             )
 
@@ -87,7 +87,7 @@ private fun AddAssetLayout(
                 modifier = Modifier.fillMaxWidth(),
                 label = R.string.generic_save,
                 isButtonLoading = state.isSaving,
-                onButtonClicked = { onAction(AddAssetAction.OnSaveClicked) }
+                onButtonClicked = { onAction(CreateEditAssetAction.OnSaveClicked) }
             )
         }
     }

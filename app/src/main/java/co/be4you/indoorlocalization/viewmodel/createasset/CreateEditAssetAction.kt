@@ -1,0 +1,12 @@
+package co.be4you.indoorlocalization.viewmodel.createasset
+
+interface CreateEditAssetAction {
+
+    data class OnNameChanged(val value: String) : CreateEditAssetAction
+
+    data class OnColorChanged(val value: String) : CreateEditAssetAction
+
+    data object OnSaveClicked : CreateEditAssetAction
+
+    data object OnBackClicked : CreateEditAssetAction
+}
