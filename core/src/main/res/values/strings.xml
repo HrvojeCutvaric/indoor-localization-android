@@ -24,4 +24,5 @@
     <string name="failed_to_load_floor_map">Failed to load floor map.</string>
     <string name="select_a_login_method">Select a login method</string>
     <string name="enter_credentials">Enter credentials:</string>
+    <string name="failed_zone_retention">Failed to fetch zone retention data</string>
 </resources>
