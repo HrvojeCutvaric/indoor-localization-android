@@ -15,6 +15,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,13 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
+import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.utils.formatDateTime
 import co.be4you.indoorlocalization.view.common.DefaultTopBar
 import co.be4you.indoorlocalization.viewmodel.assetdetail.AssetDetailAction
@@ -45,140 +45,130 @@ fun AssetDetailScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        DefaultTopBar(
-            title = "Asset Details",
-            onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.delete_this_asset)) },
+            text = { Text(stringResource(R.string.this_action_cannot_be_undone)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        viewModel.execute(AssetDetailAction.OnDeleteClicked)
+                    },
+                    enabled = !state.isDeleting
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteDialog = false },
+                    enabled = !state.isDeleting
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
         )
+    }
 
-        if (showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Delete this asset?") },
-                text = { Text("This action cannot be undone.") },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            showDeleteDialog = false
-                            viewModel.execute(AssetDetailAction.OnDeleteClicked)
-                        },
-                        enabled = !state.isDeleting
-                    ) {
-                        Text("Delete")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { showDeleteDialog = false },
-                        enabled = !state.isDeleting
-                    ) {
-                        Text("Cancel")
-                    }
-                }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            DefaultTopBar(
+                title = stringResource(R.string.asset_details),
+                onBack = { viewModel.execute(AssetDetailAction.OnBackClicked) },
             )
         }
-
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) { CircularProgressIndicator() }
-            }
-
-            state.errorResource != null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(id = state.errorResource),
-                        color = Color.Red,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+    ) { paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues)) {
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) { CircularProgressIndicator() }
                 }
-            }
 
-
-            state.asset != null -> {
-                val asset = state.asset
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                ) {
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                state.errorResource != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .background(
-                                    color = asset.colorHex?.let { colorHex ->
-                                        try {
-                                            Color(colorHex.toColorInt())
-                                        } catch (_: Exception) {
-                                            Color.Gray
-                                        }
-                                    } ?: Color.Gray,
-                                    shape = MaterialTheme.shapes.medium
-                                )
-                        )
-
-                        Spacer(Modifier.width(15.dp))
-
                         Text(
-                            text = asset.name,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
+                            text = stringResource(id = state.errorResource),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
+                }
 
-                    Spacer(Modifier.height(15.dp))
 
-                    InfoItem("Status", if (asset.active) "Active" else "Inactive")
-                    InfoItem("Last Known Position", "(${asset.x}, ${asset.y})")
-                    InfoItem("Floor Map", asset.floorMapId.toString())
-                    InfoItem("Last Sync", asset.lastSync?.formatDateTime() ?: "Unknown")
+                state.asset != null -> {
+                    val asset = state.asset
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .background(
+                                        color = asset.color,
+                                        shape = MaterialTheme.shapes.medium
+                                    )
+                            )
+
+                            Spacer(Modifier.width(15.dp))
+
+                            Text(
+                                text = asset.name,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
+                            )
+                        }
+
+                        Spacer(Modifier.height(15.dp))
+
+                        InfoItem(
+                            stringResource(R.string.status),
+                            if (asset.active) stringResource(R.string.active) else stringResource(
+                                R.string.inactive
+                            )
+                        )
+                        InfoItem(
+                            stringResource(R.string.last_known_position),
+                            "(${asset.x}, ${asset.y})"
+                        )
+                        InfoItem(stringResource(R.string.floor_map), asset.floorMapId.toString())
+                        InfoItem(
+                            stringResource(R.string.last_sync),
+                            asset.lastSync?.formatDateTime() ?: stringResource(R.string.unknown)
+                        )
+
+                        Spacer(Modifier.height(32.dp))
+
+                        DefaultButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            buttonColors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError,
+                            ),
+                            onButtonClicked = { showDeleteDialog = true },
+                            isButtonEnabled = state.isDeleting.not(),
+                            isButtonLoading = state.isDeleting,
+                            content = { if (!state.isDeleting) Text("Delete") }
+                        )
+                    }
                 }
             }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-
-            val isDeleting = state.isDeleting
-            val isBusy = state.isLoading || isDeleting
-
-            DefaultButton(
-                modifier = Modifier.fillMaxWidth(),
-                label = null,
-                onButtonClicked = { /* TODO EDIT */ },
-                isButtonEnabled = !isBusy,
-                content = { Text("Edit", color = Color.White) }
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            DefaultButton(
-                modifier = Modifier.fillMaxWidth(),
-                buttonColors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFC54B3C),
-                    contentColor = Color.White
-                ),
-                onButtonClicked = { showDeleteDialog = true },
-                isButtonEnabled = !isBusy,
-                isButtonLoading = state.isDeleting,
-                content = { if (!state.isDeleting) Text("Delete") }
-            )
         }
     }
 }
@@ -189,7 +179,7 @@ fun InfoItem(label: String, value: String) {
 
         Text(
             text = label,
-            color = Color(0xFF75AEE8),
+            color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
         )
 

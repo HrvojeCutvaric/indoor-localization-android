@@ -58,4 +58,15 @@
     <string name="heatmap_error_invalid_time_range">Invalid time range: “From” must be before “To”.</string>
     <string name="heatmap_error_from_required">Please select the “From” date and time.</string>
     <string name="heatmap_error_to_required">Please select the “To” date and time.</string>
+    <string name="asset_details">Asset Details</string>
+    <string name="delete_this_asset">Delete this asset?</string>
+    <string name="this_action_cannot_be_undone">This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="status">Status</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
+    <string name="last_known_position">Last Known Position</string>
+    <string name="floor_map">Floor Map</string>
+    <string name="last_sync">Last Sync</string>
+    <string name="unknown">Unknown</string>
 </resources>
