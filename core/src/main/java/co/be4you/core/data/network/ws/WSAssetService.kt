@@ -4,6 +4,7 @@ import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.mappers.toAsset
 import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
+import co.be4you.core.data.network.ws.api.models.assets.EditAssetRequestDto
 import co.be4you.core.data.network.ws.api.utils.apiCallListMap
 import co.be4you.core.data.network.ws.api.utils.apiCallMap
 import co.be4you.core.data.network.ws.api.utils.apiCallUnit
@@ -33,9 +34,34 @@ class WSAssetService(
             errorMessage = "Failed to delete asset"
         )
 
-    override suspend fun createAsset(request: CreateAssetRequestDto): Result<Unit> =
+    override suspend fun createAsset(asset: Asset): Result<Unit> =
         apiCallUnit(
-            call = { assetApi.createAsset(request) },
+            call = {
+                assetApi.createAsset(
+                    body = CreateAssetRequestDto(
+                        name = asset.name,
+                        x = asset.x,
+                        y = asset.y,
+                        floorMapId = asset.floorMapId,
+                        active = asset.active,
+                        color = asset.colorHex
+                    )
+                )
+            },
             errorMessage = "Failed to create asset"
+        )
+
+    override suspend fun updateAsset(asset: Asset): Result<Unit> =
+        apiCallUnit(
+            call = {
+                assetApi.updateAsset(
+                    id = asset.id,
+                    body = EditAssetRequestDto(
+                        name = asset.name,
+                        colorHex = asset.colorHex.orEmpty(),
+                    ),
+                )
+            },
+            errorMessage = "Failed to edit",
         )
 }

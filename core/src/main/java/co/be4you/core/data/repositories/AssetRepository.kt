@@ -1,12 +1,12 @@
 package co.be4you.core.data.repositories
+
 import co.be4you.core.data.network.services.AssetService
-import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
 import co.be4you.core.domain.models.Asset
 
 class AssetRepository(
     private val assetService: AssetService
-){
-    suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>>{
+) {
+    suspend fun getAssetsByFloorMap(floorMapId: Long): Result<List<Asset>> {
         return assetService.getAssetsByFloorMap(floorMapId)
     }
 
@@ -18,8 +18,11 @@ class AssetRepository(
         return assetService.deleteAsset(id)
     }
 
-    suspend fun createAsset(request: CreateAssetRequestDto): Result<Unit>{
-        return assetService.createAsset(request)
+    suspend fun createAsset(asset: Asset): Result<Unit> {
+        return assetService.createAsset(asset = asset)
     }
 
+    suspend fun updateAsset(asset: Asset): Result<Unit> {
+        return assetService.updateAsset(asset)
+    }
 }

@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -24,7 +25,7 @@ import co.be4you.core.ui.theme.CommonBlue
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.indoorlocalization.view.assetdetail.AssetDetailScreen
 import co.be4you.indoorlocalization.view.assets.AssetsScreen
-import co.be4you.indoorlocalization.view.createasset.AddAssetScreen
+import co.be4you.indoorlocalization.view.createasset.CreateEditAssetScreen
 import co.be4you.indoorlocalization.view.dashboard.DashboardScreen
 import co.be4you.indoorlocalization.view.heatmap.HeatmapScreen
 import co.be4you.indoorlocalization.view.login.LoginScreen
@@ -51,7 +52,9 @@ class MainActivity : ComponentActivity() {
             val appNavigator = koinInject<AppNavigator>()
             IndoorLocalizationTheme {
                 NavDisplay(
-                    modifier = Modifier.statusBarsPadding(),
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .navigationBarsPadding(),
                     backStack = appNavigator.backStack,
                     transitionSpec = {
                         fadeIn(tween(300)) togetherWith fadeOut(tween(300))
@@ -84,11 +87,8 @@ class MainActivity : ComponentActivity() {
                             AssetDetailScreen()
                         }
 
-                        entry<Route.CreateAsset> { create ->
-                            AddAssetScreen(
-                                floorMapId = create.floorMapId,
-                                floorMapName = create.floorMapName
-                            )
+                        entry<Route.CreateEditAsset> {
+                            CreateEditAssetScreen()
                         }
 
                         entry<Route.Heatmap> {

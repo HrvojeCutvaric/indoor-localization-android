@@ -2,11 +2,13 @@ package co.be4you.core.data.network.ws.api
 
 import co.be4you.core.data.network.ws.api.models.assets.AssetDto
 import co.be4you.core.data.network.ws.api.models.assets.CreateAssetRequestDto
+import co.be4you.core.data.network.ws.api.models.assets.EditAssetRequestDto
 import co.be4you.core.data.network.ws.api.models.utils.ApiResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface AssetApi {
@@ -28,6 +30,12 @@ interface AssetApi {
 
     @POST("/api/Asset")
     suspend fun createAsset(
-        @Body request: CreateAssetRequestDto
+        @Body body: CreateAssetRequestDto
+    ): ApiResponse<Unit>
+
+    @PUT("/api/Asset/{id}")
+    suspend fun updateAsset(
+        @Path("id") id: Long,
+        @Body body: EditAssetRequestDto
     ): ApiResponse<Unit>
 }
