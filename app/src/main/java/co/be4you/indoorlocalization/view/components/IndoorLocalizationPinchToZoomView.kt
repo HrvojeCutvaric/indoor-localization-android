@@ -144,6 +144,7 @@ fun IndoorLocalizationPinchToZoomView(
                         )
                         .clip(RectangleShape),
                     zones = zones,
+                    floorMap = floorMap,
                 )
             }
 
@@ -203,8 +204,12 @@ private fun DrawAssetsOverlay(
             val x = asset.x ?: return@forEach
             val y = asset.y ?: return@forEach
 
-            val pxX = ((x / floorMap.widthInMeters) * floorMap.imageWidthPx).toFloat()
-            val pxY = ((y / floorMap.heightInMeters) * floorMap.imageHeightPx).toFloat()
+            val mapW = floorMap.imageWidthPx
+            val mapH = floorMap.imageHeightPx
+
+            val pxX = ((x / floorMap.widthInMeters) * mapW).toFloat()
+            val rawPxY = ((y / floorMap.heightInMeters) * mapH).toFloat()
+            val pxY = (mapH - rawPxY)
 
             val color = asset.colorHex?.let { hex ->
                 runCatching { Color(hex.toColorInt()) }.getOrElse { Color.Gray }
@@ -268,8 +273,12 @@ private fun DrawAssetsOverlay(
 private fun DrawZonesOverlay(
     modifier: Modifier = Modifier,
     zones: List<Zone>,
+    floorMap: FloorMap,
 ) {
     Canvas(modifier = modifier) {
+
+        val mapW = floorMap.imageWidthPx.toFloat()
+        val mapH = floorMap.imageHeightPx.toFloat()
 
         zones.forEachIndexed { index, zone ->
             if (zone.points.size < 3) return@forEachIndexed
@@ -279,15 +288,15 @@ private fun DrawZonesOverlay(
             zone.points
                 .sortedBy { it.ordinalNumber }
                 .forEachIndexed { index, point ->
+                    val xMeters = point.x.toFloat()
+                    val yMeters = point.y.toFloat()
 
-                    val x = point.x.toFloat()
-                    val y = point.y.toFloat()
+                    val pxX = (xMeters / floorMap.widthInMeters.toFloat()) * mapW
+                    val rawPxY = (yMeters / floorMap.heightInMeters.toFloat()) * mapH
 
-                    if (index == 0) {
-                        path.moveTo(x, y)
-                    } else {
-                        path.lineTo(x, y)
-                    }
+                    val pxY = mapH - rawPxY
+
+                    if (index == 0) path.moveTo(pxX, pxY) else path.lineTo(pxX, pxY)
                 }
 
             path.close()

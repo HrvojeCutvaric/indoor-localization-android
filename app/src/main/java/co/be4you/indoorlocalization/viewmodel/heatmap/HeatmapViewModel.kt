@@ -249,7 +249,8 @@ class HeatmapViewModel(
                                 val heatBmp = withContext(Dispatchers.Default) {
                                     val pointsPx = filtered.map { p ->
                                         val pxX = (p.x / floorMap.widthInMeters) * mapW
-                                        val pxY = (p.y / floorMap.heightInMeters) * mapH
+                                        val rawPxY = (p.y / floorMap.heightInMeters) * mapH
+                                        val pxY = mapH - rawPxY
                                         HeatPointPx(pxX.toFloat(), pxY.toFloat())
                                     }
 
@@ -342,7 +343,12 @@ class HeatmapViewModel(
                 _state.update { currentState ->
                     currentState?.let {
                         val query = action.query
-                        val visible = it.assets.filter { asset -> asset.name.contains(query, ignoreCase = true) }
+                        val visible = it.assets.filter { asset ->
+                            asset.name.contains(
+                                query,
+                                ignoreCase = true
+                            )
+                        }
                         it.copy(
                             searchQuery = query,
                             unselectedAssets = (visible.toSet() - it.selectedAssets.toSet()).toList()
