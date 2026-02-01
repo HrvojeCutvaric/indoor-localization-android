@@ -1,6 +1,8 @@
 package co.be4you.indoorlocalization.viewmodel.createasset
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.be4you.core.data.repositories.AssetRepository
@@ -63,6 +65,18 @@ class CreateEditAssetViewModel(
                     showDeleteDialog = false
                 )
             }
+
+            CreateEditAssetAction.OnColorPickerClicked -> {
+                _state.update { it?.copy(showColorPicker = true) }
+            }
+
+            CreateEditAssetAction.OnColorPickerDismissed -> {
+                _state.update { it?.copy(showColorPicker = false) }
+            }
+
+            is CreateEditAssetAction.OnColorPickerConfirmed -> {
+                _state.update { it?.copy(showColorPicker = false, selectedColor = action.color) }
+            }
         }
     }
 
@@ -80,6 +94,8 @@ class CreateEditAssetViewModel(
                                 colorHex = "",
                                 errorResource = null,
                                 showDeleteDialog = false,
+                                showColorPicker = false,
+                                selectedColor = Color.White,
                             )
                             return@launch
                         }
@@ -94,6 +110,8 @@ class CreateEditAssetViewModel(
                                     colorHex = asset.colorHex.orEmpty(),
                                     errorResource = null,
                                     showDeleteDialog = false,
+                                    showColorPicker = false,
+                                    selectedColor = asset.color,
                                 )
                             },
                             onFailure = {
@@ -120,12 +138,10 @@ class CreateEditAssetViewModel(
                 return
             }
 
-            val color = currentState.colorHex.trim().takeIf { it.isNotBlank() }
-
             val newAsset = Asset(
                 id = assetId ?: 0,
                 name = currentState.name,
-                colorHex = color,
+                colorHex = String.format("#%08X", currentState.selectedColor.toArgb()),
                 x = null,
                 y = null,
                 floorMapId = currentState.floorMap.id,
