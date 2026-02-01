@@ -155,6 +155,15 @@ class DashboardViewModel(
                     }
                 }
             }
+
+            DashboardAction.OnZoneRetentionClicked -> {
+                _state.value?.let { currentState ->
+                    currentState.selectedFloorMap?.let {
+                        appNavigator.navigateTo(Route.ZoneRetention(floorMapId = currentState.selectedFloorMap.id))
+                    }
+                }
+            }
+
         }
     }
 
