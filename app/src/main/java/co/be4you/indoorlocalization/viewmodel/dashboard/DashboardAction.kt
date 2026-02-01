@@ -14,6 +14,7 @@ sealed interface DashboardAction {
 
     data class OnFloorMapSelected(val floorMap: FloorMap) : DashboardAction
 
+    data object OnZoneRetentionClicked : DashboardAction
     data class OnNavigateToAssets(
         val floorMapId: Long,
         val floorMapName: String,

@@ -179,6 +179,14 @@ private fun DashboardLayout(
                 isButtonLoading = false,
                 onButtonClicked = { onAction(DashboardAction.OnHeatmapClicked) }
             )
+
+            DefaultButton(
+                modifier = Modifier.weight(1f),
+                label = R.string.zone_retention,
+                isButtonEnabled = state.selectedFloorMap != null,
+                isButtonLoading = false,
+                onButtonClicked = { onAction(DashboardAction.OnZoneRetentionClicked) }
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))

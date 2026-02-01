@@ -7,17 +7,20 @@ import co.be4you.core.data.network.services.AssetService
 import co.be4you.core.data.network.services.AssetTrackingService
 import co.be4you.core.data.network.services.AuthService
 import co.be4you.core.data.network.services.FloorMapService
+import co.be4you.core.data.network.services.ZoneRetentionHistoryService
 import co.be4you.core.data.network.services.ZoneService
 import co.be4you.core.data.network.ws.WSAssetPositionHistoryService
 import co.be4you.core.data.network.ws.WSAssetService
 import co.be4you.core.data.network.ws.WSAuthService
 import co.be4you.core.data.network.ws.WSFloorMapService
+import co.be4you.core.data.network.ws.WSZoneRetentionHistoryService
 import co.be4you.core.data.network.ws.WSZoneService
 import co.be4you.core.data.network.ws.api.AssetApi
 import co.be4you.core.data.network.ws.api.AssetPositionHistoryApi
 import co.be4you.core.data.network.ws.api.AuthApi
 import co.be4you.core.data.network.ws.api.FloorMapApi
 import co.be4you.core.data.network.ws.api.ZoneApi
+import co.be4you.core.data.network.ws.api.ZoneRetentionHistoryApi
 import co.be4you.core.data.network.ws.mqtt.MqttAssetTrackingService
 import co.be4you.core.data.repositories.AssetPositionHistoryRepository
 import co.be4you.core.data.repositories.AssetRepository
@@ -25,6 +28,7 @@ import co.be4you.core.data.repositories.AssetTrackingRepository
 import co.be4you.core.data.repositories.AuthRepository
 import co.be4you.core.data.repositories.FloorMapRepository
 import co.be4you.core.data.repositories.ZoneRepository
+import co.be4you.core.data.repositories.ZoneRetentionHistoryRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.use_case.RegisterUseCase
 import co.be4you.core.domain.utils.Constants
@@ -39,6 +43,7 @@ import co.be4you.indoorlocalization.viewmodel.heatmap.HeatmapViewModel
 import co.be4you.indoorlocalization.viewmodel.login.LoginViewModel
 import co.be4you.indoorlocalization.viewmodel.main.MainViewModel
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationViewModel
+import co.be4you.indoorlocalization.viewmodel.zoneretention.ZoneRetentionViewModel
 import co.be4you.otp_login.OtpHandler
 import co.be4you.otp_login.OtpLoginUiAction
 import co.be4you.otp_login.OtpLoginUiState
@@ -83,6 +88,9 @@ val modules = module {
     singleOf(::ZoneRepository).bind<ZoneRepository>()
     singleOf(::WSAssetPositionHistoryService).bind<AssetPositionHistoryService>()
     singleOf(::AssetPositionHistoryRepository).bind<AssetPositionHistoryRepository>()
+    singleOf(::WSZoneRetentionHistoryService).bind<ZoneRetentionHistoryService>()
+    singleOf(::ZoneRetentionHistoryRepository).bind<ZoneRetentionHistoryRepository>()
+
 
     single { Gson() }
 
@@ -94,6 +102,8 @@ val modules = module {
     viewModelOf(::AssetDetailViewModel)
     viewModelOf(::AddAssetViewModel)
     viewModelOf(::HeatmapViewModel)
+    viewModelOf(::ZoneRetentionViewModel)
+
 
     factoryOf(::RegisterUseCase)
 
@@ -123,6 +133,9 @@ val modules = module {
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetPositionHistoryApi::class.java) }
+    single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneRetentionHistoryApi::class.java) }
+
+
 }
 
 private fun createDefaultOkHttpClient(): OkHttpClient.Builder =

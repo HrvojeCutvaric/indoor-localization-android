@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
-
+import co.be4you.indoorlocalization.view.zoneretention.ZoneRetentionScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashscreen = installSplashScreen()
@@ -93,6 +93,10 @@ class MainActivity : ComponentActivity() {
 
                         entry<Route.Heatmap> {
                             HeatmapScreen(onAction = mainViewModel::execute)
+                        }
+
+                        entry<Route.ZoneRetention>{
+                            ZoneRetentionScreen()
                         }
                     }
                 )
