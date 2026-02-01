@@ -90,8 +90,6 @@ val modules = module {
     singleOf(::AssetPositionHistoryRepository).bind<AssetPositionHistoryRepository>()
     singleOf(::WSZoneRetentionHistoryService).bind<ZoneRetentionHistoryService>()
     singleOf(::ZoneRetentionHistoryRepository).bind<ZoneRetentionHistoryRepository>()
-    singleOf(::WSZoneRetentionHistoryService).bind<ZoneRetentionHistoryService>()
-    singleOf(::ZoneRetentionHistoryRepository).bind<ZoneRetentionHistoryRepository>()
 
 
     single { Gson() }
@@ -135,7 +133,6 @@ val modules = module {
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(AssetPositionHistoryApi::class.java) }
-    single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneRetentionHistoryApi::class.java) }
     single { get<Retrofit>(named(RetrofitType.Authorized)).create(ZoneRetentionHistoryApi::class.java) }
 
 
