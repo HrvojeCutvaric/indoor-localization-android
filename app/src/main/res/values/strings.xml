@@ -52,7 +52,7 @@
     <string name="back_to_dashboard">Back to Dashboard</string>
     <string name="heatmap">Heatmap</string>
     <string name="zone_retention">Retention</string>
-    <string name="row">Row</string>
+    <string name="row">Row %1$s</string>
     <string name="row_number">No.</string>
     <string name="miliseconds">ms</string>
     <string name="exit_time">Exit</string>
