@@ -52,6 +52,11 @@
     <string name="back_to_dashboard">Back to Dashboard</string>
     <string name="heatmap">Heatmap</string>
     <string name="zone_retention">Retention</string>
+    <string name="row">Row %1$s</string>
+    <string name="row_number">No.</string>
+    <string name="miliseconds">ms</string>
+    <string name="exit_time">Exit</string>
+    <string name="enter_time">Enter</string>
     <string name="select_asset">Select asset</string>
     <string name="select_zone">Select zone</string>
     <string name="info_select_assets">Select one or more assets.</string>
