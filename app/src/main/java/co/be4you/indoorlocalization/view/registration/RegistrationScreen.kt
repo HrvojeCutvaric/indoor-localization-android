@@ -1,5 +1,7 @@
 package co.be4you.indoorlocalization.view.registration
 
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -31,11 +35,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.be4you.core.ui.components.DefaultButton
 import co.be4you.core.ui.components.DefaultTextField
+import co.be4you.core.ui.components.LabelWithTextButton
 import co.be4you.core.ui.theme.BrandLightBlue
 import co.be4you.core.ui.theme.IndoorLocalizationTheme
 import co.be4you.core.ui.theme.LinkText
 import co.be4you.indoorlocalization.R
 import co.be4you.indoorlocalization.view.common.AuthHeader
+import co.be4you.indoorlocalization.viewmodel.login.LoginAction
 import co.be4you.indoorlocalization.viewmodel.main.MainAction
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationAction
 import co.be4you.indoorlocalization.viewmodel.registration.RegistrationState
@@ -91,7 +97,9 @@ private fun RegistrationLayout(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 12.dp, vertical = 16.dp),
+                        .padding(horizontal = 12.dp, vertical = 16.dp).verticalScroll(
+                            rememberScrollState(),
+                        ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
@@ -200,27 +208,13 @@ private fun RegistrationLayout(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(R.string.already_have_an_account),
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = BrandLightBlue
-                            )
-                        )
-
-                        TextButton(onClick = { onAction(RegistrationAction.OnLoginClicked) }) {
-                            Text(
-                                text = stringResource(R.string.login),
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = LinkText
-                                )
-                            )
-                        }
-                    }
+                    LabelWithTextButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = stringResource(R.string.already_have_an_account),
+                        buttonLabel = stringResource(R.string.login),
+                        isButtonLoading = false,
+                        onTextButtonClicked = { onAction(RegistrationAction.OnLoginClicked) },
+                    )
                 }
             }
         }

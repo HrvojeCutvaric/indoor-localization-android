@@ -15,3 +15,13 @@
 local.properties
 .idea
 .idea/misc.xml
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+**/build/
+*.apk
+*.aab
+*.apks
+output-metadata.json
+**/release
