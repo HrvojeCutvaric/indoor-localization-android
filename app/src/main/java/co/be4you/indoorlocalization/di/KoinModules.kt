@@ -31,7 +31,6 @@ import co.be4you.core.data.repositories.ZoneRepository
 import co.be4you.core.data.repositories.ZoneRetentionHistoryRepository
 import co.be4you.core.domain.storage.AppEncryptedSharedPreferences
 import co.be4you.core.domain.use_case.RegisterUseCase
-import co.be4you.core.domain.utils.Constants
 import co.be4you.core.domain.utils.login.LoginHandler
 import co.be4you.core.navigation.AppNavigator
 import co.be4you.indoorlocalization.storage.AppEncryptedSharedPreferencesImpl
@@ -148,7 +147,7 @@ private fun createDefaultOkHttpClient(): OkHttpClient.Builder =
 private fun createRetrofit(okHttpClient: OkHttpClient): Retrofit =
     Retrofit
         .Builder()
-        .baseUrl(Constants.BASE_URL)
+        .baseUrl(co.be4you.indoorlocalization.BuildConfig.BASE_URL_BACKEND)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
